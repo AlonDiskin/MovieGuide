@@ -1,2 +1,11 @@
+include ':features:settings:presentation'
+include ':features:reviews:presentation'
+include ':features:home:di'
+include ':features:common:navigation'
+include ':features:news:presentation'
+include ':features:common:presentation'
+include ':features:common:localTesting'
+include ':features:home:presentation'
+include ':features:common:uiTesting'
 include ':app'
 rootProject.name = "MovieGuide"

@@ -1,0 +1,5 @@
+<resources>
+    <string name="nav_news">News</string>
+    <string name="nav_reviews">Reviews</string>
+    <string name="nav_settings">Settings</string>
+</resources>
