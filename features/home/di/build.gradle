@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
@@ -7,13 +7,13 @@ android {
     compileSdkVersion 29
 
     defaultConfig {
-        applicationId "com.diskin.alon.movieguide"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
@@ -32,23 +32,13 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-
-    packagingOptions {
-        exclude 'META-INF/presentation_debug.kotlin_module'
-    }
 }
 
 dependencies {
     def dagger_version = "2.25.4"
-    def uiautomator_version = "2.2.0"
-    def greencoffee_version = "3.5.0"
 
-    // Project modules
+    // Home feature modules
     implementation project(':features:home:presentation')
-    implementation project(':features:home:di')
-    implementation project(':features:news:presentation')
-    implementation project(':features:reviews:presentation')
-    implementation project(':features:settings:presentation')
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -60,14 +50,5 @@ dependencies {
     implementation "com.google.dagger:dagger-android-support:$dagger_version"
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
-
-    // Local/Unit testing
-    testImplementation project(':features:common:uiTesting')
-
-    // Instrumentation testing
-    androidTestImplementation project(':features:common:uiTesting')
-    androidTestImplementation "androidx.test.uiautomator:uiautomator:$uiautomator_version"
-    androidTestImplementation "com.mauriciotogneri:greencoffee:$greencoffee_version"
-    androidTestImplementation "com.google.truth:truth:1.0.1"
 
 }
