@@ -8,4 +8,4 @@ Feature: App features navigation
     Examples:
       | feature  |
       | reviews  |
-      | settings |
+#      | settings |

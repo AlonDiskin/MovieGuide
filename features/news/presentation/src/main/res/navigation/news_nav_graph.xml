@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/headlinesFragment"
-        android:name="com.diskin.alon.movieguide.news.presentation.HeadlinesFragment"
+        android:name="com.diskin.alon.movieguide.news.presentation.MoviesHeadlinesFragment"
         android:label="HeadlinesFragment"
-        tools:layout="@layout/fragment_headlines"/>
+        tools:layout="@layout/fragment_movies_headlines"/>
 </navigation>

@@ -1,0 +1,27 @@
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    // Project modules
+    implementation project(':features:news:domain')
+    api project(':features:common:appServices')
+
+    // Rx
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
+    implementation "io.reactivex.rxjava2:rxkotlin:2.4.0"
+
+    // Paging(for kotlin modules)
+    implementation "androidx.paging:paging-common:3.0.0-alpha07"
+
+    // Javax annotation
+    implementation "javax.inject:javax.inject:1"
+
+    // Unit testing/Local testing
+    testImplementation project(':features:common:localTesting')
+}
+
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"

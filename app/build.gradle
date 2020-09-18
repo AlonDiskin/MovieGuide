@@ -13,7 +13,8 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.diskin.alon.movieguide.runner.TestRunner"
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -35,6 +36,15 @@ android {
 
     packagingOptions {
         exclude 'META-INF/presentation_debug.kotlin_module'
+        exclude 'META-INF/appServices.kotlin_module'
+        exclude 'META-INF/di_debug.kotlin_module'
+        exclude 'META-INF/di_release.kotlin_module'
+        exclude 'META-INF/presentation_release.kotlin_module'
+    }
+
+    // Data Binding
+    buildFeatures {
+        dataBinding = true
     }
 }
 
@@ -43,10 +53,12 @@ dependencies {
     def uiautomator_version = "2.2.0"
     def greencoffee_version = "3.5.0"
 
+    // Multidex
+    implementation 'androidx.multidex:multidex:2.0.1'
+
     // Project modules
-    implementation project(':features:home:presentation')
     implementation project(':features:home:di')
-    implementation project(':features:news:presentation')
+    implementation project(':features:news:di')
     implementation project(':features:reviews:presentation')
     implementation project(':features:settings:presentation')
 
@@ -66,8 +78,21 @@ dependencies {
 
     // Instrumentation testing
     androidTestImplementation project(':features:common:uiTesting')
+    androidTestImplementation project(':features:common:presentation')
     androidTestImplementation "androidx.test.uiautomator:uiautomator:$uiautomator_version"
     androidTestImplementation "com.mauriciotogneri:greencoffee:$greencoffee_version"
     androidTestImplementation "com.google.truth:truth:1.0.1"
-
+    androidTestImplementation "com.squareup.okhttp3:mockwebserver:3.9.1"
+    androidTestImplementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    androidTestImplementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
+    androidTestImplementation 'com.squareup.retrofit2:retrofit:2.6.2'
+    androidTestImplementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    androidTestImplementation 'io.reactivex.rxjava2:rxjava:2.2.19'
+    androidTestImplementation "io.reactivex.rxjava2:rxkotlin:2.4.0"
+    androidTestImplementation 'com.squareup.rx.idler:rx2-idler:0.11.0'
+    androidTestImplementation "com.google.dagger:dagger-android:$dagger_version"
+    androidTestImplementation "com.google.dagger:dagger-android-support:$dagger_version"
+    kaptAndroidTest "com.google.dagger:dagger-android-processor:$dagger_version"
+    kaptAndroidTest "com.google.dagger:dagger-compiler:$dagger_version"
+    androidTestImplementation "joda-time:joda-time:2.10.4"
 }
