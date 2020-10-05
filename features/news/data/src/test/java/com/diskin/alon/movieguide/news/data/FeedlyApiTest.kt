@@ -1,5 +1,8 @@
 package com.diskin.alon.movieguide.news.data
 
+import com.diskin.alon.movieguide.news.data.remote.FeedlyApi
+import com.diskin.alon.movieguide.news.data.remote.MOVIES_NEWS_FEED
+import io.reactivex.Single
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.mockwebserver.MockResponse
@@ -75,5 +78,23 @@ class FeedlyApiTest {
 
         // Then
         testObserver.assertValue(getMappedFeedlyLastPageResponse())
+    }
+
+    @Test
+    fun getEntryAndMapResponse() {
+        // Given feedly server with existing entry as json resource
+        val testJson = getJsonFromResource("feedly_entry.json")
+        val response = MockResponse()
+            .setResponseCode(HttpURLConnection.HTTP_OK)
+            .setBody(testJson)
+
+        server.enqueue(response)
+
+        // When api makes a get request for entry resource
+        val testObserver = api.getEntry("id").test()
+
+        // Then api should map server response resource to expected response model
+        val expectedResponse = parseFeedlyEntryResponseFromJson(testJson)
+        testObserver.assertValue(expectedResponse)
     }
 }

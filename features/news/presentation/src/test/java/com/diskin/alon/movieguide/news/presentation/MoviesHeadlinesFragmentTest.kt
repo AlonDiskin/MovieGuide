@@ -1,5 +1,7 @@
 package com.diskin.alon.movieguide.news.presentation
 
+import android.content.Context
+import android.content.Intent
 import android.os.Looper
 import android.view.View
 import androidx.fragment.app.testing.FragmentScenario
@@ -10,16 +12,24 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.rxjava2.RxPagingSource
 import androidx.paging.rxjava2.observable
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.diskin.alon.movieguide.common.presentation.ImageLoader
 import com.diskin.alon.movieguide.common.uitesting.RecyclerViewMatcher.withRecyclerView
 import com.diskin.alon.movieguide.common.uitesting.swipeToRefresh
-import com.diskin.alon.movieguide.news.presentation.NewsHeadlinesAdapter.NewsHeadlineViewHolder
+import com.diskin.alon.movieguide.news.presentation.controller.MoviesHeadlinesFragment
+import com.diskin.alon.movieguide.news.presentation.controller.NewsHeadlinesAdapter
+import com.diskin.alon.movieguide.news.presentation.controller.NewsHeadlinesAdapter.NewsHeadlineViewHolder
+import com.diskin.alon.movieguide.news.presentation.model.NewsHeadline
+import com.diskin.alon.movieguide.news.presentation.viewmodel.MoviesHeadlinesViewModel
 import com.google.common.truth.Truth.assertThat
 import dagger.android.support.AndroidSupportInjection
 import io.mockk.*
@@ -125,14 +135,14 @@ class MoviesHeadlinesFragmentTest {
         // Test case fixture
         var refreshCounter = 0
         val  paging = Pager(PagingConfig(pageSize = 10)) {
-            return@Pager object : RxPagingSource<String,NewsHeadline>() {
+            return@Pager object : RxPagingSource<String, NewsHeadline>() {
                 override fun loadSingle(params: LoadParams<String>): Single<LoadResult<String, NewsHeadline>> {
                     if (params is LoadParams.Refresh) {
                         refreshCounter++
                     }
                     return Single.just(createNewsHeadlines())
                         .map { headlines ->
-                            LoadResult.Page<String,NewsHeadline>(
+                            LoadResult.Page<String, NewsHeadline>(
                                 headlines,
                                 null,
                                 null
@@ -167,11 +177,11 @@ class MoviesHeadlinesFragmentTest {
         }
 
         val paging = Pager(PagingConfig(pageSize = 10)) {
-            return@Pager object : RxPagingSource<String,NewsHeadline>() {
+            return@Pager object : RxPagingSource<String, NewsHeadline>() {
                 override fun loadSingle(params: LoadParams<String>): Single<LoadResult<String, NewsHeadline>> {
                     return Single.just(createNewsHeadlines())
                         .map { headlines ->
-                            LoadResult.Page<String,NewsHeadline>(
+                            LoadResult.Page<String, NewsHeadline>(
                                 headlines,
                                 null,
                                 null
@@ -204,7 +214,7 @@ class MoviesHeadlinesFragmentTest {
                 }
         }
         Pager(PagingConfig(pageSize = 10)) {
-            return@Pager object : RxPagingSource<String,NewsHeadline>() {
+            return@Pager object : RxPagingSource<String, NewsHeadline>() {
                 override fun loadSingle(params: LoadParams<String>): Single<LoadResult<String, NewsHeadline>> {
                     val key = when(params) {
                         is LoadParams.Refresh -> "key"
@@ -245,7 +255,7 @@ class MoviesHeadlinesFragmentTest {
         // Test case fixture
         val pagingError = Throwable("error message")
         val paging = Pager(PagingConfig(pageSize = 10)) {
-            return@Pager object : RxPagingSource<String,NewsHeadline>() {
+            return@Pager object : RxPagingSource<String, NewsHeadline>() {
                 override fun loadSingle(params: LoadParams<String>): Single<LoadResult<String, NewsHeadline>> {
                     return Single.just(LoadResult.Error(pagingError))
                 }
@@ -280,7 +290,7 @@ class MoviesHeadlinesFragmentTest {
         // Test case fixture
         val pagingError = Throwable()
         val paging = Pager(PagingConfig(pageSize = 10)) {
-            return@Pager object : RxPagingSource<String,NewsHeadline>() {
+            return@Pager object : RxPagingSource<String, NewsHeadline>() {
                 override fun loadSingle(params: LoadParams<String>): Single<LoadResult<String, NewsHeadline>> {
                     return Single.just(LoadResult.Error(pagingError))
                 }
@@ -303,5 +313,33 @@ class MoviesHeadlinesFragmentTest {
         // And do not provide a retry action for failed operation
         onView(withId(R.id.snackbar_action))
             .check(matches(withEffectiveVisibility(Visibility.GONE)))
+    }
+
+    @Test
+    fun shareHeadlineWhenHeadlineSharingSelected() {
+        // Test case fixture
+        Intents.init()
+
+        // Given a resumed fragment that display single news headline
+        val testHeadlines = createNewsHeadlines()
+        headlines.value = PagingData.from(listOf(testHeadlines.first()))
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // When user click on headline share button of first headline
+        onView(withId(R.id.shareButton))
+            .perform(click())
+
+        // Then fragment should share headline article url via Android Sharesheet
+        Intents.intended(IntentMatchers.hasAction(Intent.ACTION_CHOOSER))
+        Intents.intended(IntentMatchers.hasExtraWithKey(Intent.EXTRA_INTENT))
+
+        val intent = Intents.getIntents().first().extras?.get(Intent.EXTRA_INTENT) as Intent
+        val context = ApplicationProvider.getApplicationContext<Context>()!!
+
+        assertThat(intent.type).isEqualTo(context.getString(R.string.mime_type_text))
+        assertThat(intent.getStringExtra(Intent.EXTRA_TEXT))
+            .isEqualTo(testHeadlines.first().articleUrl)
+
+        Intents.release()
     }
 }

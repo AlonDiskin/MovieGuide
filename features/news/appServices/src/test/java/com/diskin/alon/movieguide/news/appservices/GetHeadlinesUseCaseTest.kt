@@ -2,7 +2,12 @@ package com.diskin.alon.movieguide.news.appservices
 
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.diskin.alon.movieguide.news.appservices.Mapper.mapPagedHeadlinesToDto
+import com.diskin.alon.movieguide.news.appservices.usecase.Mapper.mapPagedHeadlinesToDto
+import com.diskin.alon.movieguide.news.appservices.interfaces.HeadlineRepository
+import com.diskin.alon.movieguide.news.appservices.model.HeadlineDto
+import com.diskin.alon.movieguide.news.appservices.model.HeadlinesRequest
+import com.diskin.alon.movieguide.news.appservices.usecase.GetHeadlinesUseCase
+import com.diskin.alon.movieguide.news.appservices.usecase.Mapper
 import io.mockk.*
 import io.reactivex.Observable
 import org.junit.Before

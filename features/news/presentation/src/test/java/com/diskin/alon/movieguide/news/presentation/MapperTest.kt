@@ -1,14 +1,18 @@
 package com.diskin.alon.movieguide.news.presentation
 
-import com.diskin.alon.movieguide.news.appservices.HeadlineDto
+import com.diskin.alon.movieguide.news.appservices.model.HeadlineDto
+import com.diskin.alon.movieguide.news.presentation.model.NewsHeadline
+import com.diskin.alon.movieguide.news.presentation.viewmodel.DATE_FORMAT
+import com.diskin.alon.movieguide.news.presentation.viewmodel.mapHeadlineDtoToNewsHeadline
 import com.google.common.truth.Truth.assertThat
 import junitparams.JUnitParamsRunner
 import junitparams.Parameters
+import org.joda.time.LocalDateTime
 import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * [mapDtoPagingToNewsHeadline] unit tests.
+ * Mapper unit tests.
  */
 @RunWith(JUnitParamsRunner::class)
 class MapperTest {
@@ -17,7 +21,8 @@ class MapperTest {
     @Parameters(method = "dtoToHeadlineParams")
     fun testMapHeadlineDtoToNewsHeadline(
         dto: HeadlineDto,
-        expectedHeadline: NewsHeadline) {
+        expectedHeadline: NewsHeadline
+    ) {
         // Given
 
         // When
@@ -34,13 +39,15 @@ class MapperTest {
                     "id1",
                     "title1",
                     1600687140000L,
-                    "url1"
+                    "url1",
+                    "article1"
                 ),
                 NewsHeadline(
                     "id1",
                     "title1",
-                    "21 Sep 14:19",
-                    "url1"
+                    LocalDateTime(1600687140000L).toString(DATE_FORMAT),
+                    "url1",
+                    "article1"
                 )
             ),
             arrayOf(
@@ -48,13 +55,15 @@ class MapperTest {
                     "id2",
                     "title2",
                     1599511800000L,
-                    "url2"
+                    "url2",
+                    "article2"
                 ),
                 NewsHeadline(
                     "id2",
                     "title2",
-                    "07 Sep 23:50",
-                    "url2"
+                    LocalDateTime(1599511800000L).toString(DATE_FORMAT),
+                    "url2",
+                    "article2"
                 )
             )
         )

@@ -1,6 +1,8 @@
 package com.diskin.alon.movieguide.news.data
 
 import androidx.paging.PagingConfig
+import com.diskin.alon.movieguide.news.data.implementation.HeadlineRepositoryImpl
+import com.diskin.alon.movieguide.news.data.remote.FeedlyApi
 import io.mockk.mockk
 import org.junit.Before
 import org.junit.Test

@@ -1,6 +1,6 @@
 package com.diskin.alon.movieguide.news.featuretesting
 
-import com.diskin.alon.movieguide.news.data.FeedlyApi
+import com.diskin.alon.movieguide.news.data.remote.FeedlyApi
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient

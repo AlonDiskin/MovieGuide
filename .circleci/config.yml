@@ -27,7 +27,7 @@ jobs:
           path: app/build/reports
           destination: reports
       - store_test_results:
-          path: app/build/test-results
+          path: features/news/presentation/build/test-results
   integration_tests:
     working_directory: ~/code
     docker:

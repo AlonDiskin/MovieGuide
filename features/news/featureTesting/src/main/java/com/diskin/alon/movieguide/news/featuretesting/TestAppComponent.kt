@@ -1,5 +1,6 @@
 package com.diskin.alon.movieguide.news.featuretesting
 
+import com.diskin.alon.movieguide.news.di.ArticleActivityInjectionModule
 import com.diskin.alon.movieguide.news.di.MoviesHeadlinesFragmentInjectionModule
 import dagger.Component
 import dagger.android.AndroidInjector
@@ -11,6 +12,7 @@ import javax.inject.Singleton
 @Component(modules = [
     AndroidSupportInjectionModule::class,
     MoviesHeadlinesFragmentInjectionModule::class,
+    ArticleActivityInjectionModule::class,
     TestNetworkingModule::class])
 interface TestAppComponent : AndroidInjector<TestApp> {
 

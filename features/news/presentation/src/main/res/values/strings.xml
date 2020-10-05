@@ -3,4 +3,8 @@
     <string name="stub_item_date">8 hours ago</string>
     <string name="unexpected_error">Unexpected error</string>
     <string name="action_retry">retry</string>
+    <string name="mime_type_text">text/plain</string>
+    <string name="title_action_share">Share</string>
+    <string name="title_share_article_chooser">Share article</string>
+    <string name="title_action_not_available">Action not available</string>
 </resources>

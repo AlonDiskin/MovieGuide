@@ -1,17 +1,17 @@
 package com.diskin.alon.movieguide.news.presentation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.ViewModel
 import androidx.paging.PagingData
 import com.diskin.alon.movieguide.common.appservices.UseCase
-import com.diskin.alon.movieguide.news.appservices.HeadlineDto
-import com.diskin.alon.movieguide.news.appservices.HeadlinesRequest
-import com.diskin.alon.movieguide.news.presentation.MoviesHeadlinesViewModelImpl.Companion.PAGE_SIZE
+import com.diskin.alon.movieguide.news.appservices.model.HeadlineDto
+import com.diskin.alon.movieguide.news.appservices.model.HeadlinesRequest
+import com.diskin.alon.movieguide.news.presentation.viewmodel.MoviesHeadlinesViewModelImpl
+import com.diskin.alon.movieguide.news.presentation.viewmodel.MoviesHeadlinesViewModelImpl.Companion.PAGE_SIZE
+import com.diskin.alon.movieguide.news.presentation.viewmodel.mapDtoPagingToNewsHeadline
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
 import io.reactivex.Observable
 import io.reactivex.android.plugins.RxAndroidPlugins
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import org.junit.Before
@@ -67,7 +67,7 @@ class MoviesHeadlinesViewModelImplTest {
         val useCasePaging = PagingData.empty<HeadlineDto>()
         val newsHeadlinesPaging = PagingData.from(newsHeadlines)
 
-        mockkStatic("com.diskin.alon.movieguide.news.presentation.MapperKt")
+        mockkStatic("com.diskin.alon.movieguide.news.presentation.viewmodel.MapperKt")
         every { mapDtoPagingToNewsHeadline(any()) } returns newsHeadlinesPaging
 
         // Given an initialized view model
@@ -86,22 +86,5 @@ class MoviesHeadlinesViewModelImplTest {
 
         // And update headlines live data value with mapped paging
         assertThat(viewModel.headlines.value).isEqualTo(newsHeadlinesPaging)
-    }
-
-    @Test
-    fun freeResourcesWhenViewModelCleared() {
-        // Given an initialized view model
-
-        // When view model is cleared
-        val method = ViewModel::class.java.getDeclaredMethod("onCleared")
-        method.isAccessible = true
-        method.invoke(viewModel)
-
-        // Then all rx subscriptions should be disposed by view model
-        val field = MoviesHeadlinesViewModelImpl::class.java.getDeclaredField("disposable")
-        field.isAccessible = true
-        val disposable = field.get(viewModel) as Disposable
-
-        assertThat(disposable.isDisposed).isTrue()
     }
 }

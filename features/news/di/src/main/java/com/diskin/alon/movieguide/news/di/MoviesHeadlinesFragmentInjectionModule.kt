@@ -1,6 +1,6 @@
 package com.diskin.alon.movieguide.news.di
 
-import com.diskin.alon.movieguide.news.presentation.MoviesHeadlinesFragment
+import com.diskin.alon.movieguide.news.presentation.controller.MoviesHeadlinesFragment
 import dagger.Binds
 import dagger.Module
 import dagger.android.AndroidInjector

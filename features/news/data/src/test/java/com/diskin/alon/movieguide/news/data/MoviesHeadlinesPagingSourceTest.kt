@@ -2,6 +2,8 @@ package com.diskin.alon.movieguide.news.data
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingSource.LoadParams
+import com.diskin.alon.movieguide.news.data.local.MoviesHeadlinesPagingSource
+import com.diskin.alon.movieguide.news.data.remote.*
 import com.diskin.alon.movieguide.news.domain.HeadlineEntity
 import io.mockk.every
 import io.mockk.mockk
@@ -179,7 +181,8 @@ class MoviesHeadlinesPagingSourceTest {
     }
 
     private fun verifyPagingSourceMapLoadResult(loadResult: PagingSource.LoadResult<String, HeadlineEntity>,
-                                                apiResponse: FeedlyFeedResponse): Boolean {
+                                                apiResponse: FeedlyFeedResponse
+    ): Boolean {
         val result: PagingSource.LoadResult.Page<String,HeadlineEntity> =
             loadResult as PagingSource.LoadResult.Page<String, HeadlineEntity>
         val expectedNextKey = apiResponse.continuation
@@ -191,7 +194,8 @@ class MoviesHeadlinesPagingSourceTest {
                 entry.id,
                 entry.title,
                 calendar,
-                entry.visual.url
+                entry.visual.url,
+                entry.originId
             )
         }
 

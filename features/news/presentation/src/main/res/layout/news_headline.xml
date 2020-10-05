@@ -4,9 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="kotlin.jvm.functions.Function1"/>
+        <import type="kotlin.Unit"/>
+
         <variable
             name="newsTitle"
-            type="com.diskin.alon.movieguide.news.presentation.NewsHeadline" />
+            type="com.diskin.alon.movieguide.news.presentation.model.NewsHeadline" />
+
+        <variable
+            name="shareClickListener"
+            type="Function1&lt;com.diskin.alon.movieguide.news.presentation.model.NewsHeadline,Unit>" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -75,6 +82,17 @@
                 app:layout_constraintStart_toStartOf="@+id/title"
                 app:layout_constraintTop_toBottomOf="@+id/title_image"
                 tools:text="@string/stub_item_date" />
+
+            <ImageButton
+                android:id="@+id/shareButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:onClick="@{() -> shareClickListener.invoke(newsTitle)}"
+                app:layout_constraintTop_toBottomOf="@+id/title_image"
+                app:srcCompat="@drawable/ic_share_24" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

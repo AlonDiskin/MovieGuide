@@ -1,7 +1,7 @@
 package com.diskin.alon.movieguide.news.di
 
-import com.diskin.alon.movieguide.news.data.FEEDLY_BASE
-import com.diskin.alon.movieguide.news.data.FeedlyApi
+import com.diskin.alon.movieguide.news.data.remote.FEEDLY_BASE
+import com.diskin.alon.movieguide.news.data.remote.FeedlyApi
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient

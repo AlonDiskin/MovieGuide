@@ -2,8 +2,8 @@ package com.diskin.alon.movieguide.news.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.diskin.alon.movieguide.news.appservices.GetHeadlinesUseCase
-import com.diskin.alon.movieguide.news.presentation.MoviesHeadlinesViewModelImpl
+import com.diskin.alon.movieguide.news.appservices.usecase.GetHeadlinesUseCase
+import com.diskin.alon.movieguide.news.presentation.viewmodel.MoviesHeadlinesViewModelImpl
 import javax.inject.Inject
 import javax.inject.Provider
 

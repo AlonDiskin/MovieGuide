@@ -8,4 +8,5 @@ import java.util.*
 class HeadlineEntity(val id: String,
                      var title: String,
                      var date: Calendar,
-                     var imageUrl: String)
+                     var imageUrl: String,
+                     val articleUrl: String)

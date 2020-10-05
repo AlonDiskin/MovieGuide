@@ -1,10 +1,9 @@
 package com.diskin.alon.movieguide.di
 
-import com.diskin.alon.movieguide.news.data.FeedlyApi
+import com.diskin.alon.movieguide.news.data.remote.FeedlyApi
 import com.diskin.alon.movieguide.util.MockWebServerRule
 import dagger.Module
 import dagger.Provides
-import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

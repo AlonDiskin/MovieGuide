@@ -1,10 +1,10 @@
 package com.diskin.alon.movieguide.util
 
-import com.diskin.alon.movieguide.news.data.FEEDLY_FEED_ID_PARAM
-import com.diskin.alon.movieguide.news.data.FEEDLY_FEED_PATH
-import com.diskin.alon.movieguide.news.data.FEEDLY_FEED_SIZE_PARAM
-import com.diskin.alon.movieguide.news.data.MOVIES_NEWS_FEED
-import com.diskin.alon.movieguide.news.presentation.MoviesHeadlinesViewModelImpl
+import com.diskin.alon.movieguide.news.data.remote.FEEDLY_FEED_ID_PARAM
+import com.diskin.alon.movieguide.news.data.remote.FEEDLY_FEED_PATH
+import com.diskin.alon.movieguide.news.data.remote.FEEDLY_FEED_SIZE_PARAM
+import com.diskin.alon.movieguide.news.data.remote.MOVIES_NEWS_FEED
+import com.diskin.alon.movieguide.news.presentation.viewmodel.MoviesHeadlinesViewModelImpl
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.RecordedRequest
