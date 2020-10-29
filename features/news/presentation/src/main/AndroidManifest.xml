@@ -4,6 +4,7 @@
 
     <application>
         <activity android:name=".controller.ArticleActivity"
+            android:label="@string/title_article_activity"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 

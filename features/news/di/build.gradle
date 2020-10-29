@@ -48,12 +48,16 @@ dependencies {
     api project(':features:news:domain')
     api project(':features:news:presentation')
     api project(':features:common:presentation')
+    api project(':features:common:common')
 
     // Retrofit
     api 'com.squareup.retrofit2:retrofit:2.6.2'
     api 'com.squareup.retrofit2:converter-gson:2.3.0'
     api 'com.squareup.okhttp3:logging-interceptor:3.9.1'
     api 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+
+    // Paging
+    implementation "androidx.paging:paging-common-ktx:3.0.0-alpha07"
 
     // Dagger
     implementation "com.google.dagger:dagger-android:$dagger_version"

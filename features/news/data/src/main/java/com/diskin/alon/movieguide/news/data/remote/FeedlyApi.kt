@@ -24,5 +24,5 @@ interface FeedlyApi {
     ): Single<FeedlyFeedResponse>
 
     @GET("$FEEDLY_ENTRY_PATH/{entryId}")
-    fun getEntry(@Path(value = "entryId") entryId: String): Single<List<FeedlyEntryResponse>>
+    fun getEntry(@Path(value = "entryId", encoded = true) entryId: String): Single<List<FeedlyEntryResponse>>
 }

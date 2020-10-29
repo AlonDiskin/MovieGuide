@@ -14,3 +14,4 @@ const val FEEDLY_ENTRY_PATH = "entries"
 const val ERR_DEVICE_NETWORK = "Network error,check device connectivity"
 const val ERR_API_SERVER = "Server currently unavailable"
 const val ERR_UNKNOWN_NETWORK = "Unknown network error"
+

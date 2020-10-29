@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ShareCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.diskin.alon.movieguide.news.presentation.viewmodel.MoviesHeadlinesViewModel
 import com.diskin.alon.movieguide.news.presentation.R
@@ -43,7 +45,7 @@ class MoviesHeadlinesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // Setup news titles adapter
-        val adapter = NewsHeadlinesAdapter(this::shareHeadline)
+        val adapter = NewsHeadlinesAdapter(this::shareHeadline,this::navigateToArticle)
         headlines.adapter = adapter
 
         // Handle adapter loading state changes
@@ -102,8 +104,13 @@ class MoviesHeadlinesFragment : Fragment() {
                 .from(it)
                 .setType(getString(R.string.mime_type_text))
                 .setText(headline.articleUrl)
-                .setChooserTitle("Share headline")
+                .setChooserTitle(getString(R.string.title_share_headline_chooser))
                 .startChooser()
         }
+    }
+
+    private fun navigateToArticle(headline: NewsHeadline) {
+        val bundle = bundleOf(getString(R.string.key_article_id) to headline.id)
+        findNavController().navigate(R.id.articleActivity, bundle)
     }
 }

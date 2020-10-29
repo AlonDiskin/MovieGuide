@@ -1,5 +1,6 @@
 package com.diskin.alon.movieguide.news.presentation
 
+import com.diskin.alon.movieguide.news.presentation.model.Article
 import com.diskin.alon.movieguide.news.presentation.model.NewsHeadline
 
 fun createNewsHeadlines(): List<NewsHeadline> {
@@ -27,3 +28,13 @@ fun createNewsHeadlines(): List<NewsHeadline> {
         )
     )
 }
+
+fun createTestArticle() =
+    Article(
+        "url",
+        "title",
+        "author",
+        "content",
+        "date",
+        "image_url"
+    )

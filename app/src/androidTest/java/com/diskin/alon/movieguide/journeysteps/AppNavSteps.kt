@@ -1,4 +1,4 @@
-package com.diskin.alon.movieguide.home
+package com.diskin.alon.movieguide.journeysteps
 
 import android.app.ActivityManager
 import android.content.Context

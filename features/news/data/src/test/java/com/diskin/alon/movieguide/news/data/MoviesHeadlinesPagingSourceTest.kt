@@ -193,7 +193,7 @@ class MoviesHeadlinesPagingSourceTest {
             HeadlineEntity(
                 entry.id,
                 entry.title,
-                calendar,
+                entry.published,
                 entry.visual.url,
                 entry.originId
             )
@@ -205,7 +205,7 @@ class MoviesHeadlinesPagingSourceTest {
             if (actualHeadline.id != expectedHeadline.id ||
                 actualHeadline.title != expectedHeadline.title ||
                 actualHeadline.imageUrl != expectedHeadline.imageUrl ||
-                actualHeadline.date.timeInMillis != expectedHeadline.date.timeInMillis) {
+                actualHeadline.date != expectedHeadline.date) {
                 return false
             }
         }

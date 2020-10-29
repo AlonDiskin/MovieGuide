@@ -89,7 +89,11 @@ dependencies {
     // Joda Time
     implementation "joda-time:joda-time:2.10.4"
 
+    // Paging
+    implementation "androidx.paging:paging-common-ktx:3.0.0-alpha07"
+
     // Local testing
-    kaptTest "androidx.databinding:databinding-compiler:4.0.1"
+    kaptTest "androidx.databinding:databinding-compiler:4.1.0"
     testImplementation "androidx.test.espresso:espresso-intents:3.3.0"
+    testImplementation "androidx.navigation:navigation-testing:2.3.0"
 }

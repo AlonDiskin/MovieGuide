@@ -1,8 +1,9 @@
 package com.diskin.alon.movieguide.news.data
 
+import com.diskin.alon.movieguide.news.data.remote.FEEDLY_ENTRY_PATH
 import com.diskin.alon.movieguide.news.data.remote.FeedlyApi
 import com.diskin.alon.movieguide.news.data.remote.MOVIES_NEWS_FEED
-import io.reactivex.Single
+import com.google.common.truth.Truth.assertThat
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.mockwebserver.MockResponse
@@ -96,5 +97,22 @@ class FeedlyApiTest {
         // Then api should map server response resource to expected response model
         val expectedResponse = parseFeedlyEntryResponseFromJson(testJson)
         testObserver.assertValue(expectedResponse)
+    }
+
+    @Test
+    fun notEncodeIdPathWhenSendingGetEntryRequest() {
+        // Given
+        val response = MockResponse()
+            .setResponseCode(HttpURLConnection.HTTP_OK)
+
+        server.enqueue(response)
+
+        // When api is asked to get an entry
+        val id = createIllegalPathId()
+        api.getEntry(id).test()
+
+        // Then api should not encode entry id path
+        val expectedPath = "/$FEEDLY_ENTRY_PATH/${id}"
+        assertThat(server.takeRequest().path).isEqualTo(expectedPath)
     }
 }

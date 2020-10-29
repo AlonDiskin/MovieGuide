@@ -16,5 +16,4 @@ class HeadlineRepositoryImpl @Inject constructor(
         Pager(config)
         { MoviesHeadlinesPagingSource(api) }
             .observable
-
 }

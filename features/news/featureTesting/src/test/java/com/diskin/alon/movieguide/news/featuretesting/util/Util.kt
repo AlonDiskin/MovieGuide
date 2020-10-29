@@ -1,6 +1,8 @@
 package com.diskin.alon.movieguide.news.featuretesting.util
 
-import com.diskin.alon.movieguide.news.presentation.viewmodel.DATE_FORMAT
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
+import com.diskin.alon.movieguide.news.featuretesting.R
 import com.diskin.alon.movieguide.news.presentation.model.NewsHeadline
 import org.joda.time.LocalDateTime
 import org.json.JSONObject
@@ -18,6 +20,9 @@ fun parseFeedlyResponseJsonToNewsHeadlines(json: String): List<NewsHeadline> {
     val jsonResponseObject = JSONObject(json)
     val jsonItemsArray = jsonResponseObject.getJSONArray("items")
     val newsHeadlines = mutableListOf<NewsHeadline>()
+    val headlinesDateFormat = ApplicationProvider
+        .getApplicationContext<Context>()
+        .getString(R.string.headline_date_format)
 
     for (i in 0 until jsonItemsArray.length()) {
         val jsonItemObject = jsonItemsArray.getJSONObject(i)
@@ -25,7 +30,7 @@ fun parseFeedlyResponseJsonToNewsHeadlines(json: String): List<NewsHeadline> {
             NewsHeadline(
                 jsonItemObject.getString("id"),
                 jsonItemObject.getString("title"),
-                LocalDateTime(jsonItemObject.getLong("published")).toString(DATE_FORMAT),
+                LocalDateTime(jsonItemObject.getLong("published")).toString(headlinesDateFormat),
                 jsonItemObject.getJSONObject("visual").getString("url"),
                 jsonItemObject.getString("originId")
             )

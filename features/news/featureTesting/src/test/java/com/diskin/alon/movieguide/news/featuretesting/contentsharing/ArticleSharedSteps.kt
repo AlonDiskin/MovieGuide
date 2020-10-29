@@ -14,7 +14,6 @@ import com.diskin.alon.movieguide.news.data.remote.FEEDLY_ENTRY_PATH
 import com.diskin.alon.movieguide.news.featuretesting.util.getJsonBodyFromResource
 import com.diskin.alon.movieguide.news.presentation.R
 import com.diskin.alon.movieguide.news.presentation.controller.ArticleActivity
-import com.diskin.alon.movieguide.news.presentation.viewmodel.ArticleViewModelImpl.Companion.KEY_ARTICLE_ID
 import com.google.common.truth.Truth
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.Given
@@ -43,12 +42,9 @@ class ArticleSharedSteps(server: MockWebServer) : GreenCoffeeSteps() {
         val dispatcher = object : Dispatcher() {
 
             override fun dispatch(request: RecordedRequest): MockResponse {
-                val entryResourceId = parseTestWebEntryResourceId()
-                val validEntryId = entryResourceId.replace("[/+]".toRegex(),"")
-                val supportedPath = "/$FEEDLY_ENTRY_PATH/$validEntryId"
-                val requestPath = request.requestUrl.url().path
+                val supportedPath = "/$FEEDLY_ENTRY_PATH/${parseTestWebEntryResourceId()}"
 
-                return when(requestPath) {
+                return when(request.requestUrl.uri().path) {
                     supportedPath -> {
                         MockResponse()
                             .setBody(getJsonBodyFromResource(TEST_WEB_JSON))
@@ -68,7 +64,7 @@ class ArticleSharedSteps(server: MockWebServer) : GreenCoffeeSteps() {
         // Launch article activity
         val context = ApplicationProvider.getApplicationContext<Context>()!!
         val intent = Intent(context, ArticleActivity::class.java).apply {
-            putExtra(KEY_ARTICLE_ID,parseTestWebEntryResourceId())
+            putExtra(context.getString(R.string.key_article_id),parseTestWebEntryResourceId())
         }
         scenario = ActivityScenario.launch(intent)
     }

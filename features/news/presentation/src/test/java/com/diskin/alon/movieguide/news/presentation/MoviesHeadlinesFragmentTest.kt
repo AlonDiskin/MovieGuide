@@ -6,16 +6,20 @@ import android.os.Looper
 import android.view.View
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.Navigation
+import androidx.navigation.testing.TestNavHostController
 import androidx.paging.LoadState
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.rxjava2.RxPagingSource
 import androidx.paging.rxjava2.observable
-import androidx.test.core.app.ApplicationProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
@@ -61,6 +65,9 @@ class MoviesHeadlinesFragmentTest {
     // Stub data
     private val headlines = MutableLiveData<PagingData<NewsHeadline>>()
 
+    // Test nav controller
+    private val navController = TestNavHostController(getApplicationContext())
+
     @Before
     fun setUp() {
         // Mock out dagger di
@@ -73,6 +80,9 @@ class MoviesHeadlinesFragmentTest {
         // Stub mocked view model
         every { viewModel.headlines } returns headlines
 
+        // Setup test nav controller
+        navController.setGraph(R.navigation.news_nav_graph)
+
         // Launch fragment under test with specified theme for material widgets usage
         scenario = FragmentScenario.launchInContainer(
             MoviesHeadlinesFragment::class.java,
@@ -80,6 +90,11 @@ class MoviesHeadlinesFragmentTest {
             R.style.AppTheme,
             null
         )
+
+        // Set the NavController property on the fragment with test controller
+        scenario.onFragment {
+            Navigation.setViewNavController(it.requireView(), navController)
+        }
     }
 
     @Test
@@ -334,12 +349,120 @@ class MoviesHeadlinesFragmentTest {
         Intents.intended(IntentMatchers.hasExtraWithKey(Intent.EXTRA_INTENT))
 
         val intent = Intents.getIntents().first().extras?.get(Intent.EXTRA_INTENT) as Intent
-        val context = ApplicationProvider.getApplicationContext<Context>()!!
+        val context = getApplicationContext<Context>()!!
 
         assertThat(intent.type).isEqualTo(context.getString(R.string.mime_type_text))
         assertThat(intent.getStringExtra(Intent.EXTRA_TEXT))
             .isEqualTo(testHeadlines.first().articleUrl)
 
         Intents.release()
+    }
+
+    @Test
+    fun openArticleScreenWhenHeadlineSelected() {
+        // Given a resumed fragment that display single news headline
+        val testHeadline = createNewsHeadlines().first()
+        headlines.value = PagingData.from(listOf(testHeadline))
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // When user click on headline
+        onView(withId(R.id.headlines))
+            .perform(actionOnItemAtPosition<NewsHeadlineViewHolder>(0,click()))
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then fragment should navigate to article ui destination
+        assertThat(navController.currentDestination?.id).isEqualTo(R.id.articleActivity)
+
+        // And pass headline id to destination
+        val context = getApplicationContext<Context>()
+        assertThat(navController.currentBackStackEntry?.arguments?.get(context
+            .getString(R.string.key_article_id)))
+            .isEqualTo(testHeadline.id)
+    }
+
+    @Test
+    @Config(qualifiers = "port")
+    fun showPortUiWhenInHandsetPortOrientation() {
+        // Given a resumed fragment in port orientation shown in
+        // handset device
+
+        // Then fragment should display a handset land layout
+        scenario.onFragment { fragment ->
+            val manager = fragment.headlines.layoutManager as GridLayoutManager
+            val expectedSpan = fragment.resources.getInteger(R.integer.headlines_port_span)
+
+            assertThat(manager.spanCount).isEqualTo(expectedSpan)
+        }
+    }
+
+    @Test
+    @Config(qualifiers = "land")
+    fun showLandUiWhenInHandsetLandOrientation() {
+        // Given a resumed fragment in land orientation shown in
+        // handset device
+
+        // Then fragment should display a handset land layout
+        scenario.onFragment { fragment ->
+            val manager = fragment.headlines.layoutManager as GridLayoutManager
+            val expectedSpan = fragment.resources.getInteger(R.integer.headlines_land_span)
+
+            assertThat(manager.spanCount).isEqualTo(expectedSpan)
+        }
+    }
+
+    @Test
+    @Config(qualifiers = "sw600dp")
+    fun showPortUiWhenInSmallTabletPortOrientation() {
+        // Given a resumed fragment in port orientation shown in tablet device
+
+        // Then fragment should display a tablet land layout
+        scenario.onFragment { fragment ->
+            val manager = fragment.headlines.layoutManager as GridLayoutManager
+            val expectedSpan = fragment.resources.getInteger(R.integer.headlines_small_tablet_port_span)
+
+            assertThat(manager.spanCount).isEqualTo(expectedSpan)
+        }
+    }
+
+    @Test
+    @Config(qualifiers = "sw600dp-land")
+    fun showLandUiWhenInSmallTabletLandOrientation() {
+        // Given a resumed fragment in land orientation shown in tablet device
+
+        // Then fragment should display a tablet land layout
+        scenario.onFragment { fragment ->
+            val manager = fragment.headlines.layoutManager as GridLayoutManager
+            val expectedSpan = fragment.resources.getInteger(R.integer.headlines_small_tablet_land_span)
+
+            assertThat(manager.spanCount).isEqualTo(expectedSpan)
+        }
+    }
+
+    @Test
+    @Config(qualifiers = "sw720dp")
+    fun showPortUiWhenInLargeTabletPortOrientation() {
+        // Given a resumed fragment in port orientation shown in tablet device
+
+        // Then fragment should display a tablet land layout
+        scenario.onFragment { fragment ->
+            val manager = fragment.headlines.layoutManager as GridLayoutManager
+            val expectedSpan = fragment.resources.getInteger(R.integer.headlines_large_tablet_port_span)
+
+            assertThat(manager.spanCount).isEqualTo(expectedSpan)
+        }
+    }
+
+    @Test
+    @Config(qualifiers = "sw720dp-land")
+    fun showLandUiWhenInLargeTabletLandOrientation() {
+        // Given a resumed fragment in land orientation shown in tablet device
+
+        // Then fragment should display a tablet land layout
+        scenario.onFragment { fragment ->
+            val manager = fragment.headlines.layoutManager as GridLayoutManager
+            val expectedSpan = fragment.resources.getInteger(R.integer.headlines_large_tablet_land_span)
+
+            assertThat(manager.spanCount).isEqualTo(expectedSpan)
+        }
     }
 }

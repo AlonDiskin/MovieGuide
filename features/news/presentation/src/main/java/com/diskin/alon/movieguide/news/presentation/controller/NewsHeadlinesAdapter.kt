@@ -12,7 +12,8 @@ import com.diskin.alon.movieguide.news.presentation.model.NewsHeadline
  * Layout adapter that display [NewsHeadline]s.
  */
 class NewsHeadlinesAdapter(
-    private val shareClickListener: (NewsHeadline) -> (Unit)
+    private val shareClickListener: (NewsHeadline) -> (Unit),
+    private val headlineClickListener: (NewsHeadline) -> (Unit)
 ) : PagingDataAdapter<NewsHeadline, NewsHeadlinesAdapter.NewsHeadlineViewHolder>(
     DIFF_CALLBACK
 ) {
@@ -51,6 +52,8 @@ class NewsHeadlinesAdapter(
         )
 
         binding.shareClickListener = shareClickListener
+        binding.headlineClickListener = headlineClickListener
+
         return NewsHeadlineViewHolder(binding)
     }
 }

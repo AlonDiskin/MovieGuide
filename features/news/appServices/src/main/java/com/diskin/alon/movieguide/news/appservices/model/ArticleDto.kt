@@ -1,7 +1,6 @@
 package com.diskin.alon.movieguide.news.appservices.model
 
-data class ArticleDto(val id: String,
-                      val title: String,
+data class ArticleDto(val title: String,
                       var content: String,
                       var author: String,
                       val date: Long,

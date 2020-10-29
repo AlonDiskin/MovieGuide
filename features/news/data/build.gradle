@@ -34,11 +34,12 @@ android {
 }
 
 dependencies {
-    def paging_version = "3.0.0-alpha06"
+    def paging_version = "3.0.0-alpha07"
 
     // Project modules
     implementation project (':features:news:appServices')
     implementation project (':features:news:domain')
+    implementation project (':features:common:common')
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -50,8 +51,8 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
 
     // Paging
-    implementation "androidx.paging:paging-runtime:$paging_version"
-    implementation "androidx.paging:paging-rxjava2:$paging_version"
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+    implementation "androidx.paging:paging-rxjava2-ktx:$paging_version"
 
     // Javax annotation
     implementation "javax.inject:javax.inject:1"
@@ -61,7 +62,7 @@ dependencies {
     testImplementation "com.squareup.okhttp3:mockwebserver:3.9.1"
     testImplementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     testImplementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
-    testImplementation "androidx.paging:paging-common:$paging_version"
+    testImplementation "androidx.paging:paging-common-ktx:$paging_version"
     testImplementation 'com.google.code.gson:gson:2.8.6'
 
 }

@@ -7,12 +7,12 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import retrofit2.HttpException
 import java.io.IOException
-import java.util.*
+import javax.inject.Inject
 
 /**
  * Provides paged [HeadlineEntity] from remote api.
  */
-class MoviesHeadlinesPagingSource(
+class MoviesHeadlinesPagingSource @Inject constructor(
     private val api: FeedlyApi
 ) : RxPagingSource<String,HeadlineEntity>() {
 
@@ -38,13 +38,10 @@ class MoviesHeadlinesPagingSource(
     private fun toLoadResult(response: FeedlyFeedResponse): LoadResult<String, HeadlineEntity> {
         return LoadResult.Page(
             response.items.map { entry ->
-                val calendar = Calendar.getInstance()
-                calendar.timeInMillis = entry.published
-
                 HeadlineEntity(
                     entry.id,
                     entry.title,
-                    calendar,
+                    entry.published,
                     entry.visual.url,
                     entry.originId
                 )

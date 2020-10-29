@@ -10,7 +10,7 @@ class TestApp : DaggerApplication(), TestLifecycleApplication {
     private lateinit var testAppComponent: TestAppComponent
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-        testAppComponent = DaggerTestAppComponent.create()
+        testAppComponent = DaggerTestAppComponent.factory().create(this)
         return testAppComponent
     }
 

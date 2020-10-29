@@ -7,6 +7,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.rxjava2.cachedIn
 import com.diskin.alon.movieguide.common.appservices.UseCase
+import com.diskin.alon.movieguide.common.common.Mapper
 import com.diskin.alon.movieguide.common.presentation.RxViewModel
 import com.diskin.alon.movieguide.news.appservices.model.HeadlineDto
 import com.diskin.alon.movieguide.news.appservices.model.HeadlinesRequest
@@ -15,7 +16,8 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 class MoviesHeadlinesViewModelImpl(
-    useCase: UseCase<HeadlinesRequest, Observable<PagingData<HeadlineDto>>>
+    useCase: UseCase<HeadlinesRequest, Observable<PagingData<HeadlineDto>>>,
+    private val pagingMapper: Mapper<PagingData<HeadlineDto>, PagingData<NewsHeadline>>
 ) : RxViewModel(), MoviesHeadlinesViewModel {
 
     companion object {
@@ -33,7 +35,7 @@ class MoviesHeadlinesViewModelImpl(
         )
             .cachedIn(viewModelScope)
             .subscribeOn(AndroidSchedulers.mainThread())
-            .map(::mapDtoPagingToNewsHeadline)
+            .map(pagingMapper::map)
             .subscribe { _headlines.value = it }
 
         disposable.add(headlinesSubscription)

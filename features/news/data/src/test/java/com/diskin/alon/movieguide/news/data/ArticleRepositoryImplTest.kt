@@ -1,16 +1,13 @@
 package com.diskin.alon.movieguide.news.data
 
+import com.diskin.alon.movieguide.common.appservices.Result
 import com.diskin.alon.movieguide.news.data.implementation.ArticleRepositoryImpl
-import com.diskin.alon.movieguide.news.data.implementation.cleanId
-import com.diskin.alon.movieguide.news.data.implementation.mapApiEntryResponseToArticleEntity
-import com.diskin.alon.movieguide.news.data.remote.FeedlyApi
-import com.diskin.alon.movieguide.news.data.remote.FeedlyEntryResponse
+import com.diskin.alon.movieguide.news.data.remote.RemoteArticleStore
 import com.diskin.alon.movieguide.news.domain.ArticleEntity
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
 import io.mockk.verify
-import io.reactivex.Single
+import io.reactivex.Observable
 import org.junit.Before
 import org.junit.Test
 
@@ -23,39 +20,30 @@ class ArticleRepositoryImplTest {
     private lateinit var repository: ArticleRepositoryImpl
 
     // Collaborators
-    private val api = mockk<FeedlyApi>()
+    private val articleStore: RemoteArticleStore = mockk()
 
     @Before
     fun setUp() {
         // Init subject
-        repository = ArticleRepositoryImpl(api)
+        repository = ArticleRepositoryImpl(articleStore)
     }
 
     @Test
-    fun getArticleWhenQueried() {
+    fun getArticleFromRemoteStoreWhenQueried() {
         // Test case fixture
-        mockkStatic("com.diskin.alon.movieguide.news.data.implementation.EntryIdCleanerKt")
-        mockkStatic("com.diskin.alon.movieguide.news.data.implementation.MapperKt")
+        val articleStoreResult = mockk<Result<ArticleEntity>>()
+        every { articleStore.getArticle(any()) } returns Observable.just(articleStoreResult)
 
-        val cleanId = "cleanedId"
-        val testApiResponse = listOf(mockk<FeedlyEntryResponse>())
-        val testArticleEntity = mockk<ArticleEntity>()
-        every { cleanId(any()) } returns cleanId
-        every { api.getEntry(cleanId) } returns Single.just(testApiResponse)
-        every { mapApiEntryResponseToArticleEntity(any()) } returns testArticleEntity
-
-        // Given
+        // Given an initialized repository
 
         // When repository is queried for article
-        val testId = "id"
-        val testObserver = repository.get(testId).test()
+        val articleId = "id"
+        val testObserver = repository.get(articleId).test()
 
-        // Then repository should get entry from api with cleaned id
-        verify { cleanId(testId) }
-        verify { api.getEntry(cleanId) }
+        // Then repository should get entry from remote article store
+        verify { articleStore.getArticle(articleId) }
 
-        // And return mapped api result
-        verify { mapApiEntryResponseToArticleEntity(testApiResponse.first()) }
-        testObserver.assertValue(testArticleEntity)
+        // And return store result
+        testObserver.assertValue(articleStoreResult)
     }
 }
