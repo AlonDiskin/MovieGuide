@@ -6,9 +6,7 @@ import dagger.android.support.DaggerApplication
 
 class MovieGuideApp : DaggerApplication() {
 
-    private val appComponent = DaggerAppComponent.create()
-
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-        return appComponent
+        return DaggerAppComponent.factory().create(this)
     }
 }

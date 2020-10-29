@@ -9,17 +9,15 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.whenever
 import dagger.android.AndroidInjection
 import io.mockk.every
+import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.slot
 import kotlinx.android.synthetic.main.activity_main.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.MockitoAnnotations
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
@@ -36,14 +34,10 @@ class MainActivityTest {
     private lateinit var scenario: ActivityScenario<MainActivity>
 
     // SUT collaborators
-    @Mock
-    private lateinit var navigator: HomeNavigator
+    private val navigator: HomeNavigator = mockk()
 
     @Before
     fun setUp() {
-        // Create mocked collaborators
-        MockitoAnnotations.initMocks(this)
-
         // Mock out dagger di
         mockkStatic(AndroidInjection::class)
 
@@ -54,9 +48,9 @@ class MainActivityTest {
         }
 
         // Stub mocked navigator
-        whenever(navigator.getNewsNavGraph()).thenReturn(getTestNewsGraph())
-        whenever(navigator.getReviewsNavGraph()).thenReturn(getTestReviewsGraph())
-        whenever(navigator.getSettingsNavGraph()).thenReturn(getTestSettingsGraph())
+        every { navigator.getNewsNavGraph() } returns getTestNewsGraph()
+        every { navigator.getReviewsNavGraph() } returns getTestReviewsGraph()
+        every { navigator.getSettingsNavGraph() } returns getTestSettingsGraph()
 
         // Launch activity under test
         scenario = ActivityScenario.launch(MainActivity::class.java)

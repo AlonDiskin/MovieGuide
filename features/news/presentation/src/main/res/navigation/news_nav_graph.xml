@@ -7,7 +7,17 @@
 
     <fragment
         android:id="@+id/headlinesFragment"
-        android:name="com.diskin.alon.movieguide.news.presentation.HeadlinesFragment"
+        android:name="com.diskin.alon.movieguide.news.presentation.controller.MoviesHeadlinesFragment"
         android:label="HeadlinesFragment"
-        tools:layout="@layout/fragment_headlines"/>
+        tools:layout="@layout/fragment_movies_headlines">
+        <action
+            android:id="@+id/action_headlinesFragment_to_articleActivity"
+            app:destination="@id/articleActivity" />
+    </fragment>
+
+    <activity
+        android:id="@+id/articleActivity"
+        android:name="com.diskin.alon.movieguide.news.presentation.controller.ArticleActivity"
+        android:label="ArticleActivity"
+        tools:layout="@layout/activity_article"/>
 </navigation>

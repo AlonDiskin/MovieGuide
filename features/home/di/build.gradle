@@ -38,7 +38,7 @@ dependencies {
     def dagger_version = "2.25.4"
 
     // Home feature modules
-    implementation project(':features:home:presentation')
+    api project(':features:home:presentation')
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"

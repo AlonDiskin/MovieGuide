@@ -1,0 +1,17 @@
+<resources>
+    <string name="stub_item_title">‘The Mandalorian’:Jon Favreau Explains That Big Twist at the End of Episode 1</string>
+    <string name="stub_item_content">Hulu has released the first official trailer for Marvel\'s Runaways Season 3 and with it comes some pretty major news about the show\'s future. Based on the Marvel comics of the same name, Runaways follows a group of childhood friends brought together by the discovery they each have unique superpowers but must fight their parents, who turn out to be their nemeses. The series has remained one of the few Marvel-related live-action TV series to air on a non-Disney platform. But alas, with the debut of the Season 3 trailer which you can watch below…</string>
+    <string name="stub_item_date">8 hours ago</string>
+    <string name="key_article_id">article_id</string>
+    <string name="unexpected_error">Unexpected error</string>
+    <string name="article_date_format">dd MMM HH:mm</string>
+    <string name="headline_date_format">dd MMM HH:mm</string>
+    <string name="action_retry">retry</string>
+    <string name="mime_type_text">text/plain</string>
+    <string name="title_action_share">Share</string>
+    <string name="title_share_article_chooser">Share article</string>
+    <string name="title_action_not_available">Action not available</string>
+    <string name="title_share_headline_chooser">Share headline</string>
+    <string name="stub_article_author">Dave Trumbore</string>
+    <string name="title_article_activity"></string>
+</resources>
