@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="stub_movie_title">Aliens</string>
+    <string name="stub_movie_rating">9.0</string>
+    <string name="title_action_sort">Sort</string>
+    <string name="title_action_sort_popular">Popular</string>
+    <string name="title_action_sort_rating">Rating</string>
+    <string name="title_action_sort_newest">Newest</string>
+    <string name="action_retry">retry</string>
+    <string name="unknown_error">unknown error</string>
+</resources>

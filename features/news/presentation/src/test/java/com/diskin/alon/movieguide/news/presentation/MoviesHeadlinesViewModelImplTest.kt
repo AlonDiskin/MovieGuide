@@ -62,7 +62,6 @@ class MoviesHeadlinesViewModelImplTest {
         every { useCase.execute(capture(useCaseRequestSlot)) } returns pagingDataSubject
         every { pagingMapper.map(any()) } returns headlinesPaging
 
-
         // Init subject
         viewModel = MoviesHeadlinesViewModelImpl(useCase,pagingMapper)
     }
@@ -78,7 +77,7 @@ class MoviesHeadlinesViewModelImplTest {
         assertThat(useCaseRequestSlot.captured.pagingConfig.pageSize).isEqualTo(PAGE_SIZE)
 
         // And add subscription to disposable container
-        val field = RxViewModel::class.java.getDeclaredField("disposable")
+        val field = RxViewModel::class.java.getDeclaredField("container")
         field.isAccessible = true
         val disposable = field.get(viewModel) as CompositeDisposable
         assertThat(disposable.size()).isEqualTo(1)

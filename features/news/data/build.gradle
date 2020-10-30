@@ -34,12 +34,13 @@ android {
 }
 
 dependencies {
-    def paging_version = "3.0.0-alpha07"
+    def paging_version = "3.0.0-alpha08"
 
     // Project modules
     implementation project (':features:news:appServices')
     implementation project (':features:news:domain')
     implementation project (':features:common:common')
+    api project (':features:common:data')
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"

@@ -5,11 +5,11 @@ import androidx.fragment.app.testing.FragmentScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
-import com.diskin.alon.movieguide.news.data.remote.ERR_API_SERVER
-import com.diskin.alon.movieguide.news.data.remote.ERR_DEVICE_NETWORK
 import com.diskin.alon.movieguide.news.data.remote.FEEDLY_FEED_PATH
 import com.diskin.alon.movieguide.news.presentation.controller.MoviesHeadlinesFragment
 import com.diskin.alon.movieguide.news.presentation.R
+import com.diskin.alonmovieguide.common.data.NetworkErrorHandler.Companion.ERR_API_SERVER
+import com.diskin.alonmovieguide.common.data.NetworkErrorHandler.Companion.ERR_DEVICE_NETWORK
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.And
 import com.mauriciotogneri.greencoffee.annotations.Given
@@ -59,7 +59,7 @@ class HeadlinesListingErrorSteps(private val server: MockWebServer) : GreenCoffe
 
     @When("^User open news headlines screen$")
     fun userOpenNewsHeadlinesScreen() {
-        // launch movies headlines fragment
+        // Launch movies headlines fragment
         scenario = FragmentScenario.launchInContainer(
             MoviesHeadlinesFragment::class.java,
             null,

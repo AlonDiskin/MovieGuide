@@ -57,11 +57,7 @@ dependencies {
 
     // Project Modules
     implementation project(':features:news:di')
-    implementation project(':features:news:presentation')
     implementation project(':features:common:featureTesting')
-    implementation project(':features:common:presentation')
-    implementation project(':features:news:data')
-    implementation project(':features:news:appServices')
 
     // Fragment testing
     debugImplementation "androidx.fragment:fragment-testing:$fragment_version"

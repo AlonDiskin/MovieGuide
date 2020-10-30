@@ -45,7 +45,7 @@ class ArticleViewModelImpl(
                 }
             }
 
-        this.disposable.add(articleSubscription)
+        addSubscription(articleSubscription)
     }
 
     override fun reload() {

@@ -3,6 +3,7 @@ package com.diskin.alon.movieguide.news.data.remote
 import com.diskin.alon.movieguide.common.appservices.Result
 import com.diskin.alon.movieguide.common.common.Mapper
 import com.diskin.alon.movieguide.news.domain.ArticleEntity
+import com.diskin.alonmovieguide.common.data.NetworkErrorHandler
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import java.net.URLEncoder

@@ -38,6 +38,6 @@ class MoviesHeadlinesViewModelImpl(
             .map(pagingMapper::map)
             .subscribe { _headlines.value = it }
 
-        disposable.add(headlinesSubscription)
+        addSubscription(headlinesSubscription)
     }
 }

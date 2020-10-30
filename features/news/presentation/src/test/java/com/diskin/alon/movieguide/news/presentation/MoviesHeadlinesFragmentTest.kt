@@ -401,7 +401,7 @@ class MoviesHeadlinesFragmentTest {
         // Given a resumed fragment in land orientation shown in
         // handset device
 
-        // Then fragment should display a handset land layout
+        // Then fragment should display a handset port layout
         scenario.onFragment { fragment ->
             val manager = fragment.headlines.layoutManager as GridLayoutManager
             val expectedSpan = fragment.resources.getInteger(R.integer.headlines_land_span)
@@ -415,7 +415,7 @@ class MoviesHeadlinesFragmentTest {
     fun showPortUiWhenInSmallTabletPortOrientation() {
         // Given a resumed fragment in port orientation shown in tablet device
 
-        // Then fragment should display a tablet land layout
+        // Then fragment should display a small tablet port layout
         scenario.onFragment { fragment ->
             val manager = fragment.headlines.layoutManager as GridLayoutManager
             val expectedSpan = fragment.resources.getInteger(R.integer.headlines_small_tablet_port_span)
@@ -429,7 +429,7 @@ class MoviesHeadlinesFragmentTest {
     fun showLandUiWhenInSmallTabletLandOrientation() {
         // Given a resumed fragment in land orientation shown in tablet device
 
-        // Then fragment should display a tablet land layout
+        // Then fragment should display a small tablet land layout
         scenario.onFragment { fragment ->
             val manager = fragment.headlines.layoutManager as GridLayoutManager
             val expectedSpan = fragment.resources.getInteger(R.integer.headlines_small_tablet_land_span)
@@ -443,7 +443,7 @@ class MoviesHeadlinesFragmentTest {
     fun showPortUiWhenInLargeTabletPortOrientation() {
         // Given a resumed fragment in port orientation shown in tablet device
 
-        // Then fragment should display a tablet land layout
+        // Then fragment should display a large tablet port layout
         scenario.onFragment { fragment ->
             val manager = fragment.headlines.layoutManager as GridLayoutManager
             val expectedSpan = fragment.resources.getInteger(R.integer.headlines_large_tablet_port_span)
@@ -457,7 +457,7 @@ class MoviesHeadlinesFragmentTest {
     fun showLandUiWhenInLargeTabletLandOrientation() {
         // Given a resumed fragment in land orientation shown in tablet device
 
-        // Then fragment should display a tablet land layout
+        // Then fragment should display a large tablet land layout
         scenario.onFragment { fragment ->
             val manager = fragment.headlines.layoutManager as GridLayoutManager
             val expectedSpan = fragment.resources.getInteger(R.integer.headlines_large_tablet_land_span)

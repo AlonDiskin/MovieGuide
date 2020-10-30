@@ -5,9 +5,9 @@ import com.diskin.alon.movieguide.common.appservices.Result
 import com.diskin.alon.movieguide.common.common.Mapper
 import com.diskin.alon.movieguide.news.data.remote.FeedlyApi
 import com.diskin.alon.movieguide.news.data.remote.FeedlyEntryResponse
-import com.diskin.alon.movieguide.news.data.remote.NetworkErrorHandler
 import com.diskin.alon.movieguide.news.data.remote.RemoteNewsStore
 import com.diskin.alon.movieguide.news.domain.ArticleEntity
+import com.diskin.alonmovieguide.common.data.NetworkErrorHandler
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic

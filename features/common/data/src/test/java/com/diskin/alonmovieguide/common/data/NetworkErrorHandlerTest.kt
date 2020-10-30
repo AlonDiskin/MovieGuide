@@ -1,10 +1,6 @@
-package com.diskin.alon.movieguide.news.data
+package com.diskin.alonmovieguide.common.data
 
 import com.diskin.alon.movieguide.common.appservices.AppError
-import com.diskin.alon.movieguide.news.data.remote.ERR_API_SERVER
-import com.diskin.alon.movieguide.news.data.remote.ERR_DEVICE_NETWORK
-import com.diskin.alon.movieguide.news.data.remote.ERR_UNKNOWN_NETWORK
-import com.diskin.alon.movieguide.news.data.remote.NetworkErrorHandler
 import com.google.common.truth.Truth.assertThat
 import io.mockk.mockk
 import junitparams.JUnitParamsRunner
@@ -43,8 +39,8 @@ class NetworkErrorHandlerTest {
 
     private fun errorParams() =
         arrayOf(
-            arrayOf(IOException(),AppError(ERR_DEVICE_NETWORK,true)),
-            arrayOf(mockk<HttpException>(),AppError(ERR_API_SERVER,true)),
-            arrayOf(Throwable(),AppError(ERR_UNKNOWN_NETWORK,false))
+            arrayOf(IOException(),AppError(NetworkErrorHandler.ERR_DEVICE_NETWORK,true)),
+            arrayOf(mockk<HttpException>(),AppError(NetworkErrorHandler.ERR_API_SERVER,true)),
+            arrayOf(Throwable(),AppError(NetworkErrorHandler.ERR_UNKNOWN_NETWORK,false))
         )
 }

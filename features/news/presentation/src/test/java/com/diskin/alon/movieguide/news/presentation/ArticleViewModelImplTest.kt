@@ -104,7 +104,7 @@ class ArticleViewModelImplTest {
         verify { useCase.execute(ArticleRequest(articleId)) }
 
         // And add subscription to disposable container
-        val field = RxViewModel::class.java.getDeclaredField("disposable")
+        val field = RxViewModel::class.java.getDeclaredField("container")
         field.isAccessible = true
         val disposable = field.get(viewModel) as CompositeDisposable
         assertThat(disposable.size()).isEqualTo(1)

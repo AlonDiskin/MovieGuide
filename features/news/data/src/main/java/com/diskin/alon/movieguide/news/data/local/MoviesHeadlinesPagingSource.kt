@@ -3,17 +3,17 @@ package com.diskin.alon.movieguide.news.data.local
 import androidx.paging.rxjava2.RxPagingSource
 import com.diskin.alon.movieguide.news.data.remote.*
 import com.diskin.alon.movieguide.news.domain.HeadlineEntity
+import com.diskin.alonmovieguide.common.data.NetworkErrorHandler
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import retrofit2.HttpException
-import java.io.IOException
 import javax.inject.Inject
 
 /**
  * Provides paged [HeadlineEntity] from remote api.
  */
 class MoviesHeadlinesPagingSource @Inject constructor(
-    private val api: FeedlyApi
+    private val api: FeedlyApi,
+    private val networkErrorHandler: NetworkErrorHandler
 ) : RxPagingSource<String,HeadlineEntity>() {
 
     override fun loadSingle(params: LoadParams<String>): Single<LoadResult<String, HeadlineEntity>> {
@@ -57,13 +57,9 @@ class MoviesHeadlinesPagingSource @Inject constructor(
      * Maps remote api errors, to [Throwable] containing description message about
      */
     private fun toLoadResultError(e: Throwable): LoadResult<String,HeadlineEntity> {
-        return when (e) {
-            // Retrofit calls that return the body type throw either IOException for
-            // network failures, or HttpException for any non-2xx HTTP status codes.
-            // This code reports all errors to the UI
-            is IOException -> LoadResult.Error(Throwable(ERR_DEVICE_NETWORK))
-            is HttpException -> LoadResult.Error(Throwable(ERR_API_SERVER))
-            else -> LoadResult.Error(Throwable(ERR_UNKNOWN_NETWORK))
-        }
+        val networkError = networkErrorHandler.handle(e)
+        val throwable = Throwable(networkError.cause)
+
+        return LoadResult.Error(throwable)
     }
 }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="movies_port_span">2</integer>
+    <integer name="movies_land_span">3</integer>
+    <integer name="movies_small_tablet_port_span">3</integer>
+    <integer name="movies_small_tablet_land_span">4</integer>
+    <integer name="movies_large_tablet_port_span">4</integer>
+    <integer name="movies_large_tablet_land_span">5</integer>
+    <integer name="movies_span">@integer/movies_port_span</integer>
+</resources>
