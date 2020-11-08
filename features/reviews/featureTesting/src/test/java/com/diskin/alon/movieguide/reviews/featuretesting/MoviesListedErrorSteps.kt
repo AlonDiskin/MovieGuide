@@ -39,8 +39,8 @@ class MoviesListedErrorSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
     init {
         // Prepare test server
-        server.setDispatcher(dispatcher)
         server.start()
+        server.setDispatcher(dispatcher)
 
         // Mock out image loader
         mockkObject(ImageLoader)

@@ -4,7 +4,12 @@ plugins {
 }
 
 def localProperties = new Properties()
-localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
+if (rootProject.file("local.properties").exists()) {
+    localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+} else {
+    localProperties.setProperty('movieDbApiKey',"\"API_KEY_STUB\"")
+}
 
 android {
     compileSdkVersion 29

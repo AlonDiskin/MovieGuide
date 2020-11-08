@@ -34,15 +34,15 @@ import org.robolectric.Shadows
 /**
  * Step definitions for 'Reviewed movies listed by sorting' scenario.
  */
-class MoviesListedSteps(mockWebServer: MockWebServer) : GreenCoffeeSteps() {
+class MoviesListedSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
     private lateinit var scenario: FragmentScenario<MoviesFragment>
     private val dispatcher = TestDispatcher()
 
     init {
         // Prepare mock web server for test scenario
-        mockWebServer.start()
-        mockWebServer.setDispatcher(dispatcher)
+        server.start()
+        server.setDispatcher(dispatcher)
 
         // Mock out image loader
         mockkObject(ImageLoader)

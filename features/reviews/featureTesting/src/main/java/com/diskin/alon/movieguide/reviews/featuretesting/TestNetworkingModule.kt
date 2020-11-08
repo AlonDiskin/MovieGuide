@@ -18,6 +18,8 @@ object TestNetworkingModule {
     @Singleton
     @Provides
     fun provideMockWebServer(): MockWebServer {
+        // Fix MockWebServer 'No password supplied for PKCS#12 KeyStore' bug on CI machine
+        System.setProperty("javax.net.ssl.trustStore", "NONE")
         return MockWebServer()
     }
 

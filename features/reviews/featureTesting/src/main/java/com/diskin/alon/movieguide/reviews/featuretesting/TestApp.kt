@@ -7,9 +7,10 @@ import org.robolectric.TestLifecycleApplication
 import java.lang.reflect.Method
 
 class TestApp : DaggerApplication(), TestLifecycleApplication {
-    private val testAppComponent: TestAppComponent = DaggerTestAppComponent.create()
+    private lateinit var testAppComponent: TestAppComponent
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
+        testAppComponent = DaggerTestAppComponent.create()
         return testAppComponent
     }
 
