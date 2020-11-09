@@ -138,7 +138,7 @@ class ArticleActivityTest {
     fun showProgressBarWhenArticleLoading() {
         // Given a resumed activity
 
-        // When update loading state to 'loading'
+        // When view model update loading state to 'loading'
         loading.value = LoadState.Loading
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
@@ -151,11 +151,11 @@ class ArticleActivityTest {
     fun hideProgressBarWhenArticleSuccessfullyLoaded() {
         // Given a resumed activity
 
-        // When update loading state to 'not loading'
+        // When view model update loading state to 'not loading'
         loading.value = LoadState.Success
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-        // Then activity should show progress bar
+        // Then activity should hide progress bar
         onView(withId(R.id.progress_bar))
             .check(matches(withEffectiveVisibility(Visibility.GONE)))
     }

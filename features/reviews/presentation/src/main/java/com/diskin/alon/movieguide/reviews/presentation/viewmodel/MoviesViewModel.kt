@@ -2,8 +2,8 @@ package com.diskin.alon.movieguide.reviews.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
-import com.diskin.alon.movieguide.reviews.appservices.model.MovieSorting
-import com.diskin.alon.movieguide.reviews.presentation.model.Movie
+import com.diskin.alon.movieguide.reviews.appservices.data.MovieSorting
+import com.diskin.alon.movieguide.reviews.presentation.data.Movie
 
 interface MoviesViewModel {
 

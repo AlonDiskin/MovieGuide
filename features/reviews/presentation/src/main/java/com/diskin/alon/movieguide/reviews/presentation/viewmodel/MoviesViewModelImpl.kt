@@ -8,16 +8,19 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.rxjava2.cachedIn
 import com.diskin.alon.movieguide.common.appservices.UseCase
-import com.diskin.alon.movieguide.common.common.Mapper
+import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.common.presentation.RxViewModel
-import com.diskin.alon.movieguide.reviews.appservices.model.MovieDto
-import com.diskin.alon.movieguide.reviews.appservices.model.MovieSorting
-import com.diskin.alon.movieguide.reviews.appservices.model.SortedMoviesRequest
-import com.diskin.alon.movieguide.reviews.presentation.model.Movie
+import com.diskin.alon.movieguide.reviews.appservices.data.MovieDto
+import com.diskin.alon.movieguide.reviews.appservices.data.MovieSorting
+import com.diskin.alon.movieguide.reviews.appservices.data.SortedMoviesRequest
+import com.diskin.alon.movieguide.reviews.presentation.data.Movie
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.BehaviorSubject
 
+/**
+ * Stores and manage UI related data for the movies UI controller.
+ */
 class MoviesViewModelImpl(
     private val getMoviesUseCase: UseCase<SortedMoviesRequest, Observable<PagingData<MovieDto>>>,
     private val pagingMapper: Mapper<PagingData<MovieDto>, PagingData<Movie>>,
@@ -58,7 +61,6 @@ class MoviesViewModelImpl(
                 _currentSorting.value = selectedSorting.value
                 _movies.value = paging
             }
-
 
         addSubscription(subscription)
     }

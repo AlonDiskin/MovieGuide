@@ -13,7 +13,7 @@ dependencies {
 
     // Project modules
     implementation project(':features:reviews:domain')
-    implementation project(':features:common:common')
+    implementation project(':features:common:util')
     api project(':features:common:appServices')
 
     // Rx

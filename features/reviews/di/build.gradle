@@ -44,7 +44,7 @@ dependencies {
     api project(':features:reviews:appServices')
     api project(':features:reviews:domain')
     api project(':features:reviews:presentation')
-    api project(':features:common:common')
+    api project(':features:common:util')
 
     // Paging
     api "androidx.paging:paging-common-ktx:3.0.0-alpha08"

@@ -6,6 +6,8 @@ import android.widget.RelativeLayout
 import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.Navigation
+import androidx.navigation.testing.TestNavHostController
 import androidx.paging.*
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.test.core.app.ApplicationProvider
@@ -14,16 +16,18 @@ import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.diskin.alon.movieguide.common.uitesting.RecyclerViewMatcher.withRecyclerView
 import com.diskin.alon.movieguide.common.uitesting.swipeToRefresh
-import com.diskin.alon.movieguide.reviews.appservices.model.MovieSorting
+import com.diskin.alon.movieguide.reviews.appservices.data.MovieSorting
 import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesAdapter
+import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesAdapter.MovieViewHolder
 import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesFragment
-import com.diskin.alon.movieguide.reviews.presentation.model.Movie
+import com.diskin.alon.movieguide.reviews.presentation.data.Movie
 import com.diskin.alon.movieguide.reviews.presentation.viewmodel.MoviesViewModel
 import com.google.common.truth.Truth.assertThat
 import dagger.android.support.AndroidSupportInjection
@@ -58,6 +62,9 @@ class MoviesFragmentTest {
     private val movies = MutableLiveData<PagingData<Movie>>()
     private val sorting = MutableLiveData<MovieSorting>()
 
+    // Test nav controller
+    private val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
+
     @Before
     fun setUp() {
         // Mock out dagger di
@@ -72,6 +79,9 @@ class MoviesFragmentTest {
         every { viewModel.sortMovies(any()) } returns Unit
         every { viewModel.movies } returns movies
 
+        // Setup test nav controller
+        navController.setGraph(R.navigation.reviews_nav_graph)
+
         // Launch fragment under test
         scenario = FragmentScenario.launchInContainer(
             MoviesFragment::class.java,
@@ -79,6 +89,9 @@ class MoviesFragmentTest {
             R.style.AppTheme,
             null
         )
+
+        // Set the NavController property on the fragment with test controller
+        scenario.onFragment { Navigation.setViewNavController(it.requireView(), navController) }
     }
 
     @Test
@@ -97,7 +110,7 @@ class MoviesFragmentTest {
         movies.forEachIndexed { index, movie ->
             // Scroll to expected movie layout position
             onView(withId(R.id.movies))
-                .perform(scrollToPosition<MoviesAdapter.MovieViewHolder>(index))
+                .perform(scrollToPosition<MovieViewHolder>(index))
 
             Shadows.shadowOf(Looper.getMainLooper()).idle()
 
@@ -611,17 +624,41 @@ class MoviesFragmentTest {
         }
     }
 
+    @Test
+    fun openMovieReviewScreenWhenMovieSelected() {
+        // Given an initialized fragment with displayed movies
+        val movies = createMovies()
+        this.movies.value = PagingData.from(movies)
+
+        // When user click on first shown movie from list
+        onView(withId(R.id.movies))
+            .perform(actionOnItemAtPosition<MovieViewHolder>(0, click()))
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then fragment should open movie review screen via navigation controller
+        assertThat(navController.currentDestination?.id).isEqualTo(R.id.movieReviewActivity)
+
+        // And pass movie id to destination
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        assertThat(navController.currentBackStackEntry?.arguments?.get(context
+            .getString(R.string.movie_id_arg)))
+            .isEqualTo(movies.first().id)
+    }
+
     private fun getMoviesAdapterLoadStatesListener(adapter: MoviesAdapter): (CombinedLoadStates) -> Unit {
         val field = PagingDataAdapter::class.java.getDeclaredField("differ")
         field.isAccessible = true
+        @Suppress("UNCHECKED_CAST")
         val differ = field.get(adapter) as AsyncPagingDataDiffer<Movie>
 
         val field2 = AsyncPagingDataDiffer::class.java.getDeclaredField("differBase")
         field2.isAccessible = true
+        @Suppress("UNCHECKED_CAST")
         val differBase = field2.get(differ) as PagingDataDiffer<Movie>
 
         val field3 = PagingDataDiffer::class.java.getDeclaredField("loadStateListeners")
         field3.isAccessible = true
+        @Suppress("UNCHECKED_CAST")
         val listeners = field3.get(differBase) as CopyOnWriteArrayList<(CombinedLoadStates) -> Unit>
 
         return listeners[1]

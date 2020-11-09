@@ -2,7 +2,7 @@ package com.diskin.alon.movieguide.news.appservices.usecase
 
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.diskin.alon.movieguide.common.common.Mapper
+import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.news.appservices.model.HeadlineDto
 import com.diskin.alon.movieguide.news.domain.HeadlineEntity
 import javax.inject.Inject

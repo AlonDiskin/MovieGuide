@@ -3,7 +3,7 @@ package com.diskin.alon.movieguide.news.presentation
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.paging.PagingData
 import com.diskin.alon.movieguide.common.appservices.UseCase
-import com.diskin.alon.movieguide.common.common.Mapper
+import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.common.presentation.RxViewModel
 import com.diskin.alon.movieguide.news.appservices.model.HeadlineDto
 import com.diskin.alon.movieguide.news.appservices.model.HeadlinesRequest

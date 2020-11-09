@@ -2,13 +2,13 @@ package com.diskin.alon.movieguide.reviews.appservices
 
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.diskin.alon.movieguide.common.common.Mapper
+import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.reviews.appservices.interfaces.MovieRepository
-import com.diskin.alon.movieguide.reviews.appservices.model.MovieDto
-import com.diskin.alon.movieguide.reviews.appservices.model.MovieSorting
-import com.diskin.alon.movieguide.reviews.appservices.model.SortedMoviesRequest
+import com.diskin.alon.movieguide.reviews.appservices.data.MovieDto
+import com.diskin.alon.movieguide.reviews.appservices.data.MovieSorting
+import com.diskin.alon.movieguide.reviews.appservices.data.SortedMoviesRequest
 import com.diskin.alon.movieguide.reviews.appservices.usecase.GetSortedMoviesUseCase
-import com.diskin.alon.movieguide.reviews.domain.MovieEntity
+import com.diskin.alon.movieguide.reviews.domain.entities.MovieEntity
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -26,7 +26,7 @@ class GetSortedMoviesUseCaseTest {
 
     // Collaborators
     private val repository: MovieRepository = mockk()
-    private val pagingMapper: Mapper<PagingData<MovieEntity>,PagingData<MovieDto>> = mockk()
+    private val pagingMapper: Mapper<PagingData<MovieEntity>, PagingData<MovieDto>> = mockk()
 
     @Before
     fun setUp() {

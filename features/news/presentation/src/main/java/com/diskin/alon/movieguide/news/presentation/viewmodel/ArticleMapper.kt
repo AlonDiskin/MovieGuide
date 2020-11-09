@@ -1,7 +1,7 @@
 package com.diskin.alon.movieguide.news.presentation.viewmodel
 
 import android.content.res.Resources
-import com.diskin.alon.movieguide.common.common.Mapper
+import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.news.appservices.model.ArticleDto
 import com.diskin.alon.movieguide.news.presentation.R
 import com.diskin.alon.movieguide.news.presentation.model.Article

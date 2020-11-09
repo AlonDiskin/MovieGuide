@@ -5,7 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.diskin.alon.movieguide.reviews.appservices.usecase.GetSortedMoviesUseCase
 import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesFragment
-import com.diskin.alon.movieguide.reviews.presentation.viewmodel.MoviePagingMapper
+import com.diskin.alon.movieguide.reviews.presentation.util.MoviePagingMapper
 import com.diskin.alon.movieguide.reviews.presentation.viewmodel.MoviesViewModelImpl
 import javax.inject.Inject
 import javax.inject.Provider

@@ -2,9 +2,9 @@ package com.diskin.alon.movieguide.reviews.appservices.usecase
 
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.diskin.alon.movieguide.common.common.Mapper
-import com.diskin.alon.movieguide.reviews.appservices.model.MovieDto
-import com.diskin.alon.movieguide.reviews.domain.MovieEntity
+import com.diskin.alon.movieguide.common.util.Mapper
+import com.diskin.alon.movieguide.reviews.appservices.data.MovieDto
+import com.diskin.alon.movieguide.reviews.domain.entities.MovieEntity
 import javax.inject.Inject
 
 class MovieDtoPagingMapper @Inject constructor() : Mapper<PagingData<MovieEntity>, PagingData<MovieDto>> {

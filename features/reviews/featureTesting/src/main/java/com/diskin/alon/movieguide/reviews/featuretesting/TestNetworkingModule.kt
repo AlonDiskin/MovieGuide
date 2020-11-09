@@ -1,6 +1,6 @@
 package com.diskin.alon.movieguide.reviews.featuretesting
 
-import com.diskin.alon.movieguide.reviews.data.TheMovieDbApi
+import com.diskin.alon.movieguide.reviews.data.remote.TheMovieDbApi
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -26,7 +26,7 @@ object TestNetworkingModule {
     @JvmStatic
     @Singleton
     @Provides
-    fun provideFeedlyApi(server: MockWebServer): TheMovieDbApi {
+    fun provideTheMovieDbApi(server: MockWebServer): TheMovieDbApi {
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.BASIC
         val okHttpClient = OkHttpClient.Builder()

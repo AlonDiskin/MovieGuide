@@ -2,10 +2,13 @@ package com.diskin.alon.movieguide.reviews.presentation.controller
 
 import android.os.Bundle
 import android.view.*
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import com.diskin.alon.movieguide.reviews.appservices.model.MovieSorting
+import com.diskin.alon.movieguide.reviews.appservices.data.MovieSorting
 import com.diskin.alon.movieguide.reviews.presentation.R
+import com.diskin.alon.movieguide.reviews.presentation.data.Movie
 import com.diskin.alon.movieguide.reviews.presentation.viewmodel.MoviesViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.AndroidSupportInjection
@@ -56,7 +59,7 @@ class MoviesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Setup movies adapter
-        val adapter = MoviesAdapter()
+        val adapter = MoviesAdapter(this::navigateToMovieReview)
         movies.adapter = adapter
 
         adapter.refresh()
@@ -139,5 +142,10 @@ class MoviesFragment : Fragment() {
         }
 
         snackbar?.show()
+    }
+
+    private fun navigateToMovieReview(movie: Movie) {
+        val bundle = bundleOf(getString(R.string.movie_id_arg) to movie.id)
+        findNavController().navigate(R.id.movieReviewActivity, bundle)
     }
 }

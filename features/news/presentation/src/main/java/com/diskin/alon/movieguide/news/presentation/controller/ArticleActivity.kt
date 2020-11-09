@@ -47,7 +47,7 @@ class ArticleActivity : AppCompatActivity() {
         viewModel.article.observe(this, Observer { binding.article = it })
 
         // Observe view model article loading state
-        viewModel.loading.observe(this, Observer { state ->
+        viewModel.loading.observe(this, { state ->
             when(state) {
                 is LoadState.Loading -> {
                     progress_bar.visibility = View.VISIBLE

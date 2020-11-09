@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="stub_movie_title">Aliens</string>
+    <string name="stub_movie_title">Star Wars: Episode IX - The Rise of Skywalker</string>
+    <string name="stub_movie_genre">Action , Thriller</string>
+    <string name="stub_movie_release">2019-20-12</string>
+    <string name="stub_movie_summary">The surviving Resistance faces the First Order once more in the final chapter of the Skywalker saga.</string>
+    <string name="stub_movie_review">It is trying to accomplish a lot, because it has to tie up every plotline. It has to involve every character. It has to has to take you to every planet... And so, in trying to cram in all of that, it feels very cursory and very rushed.</string>
     <string name="stub_movie_rating">9.0</string>
     <string name="title_action_sort">Sort</string>
     <string name="title_action_sort_popular">Popular</string>
@@ -8,4 +12,9 @@
     <string name="title_action_sort_newest">Newest</string>
     <string name="action_retry">retry</string>
     <string name="unknown_error">unknown error</string>
+    <string name="label_trailers">Trailers:</string>
+    <string name="label_review">Review:</string>
+    <string name="movie_release_date_format">dd MMM yyyy</string>
+    <string name="title_review_activity"></string>
+    <string name="movie_id_arg">movie_id</string>
 </resources>

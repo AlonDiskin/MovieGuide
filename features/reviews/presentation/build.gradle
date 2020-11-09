@@ -57,10 +57,12 @@ dependencies {
     def paging_version = "3.0.0-alpha08"
     def dagger_version = "2.25.4"
     def lifecycle_version = "2.3.0-beta01"
+    def joda_version = "2.10.4"
 
     // Project modules
     api project(':features:common:presentation')
-    implementation project(':features:common:common')
+    implementation project(':features:common:util')
+    implementation project(':features:common:navigation')
     implementation project(':features:reviews:appServices')
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -95,6 +97,9 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.13'
     implementation "io.reactivex.rxjava2:rxkotlin:2.4.0"
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+
+    // Joda Time
+    implementation "joda-time:joda-time:$joda_version"
 
     // Dagger
     implementation "com.google.dagger:dagger-android:$dagger_version"

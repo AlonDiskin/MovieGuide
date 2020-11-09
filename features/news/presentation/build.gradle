@@ -68,7 +68,7 @@ dependencies {
 
     // Project modules
     api project(':features:common:presentation')
-    implementation project(':features:common:common')
+    implementation project(':features:common:util')
     implementation project(':features:news:appServices')
 
     // View model and Live Data

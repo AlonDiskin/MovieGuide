@@ -39,7 +39,7 @@ dependencies {
     // Project modules
     implementation project (':features:news:appServices')
     implementation project (':features:news:domain')
-    implementation project (':features:common:common')
+    implementation project (':features:common:util')
     api project (':features:common:data')
 
     implementation fileTree(dir: "libs", include: ["*.jar"])

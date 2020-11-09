@@ -6,12 +6,14 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.diskin.alon.movieguide.reviews.presentation.databinding.MovieBinding
-import com.diskin.alon.movieguide.reviews.presentation.model.Movie
+import com.diskin.alon.movieguide.reviews.presentation.data.Movie
 
 /**
  * Layout adapter that display [Movie]s data.
  */
-class MoviesAdapter : PagingDataAdapter<Movie, MoviesAdapter.MovieViewHolder>(
+class MoviesAdapter(
+    private val movieClickListener: (Movie) -> (Unit)
+) : PagingDataAdapter<Movie, MoviesAdapter.MovieViewHolder>(
     DIFF_CALLBACK
 ) {
 
@@ -47,6 +49,8 @@ class MoviesAdapter : PagingDataAdapter<Movie, MoviesAdapter.MovieViewHolder>(
             parent,
             false
         )
+
+        binding.movieClickListener = movieClickListener
 
         return MovieViewHolder(binding)
     }

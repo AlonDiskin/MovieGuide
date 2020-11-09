@@ -1,5 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.diskin.alon.movieguide.reviews.presentation">
 
-    /
+    <application>
+        <activity android:name=".controller.MovieReviewActivity"
+            android:label="@string/title_review_activity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+    </application>
+
 </manifest>

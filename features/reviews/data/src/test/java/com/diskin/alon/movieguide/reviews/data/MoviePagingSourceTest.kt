@@ -3,9 +3,12 @@ package com.diskin.alon.movieguide.reviews.data
 import androidx.paging.PagingSource
 import androidx.paging.PagingSource.LoadParams
 import com.diskin.alon.movieguide.common.appservices.AppError
-import com.diskin.alon.movieguide.common.common.Mapper
-import com.diskin.alon.movieguide.reviews.appservices.model.MovieSorting
-import com.diskin.alon.movieguide.reviews.domain.MovieEntity
+import com.diskin.alon.movieguide.common.util.Mapper
+import com.diskin.alon.movieguide.reviews.appservices.data.MovieSorting
+import com.diskin.alon.movieguide.reviews.data.remote.MoviePagingSource
+import com.diskin.alon.movieguide.reviews.data.remote.data.MoviesResponse
+import com.diskin.alon.movieguide.reviews.data.remote.TheMovieDbApi
+import com.diskin.alon.movieguide.reviews.domain.entities.MovieEntity
 import com.diskin.alonmovieguide.common.data.NetworkErrorHandler
 import io.mockk.every
 import io.mockk.mockk
@@ -19,8 +22,6 @@ import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
-import retrofit2.HttpException
-import java.io.IOException
 
 /**
  * [MoviePagingSource] unit test class.
@@ -133,7 +134,7 @@ class MoviePagingSourceTest {
 
         // Then paging source return page result that contain next page key, according to api response
         testObserver.assertValue {
-            val page = (it as PagingSource.LoadResult.Page<String,MovieEntity>)
+            val page = (it as PagingSource.LoadResult.Page<String, MovieEntity>)
             page.nextKey.equals(key)
         }
     }

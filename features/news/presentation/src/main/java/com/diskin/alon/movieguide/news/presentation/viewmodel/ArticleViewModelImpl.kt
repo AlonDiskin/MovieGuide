@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import com.diskin.alon.movieguide.common.appservices.Result
 import com.diskin.alon.movieguide.common.appservices.UseCase
-import com.diskin.alon.movieguide.common.common.Mapper
+import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.common.presentation.LoadState
 import com.diskin.alon.movieguide.common.presentation.RxViewModel
 import com.diskin.alon.movieguide.news.appservices.model.ArticleDto

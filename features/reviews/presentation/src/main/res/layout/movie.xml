@@ -4,9 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="kotlin.jvm.functions.Function1"/>
+        <import type="kotlin.Unit"/>
+
         <variable
             name="movie"
-            type="com.diskin.alon.movieguide.reviews.presentation.model.Movie" />
+            type="com.diskin.alon.movieguide.reviews.presentation.data.Movie" />
+        <variable
+            name="movieClickListener"
+            type="Function1&lt;com.diskin.alon.movieguide.reviews.presentation.data.Movie,Unit>" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -14,7 +20,9 @@
         android:layout_height="wrap_content"
         tools:layout_margin="4dp"
         app:cardCornerRadius="4dp"
-        android:background="@color/cardBackground">
+        android:background="@color/cardBackground"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:onClick="@{() -> movieClickListener.invoke(movie)}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

@@ -48,7 +48,7 @@ dependencies {
     // Project modules
     implementation project (':features:reviews:appServices')
     implementation project (':features:reviews:domain')
-    implementation project (':features:common:common')
+    implementation project (':features:common:util')
     api project (':features:common:data')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"

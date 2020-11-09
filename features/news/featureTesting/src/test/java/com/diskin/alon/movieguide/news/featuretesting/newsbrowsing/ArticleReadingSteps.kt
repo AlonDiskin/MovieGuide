@@ -61,7 +61,7 @@ class ArticleReadingSteps(server: MockWebServer) : GreenCoffeeSteps() {
                 val intent = Intent(context,ArticleActivity::class.java)
                     .apply { putExtra(keyArticleId,articleIdArg) }
 
-                // Launch video detail activity when user navigates to it from fragment
+                // Launch article detail activity when user navigates to it from fragment
                 // (manually,robolectric bug)
                 articleScenario = ActivityScenario.launch(intent)
 

@@ -1,14 +1,14 @@
 package com.diskin.alon.movieguide.reviews.data
 
 import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import com.diskin.alon.movieguide.common.common.Mapper
-import com.diskin.alon.movieguide.reviews.appservices.model.MovieSorting
-import com.diskin.alon.movieguide.reviews.domain.MovieEntity
+import com.diskin.alon.movieguide.common.util.Mapper
+import com.diskin.alon.movieguide.reviews.appservices.data.MovieSorting
+import com.diskin.alon.movieguide.reviews.data.implementations.MovieRepositoryImpl
+import com.diskin.alon.movieguide.reviews.data.remote.data.MoviesResponse
+import com.diskin.alon.movieguide.reviews.data.remote.TheMovieDbApi
+import com.diskin.alon.movieguide.reviews.domain.entities.MovieEntity
 import com.diskin.alonmovieguide.common.data.NetworkErrorHandler
 import io.mockk.mockk
-import io.mockk.mockkConstructor
-import io.mockk.verify
 import org.junit.Before
 import org.junit.Test
 
@@ -31,7 +31,7 @@ class MovieRepositoryImplTest {
     }
 
     @Test
-    fun createPagingSourceWhenQueriedForMoviesPaging() {
+    fun getMoviesPagingBySortingWhenQueried() {
         // Given an initialized repository
 
         // When repository is queried for movies paging
