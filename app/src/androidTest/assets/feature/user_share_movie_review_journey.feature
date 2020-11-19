@@ -9,4 +9,4 @@ Feature: User movie review sharing
     When User selects to read first listed review
     And Read movie review
     When User select to share review
-    Then Sharing menu should be displayed
+    Then Review should be shared

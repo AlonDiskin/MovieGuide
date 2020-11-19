@@ -4,7 +4,7 @@ data class FeedlyEntryResponse(val id: String,
                                val title: String,
                                val author: String,
                                val published: Long,
-                               val visual: Visual,
+                               val visual: Visual?,
                                val originId: String,
                                val summary: Summary
 ) {

@@ -1,12 +1,17 @@
 package com.diskin.alon.movieguide.reviews.presentation
 
+import android.content.Context
+import android.content.Intent
 import android.os.Looper
 import androidx.lifecycle.MutableLiveData
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
@@ -16,7 +21,7 @@ import com.diskin.alon.movieguide.common.presentation.ViewDataError
 import com.diskin.alon.movieguide.reviews.presentation.controller.MovieReviewActivity
 import com.diskin.alon.movieguide.reviews.presentation.data.MovieReview
 import com.diskin.alon.movieguide.reviews.presentation.viewmodel.MovieReviewViewModel
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import dagger.android.AndroidInjection
 import io.mockk.*
 import kotlinx.android.synthetic.main.activity_movie_review.*
@@ -27,6 +32,7 @@ import org.junit.runner.RunWith
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import org.robolectric.shadows.ShadowToast
 
 /**
  * [MovieReviewActivity] hermetic ui test.
@@ -105,7 +111,7 @@ class MovieReviewActivityTest {
         // Given a resumed activity
 
         // Then activity should show an empty title in appbar
-        scenario.onActivity { Truth.assertThat(it.toolbar.title).isEqualTo("") }
+        scenario.onActivity { assertThat(it.toolbar.title).isEqualTo("") }
     }
 
     @Test
@@ -233,5 +239,49 @@ class MovieReviewActivityTest {
         // Then activity should hide error snackbar
         onView(withId(R.id.snackbar_text))
             .check(ViewAssertions.doesNotExist())
+    }
+
+    @Test
+    fun shareMovieTrailerWhenUserShareShownReviewData() {
+        // Test case fixture
+        Intents.init()
+
+        // Given a resumed activity with displayed review
+        val review = createTestReview()
+        movieReview.value = ViewData.Data(review)
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // When user clicks on the share menu option
+        onView(withId(R.id.action_share))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then activity should share movie trailer url via Android Sharesheet
+        Intents.intended(IntentMatchers.hasAction(Intent.ACTION_CHOOSER))
+        Intents.intended(IntentMatchers.hasExtraWithKey(Intent.EXTRA_INTENT))
+
+        val intent = Intents.getIntents().first().extras?.get(Intent.EXTRA_INTENT) as Intent
+        val context = ApplicationProvider.getApplicationContext<Context>()!!
+
+        assertThat(intent.type).isEqualTo(context.getString(R.string.mime_type_text))
+        assertThat(intent.getStringExtra(Intent.EXTRA_TEXT))
+            .isEqualTo(review.trailersUrls.first())
+
+        Intents.release()
+    }
+
+    @Test
+    fun disallowSharingWhenNoReviewDataShown() {
+        // Given a resumed activity without displayed review
+
+        // And user clicks on the share button
+        onView(withId(R.id.action_share))
+            .perform(click())
+
+        // Then activity should notify user that sharing action is unavailable
+        val toastMessage = ApplicationProvider.getApplicationContext<Context>()
+            .getString(R.string.title_action_not_available)
+
+        assertThat(ShadowToast.getTextOfLatestToast().toString()).isEqualTo(toastMessage)
     }
 }

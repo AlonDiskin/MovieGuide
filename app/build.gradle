@@ -35,11 +35,14 @@ android {
     }
 
     packagingOptions {
-        exclude 'META-INF/presentation_debug.kotlin_module'
+        exclude 'META-INF/domain.kotlin_module'
         exclude 'META-INF/appServices.kotlin_module'
+        exclude 'META-INF/presentation_debug.kotlin_module'
+        exclude 'META-INF/presentation_release.kotlin_module'
         exclude 'META-INF/di_debug.kotlin_module'
         exclude 'META-INF/di_release.kotlin_module'
-        exclude 'META-INF/presentation_release.kotlin_module'
+        exclude 'META-INF/data_debug.kotlin_module'
+        exclude 'META-INF/data_release.kotlin_module'
     }
 
     // Data Binding
@@ -59,7 +62,7 @@ dependencies {
     // Project modules
     implementation project(':features:home:di')
     implementation project(':features:news:di')
-    implementation project(':features:reviews:presentation')
+    implementation project(':features:reviews:di')
     implementation project(':features:settings:presentation')
 
     implementation fileTree(dir: "libs", include: ["*.jar"])

@@ -9,7 +9,7 @@ data class FeedlyFeedResponse(val items: List<FeedEntry>,
     data class FeedEntry(val id: String,
                          val title: String,
                          val published: Long,
-                         val visual: Visual,
+                         val visual: Visual?,
                          val originId: String
     )
 

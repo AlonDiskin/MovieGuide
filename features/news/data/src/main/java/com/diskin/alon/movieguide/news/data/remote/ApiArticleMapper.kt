@@ -16,7 +16,7 @@ class ApiArticleMapper @Inject constructor() :
             entry.summary.content,
             entry.author,
             entry.published,
-            entry.visual.url,
+            entry.visual?.url ?: "",
             entry.originId
         )
 

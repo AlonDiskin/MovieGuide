@@ -113,4 +113,9 @@ class MoviesHeadlinesFragment : Fragment() {
         val bundle = bundleOf(getString(R.string.key_article_id) to headline.id)
         findNavController().navigate(R.id.articleActivity, bundle)
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        snackbar?.dismiss()
+    }
 }

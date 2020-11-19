@@ -2,6 +2,7 @@ package com.diskin.alon.movieguide.reviews.data.remote
 
 import com.diskin.alon.movieguide.reviews.data.BuildConfig
 
+const val MOVIE_DB_BASE = "http://api.themoviedb.org/"
 const val MOVIE_DB_BASE_POSTER_PATH = "http://image.tmdb.org/t/p/w342"
 const val MOVIE_DB_BASE_BACKDROP_PATH = "http://image.tmdb.org/t/p/w342"
 const val YOUTUBE_THUMBNAIL_PATH = "https://img.youtube.com/vi/"

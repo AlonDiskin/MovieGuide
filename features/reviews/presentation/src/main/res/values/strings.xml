@@ -17,4 +17,8 @@
     <string name="movie_release_date_format">dd MMM yyyy</string>
     <string name="title_review_activity"></string>
     <string name="movie_id_arg">movie_id</string>
+    <string name="title_action_share">Share</string>
+    <string name="title_action_not_available">Unable to share!</string>
+    <string name="mime_type_text">text/plain</string>
+    <string name="title_share_review_chooser">Share movie  data</string>
 </resources>

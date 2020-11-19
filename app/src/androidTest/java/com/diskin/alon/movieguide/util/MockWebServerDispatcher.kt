@@ -2,6 +2,7 @@ package com.diskin.alon.movieguide.util
 
 import com.diskin.alon.movieguide.news.data.remote.*
 import com.diskin.alon.movieguide.news.presentation.viewmodel.MoviesHeadlinesViewModelImpl
+import com.diskin.alon.movieguide.reviews.data.BuildConfig
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.RecordedRequest
@@ -18,6 +19,12 @@ class MockWebServerDispatcher : Dispatcher() {
         private const val STUB_IMAGE_RES = "assets/image/taco.jpeg"
         const val MOVIE_NEWS_STREAM_RES = "assets/json/feedly_movie_news_stream.json"
         const val MOVIE_NEWS_ENTRY_RES =  "assets/json/feedly_movie_news_entry.json"
+        const val MOVIES_POPULAR_RES = "assets/json/themoviedb_movies_sorted_by_popularity.json"
+        const val MOVIE_DETAIL_RES = "assets/json/themoviedb_movie_detail.json"
+        const val MOVIE_TRAILERS_RES = "assets/json/themoviedb_movie_trailers.json"
+        const val MOVIES_POPULAR_PATH = "/3/discover/movie"
+        private const val MOVIE_DETAIL_PATH = "/3/movie/724989"
+        private const val MOVIE_TRAILERS_PATH = "/3/movie/724989/videos"
     }
 
     override fun dispatch(request: RecordedRequest): MockResponse {
@@ -39,6 +46,49 @@ class MockWebServerDispatcher : Dispatcher() {
 
             STUB_IMAGES_PATH -> MockResponse().setResponseCode(200)
                 .setBody(FileReader.readImageIntoBuffer(STUB_IMAGE_RES))
+
+            MOVIES_POPULAR_PATH -> {
+                return if (
+                    request.requestUrl.queryParameter("page") == "1" &&
+                    request.requestUrl.queryParameter("include_video") == "false" &&
+                    request.requestUrl.queryParameter("include_adult") == "false" &&
+                    request.requestUrl.queryParameter("sort_by") == "popularity.desc" &&
+                    request.requestUrl.queryParameter("language") == "en" &&
+                    request.requestUrl.queryParameter("api_key") == BuildConfig.MOVIE_DB_API_KEY
+                ) {
+                    MockResponse()
+                        .setBody(FileReader.readStringFromFile(MOVIES_POPULAR_RES))
+                        .setResponseCode(200)
+                } else {
+                    MockResponse().setResponseCode(404)
+                }
+            }
+
+            MOVIE_DETAIL_PATH -> {
+                return if (
+                    request.requestUrl.queryParameter("api_key") ==
+                    BuildConfig.MOVIE_DB_API_KEY
+                ) {
+                    MockResponse()
+                        .setBody(FileReader.readStringFromFile(MOVIE_DETAIL_RES))
+                        .setResponseCode(200)
+                } else{
+                    MockResponse().setResponseCode(404)
+                }
+            }
+
+            MOVIE_TRAILERS_PATH -> {
+                return if (
+                    request.requestUrl.queryParameter("api_key") ==
+                    BuildConfig.MOVIE_DB_API_KEY
+                ) {
+                    MockResponse()
+                        .setBody(FileReader.readStringFromFile(MOVIE_TRAILERS_RES))
+                        .setResponseCode(200)
+                } else{
+                    MockResponse().setResponseCode(404)
+                }
+            }
 
             else -> MockResponse().setResponseCode(404)
         }

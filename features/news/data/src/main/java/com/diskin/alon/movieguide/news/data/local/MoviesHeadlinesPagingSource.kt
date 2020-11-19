@@ -42,7 +42,7 @@ class MoviesHeadlinesPagingSource @Inject constructor(
                     entry.id,
                     entry.title,
                     entry.published,
-                    entry.visual.url,
+                    entry.visual?.url ?: "",
                     entry.originId
                 )
             },

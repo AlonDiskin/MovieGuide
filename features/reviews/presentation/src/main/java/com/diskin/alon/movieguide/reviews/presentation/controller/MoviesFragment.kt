@@ -148,4 +148,9 @@ class MoviesFragment : Fragment() {
         val bundle = bundleOf(getString(R.string.movie_id_arg) to movie.id)
         findNavController().navigate(R.id.movieReviewActivity, bundle)
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        snackbar?.dismiss()
+    }
 }

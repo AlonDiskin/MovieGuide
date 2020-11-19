@@ -1,8 +1,12 @@
 package com.diskin.alon.movieguide.reviews.presentation.controller
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ShareCompat
 import androidx.databinding.DataBindingUtil
 import com.diskin.alon.movieguide.common.presentation.ViewData
 import com.diskin.alon.movieguide.common.presentation.ViewDataError
@@ -64,6 +68,22 @@ class MovieReviewActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_movie_review, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.action_share -> {
+                shareReview()
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     private fun handleReviewStateError(error: ViewDataError) {
         snackbar = Snackbar.make(
             review_content,
@@ -75,5 +95,22 @@ class MovieReviewActivity : AppCompatActivity() {
         }
 
         snackbar?.show()
+    }
+
+    private fun shareReview() {
+        viewModel.movieReview.value?.data?.let { review ->
+            ShareCompat.IntentBuilder
+                .from(this)
+                .setType(getString(R.string.mime_type_text))
+                .setText(review.trailersUrls.firstOrNull() ?: review.title)
+                .setChooserTitle(getString(R.string.title_share_review_chooser))
+                .startChooser()
+        } ?: run {
+            Toast.makeText(
+                this,
+                getString(R.string.title_action_not_available),
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
 }
