@@ -3,7 +3,7 @@ package com.diskin.alon.movieguide.news.presentation
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.paging.PagingData
 import com.diskin.alon.movieguide.common.appservices.UseCase
-import com.diskin.alon.movieguide.common.common.Mapper
+import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.common.presentation.RxViewModel
 import com.diskin.alon.movieguide.news.appservices.model.HeadlineDto
 import com.diskin.alon.movieguide.news.appservices.model.HeadlinesRequest
@@ -62,7 +62,6 @@ class MoviesHeadlinesViewModelImplTest {
         every { useCase.execute(capture(useCaseRequestSlot)) } returns pagingDataSubject
         every { pagingMapper.map(any()) } returns headlinesPaging
 
-
         // Init subject
         viewModel = MoviesHeadlinesViewModelImpl(useCase,pagingMapper)
     }
@@ -78,7 +77,7 @@ class MoviesHeadlinesViewModelImplTest {
         assertThat(useCaseRequestSlot.captured.pagingConfig.pageSize).isEqualTo(PAGE_SIZE)
 
         // And add subscription to disposable container
-        val field = RxViewModel::class.java.getDeclaredField("disposable")
+        val field = RxViewModel::class.java.getDeclaredField("container")
         field.isAccessible = true
         val disposable = field.get(viewModel) as CompositeDisposable
         assertThat(disposable.size()).isEqualTo(1)

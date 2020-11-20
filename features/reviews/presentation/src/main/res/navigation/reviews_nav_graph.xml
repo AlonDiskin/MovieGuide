@@ -7,7 +7,22 @@
 
     <fragment
         android:id="@+id/moviesFragment"
-        android:name="com.diskin.alon.movieguide.reviews.presentation.MoviesFragment"
+        android:name="com.diskin.alon.movieguide.reviews.presentation.controller.MoviesFragment"
         android:label="MoviesFragment"
-        tools:layout="@layout/fragment_movies"/>
+        tools:layout="@layout/fragment_movies">
+        <action
+            android:id="@+id/action_moviesFragment_to_movieReviewActivity"
+            app:destination="@id/movieReviewActivity">
+
+            <argument
+                android:name="@string/movie_id_arg"
+                app:argType="string"
+                android:defaultValue="" />
+        </action>
+    </fragment>
+    <activity
+        android:id="@+id/movieReviewActivity"
+        android:name="com.diskin.alon.movieguide.reviews.presentation.controller.MovieReviewActivity"
+        android:label="MovieReviewActivity"
+        tools:layout="@layout/activity_movie_review"/>
 </navigation>

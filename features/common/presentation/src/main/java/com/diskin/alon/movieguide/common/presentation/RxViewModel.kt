@@ -2,19 +2,24 @@ package com.diskin.alon.movieguide.common.presentation
 
 import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 
 /**
  * Base class for [ViewModel] implementations that subscribe to Rx observables.
  */
 abstract class RxViewModel : ViewModel() {
 
-    protected val disposable = CompositeDisposable()
+    private val container = CompositeDisposable()
 
     override fun onCleared() {
         super.onCleared()
         // Dispose all rx subscriptions
-        if (!disposable.isDisposed) {
-            disposable.dispose()
+        if (!container.isDisposed) {
+            container.dispose()
         }
+    }
+
+    protected fun addSubscription(disposable: Disposable) {
+        container.add(disposable)
     }
 }

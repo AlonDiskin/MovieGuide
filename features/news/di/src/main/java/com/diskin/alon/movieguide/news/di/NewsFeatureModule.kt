@@ -3,7 +3,7 @@ package com.diskin.alon.movieguide.news.di
 import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagingData
 import com.diskin.alon.movieguide.common.appservices.Result
-import com.diskin.alon.movieguide.common.common.Mapper
+import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.news.appservices.interfaces.ArticleRepository
 import com.diskin.alon.movieguide.news.appservices.interfaces.HeadlineRepository
 import com.diskin.alon.movieguide.news.appservices.model.ArticleDto

@@ -119,7 +119,7 @@ fun getArticleEntity(entry: FeedlyEntryResponse): ArticleEntity {
         entry.summary.content,
         entry.author,
         entry.published,
-        entry.visual.url,
+        entry.visual?.url ?: "",
         entry.originId
     )
 }

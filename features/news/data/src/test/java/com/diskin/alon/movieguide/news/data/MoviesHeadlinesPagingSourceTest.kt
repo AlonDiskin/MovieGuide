@@ -2,9 +2,13 @@ package com.diskin.alon.movieguide.news.data
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingSource.LoadParams
+import com.diskin.alon.movieguide.common.appservices.AppError
 import com.diskin.alon.movieguide.news.data.local.MoviesHeadlinesPagingSource
-import com.diskin.alon.movieguide.news.data.remote.*
+import com.diskin.alon.movieguide.news.data.remote.FeedlyApi
+import com.diskin.alon.movieguide.news.data.remote.FeedlyFeedResponse
+import com.diskin.alon.movieguide.news.data.remote.MOVIES_NEWS_FEED
 import com.diskin.alon.movieguide.news.domain.HeadlineEntity
+import com.diskin.alonmovieguide.common.data.NetworkErrorHandler
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -12,13 +16,10 @@ import io.reactivex.Single
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import junitparams.JUnitParamsRunner
-import junitparams.Parameters
 import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
-import retrofit2.HttpException
-import java.io.IOException
 import java.util.*
 
 /**
@@ -42,11 +43,12 @@ class MoviesHeadlinesPagingSourceTest {
 
     // Collaborators
     private val api: FeedlyApi = mockk()
+    private val networkErrorHandler: NetworkErrorHandler = mockk()
 
     @Before
     fun setUp() {
         // Init subject
-        pagingSource =  MoviesHeadlinesPagingSource(api)
+        pagingSource =  MoviesHeadlinesPagingSource(api,networkErrorHandler)
     }
 
     @Test
@@ -131,13 +133,13 @@ class MoviesHeadlinesPagingSourceTest {
     }
 
     @Test
-    @Parameters(method = "apiErrorParams")
-    fun returnMappedErrorResultWhenApiLoadFailUponSourceRefresh(
-        apiError: Throwable,
-        expectedMessage: String
-    ) {
+    fun returnMappedErrorResultWhenApiLoadFailUponSourceRefresh() {
         // Test case fixture
+        val apiError = Throwable()
+        val appError = AppError("error description",true)
+
         every { api.getFeedItems(any(),any()) } returns Single.error(apiError)
+        every { networkErrorHandler.handle(any()) } returns appError
 
         // Given an initialized paging source
 
@@ -146,23 +148,26 @@ class MoviesHeadlinesPagingSourceTest {
         val testObserver =
             pagingSource.loadSingle(refreshParams).test()
 
-        // Then paging source should map api error to throwable with correct description message
+        // Then paging source should ask network error handler api error
+        verify { networkErrorHandler.handle(apiError) }
+
+        // And return throwable containing the error description from handled error
         testObserver.assertValue {
             val result = it as PagingSource.LoadResult.Error
             val errorMessage = result.throwable.message!!
 
-            errorMessage == expectedMessage
+            errorMessage == appError.cause
         }
     }
 
     @Test
-    @Parameters(method = "apiErrorParams")
-    fun returnMappedErrorResultWhenApiLoadFailUponSourceAppend(
-        apiError: Throwable,
-        expectedMessage: String
-    ) {
+    fun returnMappedErrorResultWhenApiLoadFailUponSourceAppend() {
         // Test case fixture
+        val apiError = Throwable()
+        val appError = AppError("error description",true)
+
         every { api.getFeedItemsPage(any(),any(),any()) } returns Single.error(apiError)
+        every { networkErrorHandler.handle(any()) } returns appError
 
         // Given an initialized paging source
 
@@ -171,12 +176,15 @@ class MoviesHeadlinesPagingSourceTest {
         val testObserver =
             pagingSource.loadSingle(refreshParams).test()
 
-        // Then paging source should map api error to throwable with correct description message
+        // Then paging source should ask network error handler api error
+        verify { networkErrorHandler.handle(apiError) }
+
+        // And return throwable containing the error description from handled error
         testObserver.assertValue {
             val result = it as PagingSource.LoadResult.Error
             val errorMessage = result.throwable.message!!
 
-            errorMessage == expectedMessage
+            errorMessage == appError.cause
         }
     }
 
@@ -194,7 +202,7 @@ class MoviesHeadlinesPagingSourceTest {
                 entry.id,
                 entry.title,
                 entry.published,
-                entry.visual.url,
+                entry.visual?.url ?: "",
                 entry.originId
             )
         }
@@ -213,10 +221,4 @@ class MoviesHeadlinesPagingSourceTest {
         // assert result include next page key
         return (result.nextKey == expectedNextKey) && (result.prevKey == expectedPrevKey)
     }
-
-    fun apiErrorParams() = arrayOf(
-        arrayOf(mockk<HttpException>(), ERR_API_SERVER),
-        arrayOf(IOException(), ERR_DEVICE_NETWORK),
-        arrayOf(Throwable(), ERR_UNKNOWN_NETWORK)
-    )
 }

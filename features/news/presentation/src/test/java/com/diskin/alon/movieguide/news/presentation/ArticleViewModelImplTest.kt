@@ -6,7 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.diskin.alon.movieguide.common.appservices.AppError
 import com.diskin.alon.movieguide.common.appservices.Result
 import com.diskin.alon.movieguide.common.appservices.UseCase
-import com.diskin.alon.movieguide.common.common.Mapper
+import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.common.presentation.LoadState
 import com.diskin.alon.movieguide.common.presentation.RxViewModel
 import com.diskin.alon.movieguide.news.appservices.model.ArticleDto
@@ -104,7 +104,7 @@ class ArticleViewModelImplTest {
         verify { useCase.execute(ArticleRequest(articleId)) }
 
         // And add subscription to disposable container
-        val field = RxViewModel::class.java.getDeclaredField("disposable")
+        val field = RxViewModel::class.java.getDeclaredField("container")
         field.isAccessible = true
         val disposable = field.get(viewModel) as CompositeDisposable
         assertThat(disposable.size()).isEqualTo(1)

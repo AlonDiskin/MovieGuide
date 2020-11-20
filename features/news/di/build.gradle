@@ -48,7 +48,7 @@ dependencies {
     api project(':features:news:domain')
     api project(':features:news:presentation')
     api project(':features:common:presentation')
-    api project(':features:common:common')
+    api project(':features:common:util')
 
     // Retrofit
     api 'com.squareup.retrofit2:retrofit:2.6.2'

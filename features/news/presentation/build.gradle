@@ -67,8 +67,8 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:$fragment_version"
 
     // Project modules
-    implementation project(':features:common:presentation')
-    implementation project(':features:common:common')
+    api project(':features:common:presentation')
+    implementation project(':features:common:util')
     implementation project(':features:news:appServices')
 
     // View model and Live Data

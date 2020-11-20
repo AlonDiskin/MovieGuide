@@ -2,11 +2,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/news_root"
-    tools:context=".controller.MoviesHeadlinesFragment">
+    android:id="@+id/news_root">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
@@ -35,4 +33,5 @@
         android:visibility="gone"
         tools:visibility="visible"
         android:layout_gravity="center"/>
+
 </FrameLayout>

@@ -1,7 +1,7 @@
 package com.diskin.alon.movieguide.news.data.remote
 
 import com.diskin.alon.movieguide.common.appservices.Result
-import com.diskin.alon.movieguide.common.common.Mapper
+import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.news.domain.ArticleEntity
 import javax.inject.Inject
 
@@ -16,7 +16,7 @@ class ApiArticleMapper @Inject constructor() :
             entry.summary.content,
             entry.author,
             entry.published,
-            entry.visual.url,
+            entry.visual?.url ?: "",
             entry.originId
         )
 

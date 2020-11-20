@@ -9,14 +9,13 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
-import com.diskin.alon.movieguide.news.data.remote.ERR_API_SERVER
-import com.diskin.alon.movieguide.news.data.remote.ERR_DEVICE_NETWORK
-import com.diskin.alon.movieguide.news.data.remote.ERR_UNKNOWN_NETWORK
 import com.diskin.alon.movieguide.news.data.remote.FEEDLY_ENTRY_PATH
 import com.diskin.alon.movieguide.news.featuretesting.R
 import com.diskin.alon.movieguide.news.featuretesting.util.getJsonBodyFromResource
 import com.diskin.alon.movieguide.news.presentation.controller.ArticleActivity
 import com.diskin.alon.movieguide.news.presentation.model.Article
+import com.diskin.alonmovieguide.common.data.NetworkErrorHandler.Companion.ERR_API_SERVER
+import com.diskin.alonmovieguide.common.data.NetworkErrorHandler.Companion.ERR_DEVICE_NETWORK
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.And
 import com.mauriciotogneri.greencoffee.annotations.Given
@@ -27,9 +26,6 @@ import org.hamcrest.CoreMatchers.allOf
 import org.joda.time.LocalDateTime
 import org.json.JSONArray
 import org.robolectric.Shadows
-import java.io.IOException
-import java.util.concurrent.TimeUnit
-
 
 /**
  * Step definitions for 'Article reading error handling' scenario.

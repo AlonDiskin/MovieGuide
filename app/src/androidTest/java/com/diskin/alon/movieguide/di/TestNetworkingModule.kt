@@ -1,6 +1,7 @@
 package com.diskin.alon.movieguide.di
 
 import com.diskin.alon.movieguide.news.data.remote.FeedlyApi
+import com.diskin.alon.movieguide.reviews.data.remote.TheMovieDbApi
 import com.diskin.alon.movieguide.util.MockWebServerRule
 import dagger.Module
 import dagger.Provides
@@ -17,19 +18,38 @@ object TestNetworkingModule {
     @JvmStatic
     @Singleton
     @Provides
-    fun provideFeedlyApi(): FeedlyApi {
+    fun provideHttpClient(): OkHttpClient {
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.BASIC
-        val okHttpClient = OkHttpClient.Builder()
+
+        return OkHttpClient.Builder()
             .addInterceptor(logging)
             .build()
+    }
 
+    @JvmStatic
+    @Singleton
+    @Provides
+    fun provideFeedlyApi(httpClient: OkHttpClient): FeedlyApi {
         return Retrofit.Builder()
             .baseUrl(MockWebServerRule.serverUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .client(okHttpClient)
+            .client(httpClient)
             .build()
             .create(FeedlyApi::class.java)
+    }
+
+    @JvmStatic
+    @Singleton
+    @Provides
+    fun provideTheMovieDbApi(httpClient: OkHttpClient): TheMovieDbApi {
+        return Retrofit.Builder()
+            .baseUrl(MockWebServerRule.serverUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .client(httpClient)
+            .build()
+            .create(TheMovieDbApi::class.java)
     }
 }
