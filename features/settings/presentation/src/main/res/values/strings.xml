@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pref_theme_key">app_theme</string>
+    <string name="pref_theme_title">App theme</string>
+    <string name="pref_theme_day_value">day</string>
+    <string name="pref_theme_night_value">night</string>
+    <string name="pref_theme_day_entry">Light</string>
+    <string name="pref_theme_night_entry">Dark</string>
+    <string name="pref_theme_default_value">@string/pref_theme_day_value</string>
+
+    <string-array name="pref_theme_entries">
+        <item>@string/pref_theme_day_entry</item>
+        <item>@string/pref_theme_night_entry</item>
+    </string-array>
+    <string-array name="pref_theme_values">
+        <item>@string/pref_theme_day_value</item>
+        <item>@string/pref_theme_night_value</item>
+    </string-array>
+</resources>

@@ -8,6 +8,5 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.diskin.alon.movieguide.settings.presentation.SettingsFragment"
-        android:label="SettingsFragment"
-        tools:layout="@layout/fragment_settings"/>
+        android:label="SettingsFragment" />
 </navigation>

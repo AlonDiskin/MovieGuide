@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ListPreference
+        android:key="@string/pref_theme_key"
+        android:entries="@array/pref_theme_entries"
+        android:entryValues="@array/pref_theme_values"
+        android:defaultValue="@string/pref_theme_default_value"
+        android:title="@string/pref_theme_title"
+        app:useSimpleSummaryProvider="true"
+        tools:summary="Night"
+        />
+
+</androidx.preference.PreferenceScreen>
