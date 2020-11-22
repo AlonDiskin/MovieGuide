@@ -4,23 +4,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="kotlin.jvm.functions.Function1"/>
+        <import type="kotlin.Unit"/>
+
         <variable
-            name="url"
-            type="String" />
+            name="trailer"
+            type="com.diskin.alon.movieguide.reviews.presentation.data.Trailer" />
+
+        <variable
+            name="trailerClickListener"
+            type="Function1&lt;com.diskin.alon.movieguide.reviews.presentation.data.Trailer,Unit>" />
     </data>
 
     <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginEnd="4dp">
+        android:layout_marginEnd="4dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:onClick="@{() -> trailerClickListener.invoke(trailer)}"
+        android:clickable="true"
+        android:focusable="true">
 
         <ImageView
             android:id="@+id/trailer_thumb"
             android:scaleType="centerCrop"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            app:loadImage="@{url}"
+            app:loadImage="@{trailer.thumbnailUrl}"
             tools:srcCompat="@tools:sample/avatars[3]" />
 
     </FrameLayout>

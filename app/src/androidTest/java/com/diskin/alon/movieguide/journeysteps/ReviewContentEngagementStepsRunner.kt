@@ -17,14 +17,14 @@ import org.junit.runners.Parameterized
  */
 @RunWith(Parameterized::class)
 @LargeTest
-class ReviewSharingStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
+class ReviewContentEngagementStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
 
     companion object {
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")
         fun scenarios(): Iterable<ScenarioConfig> {
             return GreenCoffeeConfig()
-                .withFeatureFromAssets("assets/feature/review_sharing_journey.feature")
+                .withFeatureFromAssets("assets/feature/review_content engagement_journey.feature")
                 .scenarios()
         }
     }
@@ -39,6 +39,6 @@ class ReviewSharingStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scena
         RxJavaPlugins.setInitIoSchedulerHandler(
             Rx2Idler.create("RxJava 2.x IO Scheduler"))
 
-        start(ReviewSharingSteps())
+        start(ReviewContentEngagementSteps())
     }
 }

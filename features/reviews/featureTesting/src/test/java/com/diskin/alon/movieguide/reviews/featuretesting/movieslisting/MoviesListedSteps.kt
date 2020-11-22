@@ -56,7 +56,7 @@ class MoviesListedSteps(server: MockWebServer) : GreenCoffeeSteps() {
     @Then("^Reviewed movies should be listed and sorted by movie popularity in desc order$")
     fun reviewedMoviesShouldBeListedAndSortedByPopularityInDescOrder() {
         // Verify all movies from mock server are shown as expected
-        val expectedUiMovies = getExpectedUiMoviesFromTestWebResource(
+        val expectedUiMovies = expectedUiMovies(
             dispatcher.moviesByPopularityResourcePath
         )
 
@@ -101,7 +101,7 @@ class MoviesListedSteps(server: MockWebServer) : GreenCoffeeSteps() {
         // Verify all movies from mock server are shown as expected
         when(sorting) {
             "rating" -> {
-                val expectedUiMovies = getExpectedUiMoviesFromTestWebResource(
+                val expectedUiMovies = expectedUiMovies(
                     dispatcher.moviesByRatingResourcePath
                 )
 
@@ -109,7 +109,7 @@ class MoviesListedSteps(server: MockWebServer) : GreenCoffeeSteps() {
             }
 
             "release date" -> {
-                val expectedUiMovies = getExpectedUiMoviesFromTestWebResource(
+                val expectedUiMovies = expectedUiMovies(
                     dispatcher.moviesByDateResourcePath
                 )
 

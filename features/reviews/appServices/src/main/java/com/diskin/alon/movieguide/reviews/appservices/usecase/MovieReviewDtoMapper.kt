@@ -3,6 +3,7 @@ package com.diskin.alon.movieguide.reviews.appservices.usecase
 import com.diskin.alon.movieguide.common.appservices.Result
 import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.reviews.appservices.data.MovieReviewDto
+import com.diskin.alon.movieguide.reviews.appservices.data.TrailerDto
 import com.diskin.alon.movieguide.reviews.domain.entities.MovieReviewEntity
 
 /**
@@ -22,7 +23,10 @@ class MovieReviewDtoMapper : Mapper<Result<MovieReviewEntity>, Result<MovieRevie
                         source.data.genres.map { it.name },
                         source.data.summary,
                         source.data.review,
-                        source.data.trailersUrl
+                        source.data.webUrl,
+                        source.data.trailersUrl.map {
+                            TrailerDto(it.url,it.thumbnailUrl)
+                        }
                     )
                 )
             }

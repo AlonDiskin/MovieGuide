@@ -3,14 +3,14 @@ package com.diskin.alon.movieguide.reviews.featuretesting.movieslisting
 import android.os.Looper
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso.*
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions.*
-import androidx.test.espresso.contrib.RecyclerViewActions.*
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
 import com.diskin.alon.movieguide.common.presentation.ImageLoader
-import com.diskin.alon.movieguide.common.uitesting.RecyclerViewMatcher.*
+import com.diskin.alon.movieguide.common.uitesting.RecyclerViewMatcher.withRecyclerView
 import com.diskin.alon.movieguide.reviews.data.remote.MOVIE_DB_MOVIES_PATH
 import com.diskin.alon.movieguide.reviews.data.remote.MOVIE_DB_PARAM_PAGE
 import com.diskin.alon.movieguide.reviews.data.remote.MOVIE_DB_POP_MOVIES_PARAMS
@@ -19,7 +19,7 @@ import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesAdapter
 import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesFragment
 import com.diskin.alonmovieguide.common.data.NetworkErrorHandler.Companion.ERR_API_SERVER
 import com.diskin.alonmovieguide.common.data.NetworkErrorHandler.Companion.ERR_DEVICE_NETWORK
-import com.google.common.truth.Truth.*
+import com.google.common.truth.Truth.assertThat
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.And
 import com.mauriciotogneri.greencoffee.annotations.Given
@@ -28,7 +28,7 @@ import com.mauriciotogneri.greencoffee.annotations.When
 import io.mockk.mockkObject
 import io.mockk.verify
 import okhttp3.mockwebserver.*
-import org.hamcrest.CoreMatchers.*
+import org.hamcrest.CoreMatchers.allOf
 import org.robolectric.Shadows
 
 /**
@@ -131,7 +131,7 @@ class MoviesListedErrorSteps(server: MockWebServer) : GreenCoffeeSteps() {
     @Then("^Reviews should be shown in reviews screen$")
     fun reviewsShouldBeShownInReviewsScreen() {
         // Verify expected movies are displayed
-        val expectedUiMovies = getExpectedUiMoviesFromTestWebResource(
+        val expectedUiMovies = expectedUiMovies(
             dispatcher.moviesResourcePath
         )
 

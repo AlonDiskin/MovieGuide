@@ -7,4 +7,4 @@ data class UiMovieReviewData(val title: String,
                              val summary: String,
                              val review: String,
                              val backDropImageUrl: String,
-                             val trailersUrls: List<String>)
+                             val trailersThumbnailUrls: List<String>)

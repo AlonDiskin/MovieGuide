@@ -5,24 +5,27 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.diskin.alon.movieguide.reviews.presentation.data.Trailer
 import com.diskin.alon.movieguide.reviews.presentation.databinding.MovieTrailerBinding
 
 /**
  * Layout adapter that display [MovieReview]s trailers data.
  */
-class TrailersAdapter : ListAdapter<String,TrailersAdapter.MovieTrailerViewHolder>(
+class TrailersAdapter(
+    private val trailerClickListener: (Trailer) -> (Unit)
+) : ListAdapter<Trailer,TrailersAdapter.MovieTrailerViewHolder>(
     DIFF_CALLBACK
 ) {
 
     companion object {
 
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<String>() {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Trailer>() {
 
-            override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
+            override fun areItemsTheSame(oldItem: Trailer, newItem: Trailer): Boolean {
                 return oldItem == newItem
             }
 
-            override fun areContentsTheSame(oldItem: String, newItem: String) =
+            override fun areContentsTheSame(oldItem: Trailer, newItem: Trailer) =
                 oldItem == newItem
         }
     }
@@ -31,8 +34,8 @@ class TrailersAdapter : ListAdapter<String,TrailersAdapter.MovieTrailerViewHolde
         private val binding: MovieTrailerBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(url: String) {
-            binding.url = url
+        fun bind(trailer: Trailer) {
+            binding.trailer = trailer
         }
     }
 
@@ -47,6 +50,7 @@ class TrailersAdapter : ListAdapter<String,TrailersAdapter.MovieTrailerViewHolde
             false
         )
 
+        binding.trailerClickListener = trailerClickListener
         return MovieTrailerViewHolder(binding)
     }
 }

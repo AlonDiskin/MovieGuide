@@ -9,5 +9,6 @@ data class MovieReview(
     val summary: String,
     val review: String,
     val backDropImageUrl: String,
-    val trailersUrls: List<String>
+    val webUrl: String,
+    val trailers: List<Trailer>
 )

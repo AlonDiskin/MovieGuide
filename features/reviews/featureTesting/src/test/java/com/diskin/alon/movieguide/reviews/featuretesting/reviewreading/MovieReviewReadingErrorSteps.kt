@@ -120,7 +120,7 @@ class MovieReviewReadingErrorSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
     @Then("^Movie Review detail should be shown$")
     fun movieReviewDetailShouldBeShown() {
-        val review = getExpectedUiMovieReviewFromTestResources(
+        val review = expectedUiMovieReview(
             dispatcher.movieDetailResourcePath,
             dispatcher.movieTrailersResourcePath
         )
@@ -145,7 +145,7 @@ class MovieReviewReadingErrorSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
         verify { ImageLoader.loadIntoImageView(any(),review.backDropImageUrl) }
 
-        review.trailersUrls.forEach { url ->
+        review.trailersThumbnailUrls.forEach { url ->
             verify { ImageLoader.loadIntoImageView(any(),url) }
         }
     }
