@@ -32,8 +32,6 @@ class ArticleActivity : AppCompatActivity() {
             R.layout.activity_article
         )
 
-        //StatusBarUtil.setTransparent(this)
-
         // Inject activity
         AndroidInjection.inject(this)
 
@@ -44,7 +42,7 @@ class ArticleActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // Observe view model article state
-        viewModel.article.observe(this, Observer { binding.article = it })
+        viewModel.article.observe(this, { binding.article = it })
 
         // Observe view model article loading state
         viewModel.loading.observe(this, { state ->

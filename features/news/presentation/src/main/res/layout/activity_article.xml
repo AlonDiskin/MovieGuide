@@ -7,7 +7,7 @@
     <data>
         <variable
             name="article"
-            type="com.diskin.alon.movieguide.news.presentation.model.Article" />
+            type="com.diskin.alon.movieguide.news.presentation.data.Article" />
     </data>
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"

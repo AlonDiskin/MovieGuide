@@ -22,9 +22,9 @@ import com.diskin.alon.movieguide.news.data.remote.MOVIES_NEWS_FEED
 import com.diskin.alon.movieguide.news.featuretesting.R
 import com.diskin.alon.movieguide.news.featuretesting.util.getJsonBodyFromResource
 import com.diskin.alon.movieguide.news.featuretesting.util.parseFeedlyResponseJsonToNewsHeadlines
-import com.diskin.alon.movieguide.news.presentation.controller.MoviesHeadlinesFragment
-import com.diskin.alon.movieguide.news.presentation.viewmodel.MoviesHeadlinesViewModelImpl.Companion.PAGE_SIZE
-import com.diskin.alon.movieguide.news.presentation.controller.NewsHeadlinesAdapter.NewsHeadlineViewHolder
+import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesFragment
+import com.diskin.alon.movieguide.news.presentation.viewmodel.HeadlinesViewModelImpl.Companion.PAGE_SIZE
+import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesAdapter.HeadlineViewHolder
 import com.google.common.truth.Truth.assertThat
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.Given
@@ -45,7 +45,7 @@ class HeadlineSharedSteps(server: MockWebServer) : GreenCoffeeSteps() {
         const val TEST_WEB_JSON = "json/feed_movie_headlines.json"
     }
 
-    private lateinit var scenario: FragmentScenario<MoviesHeadlinesFragment>
+    private lateinit var scenario: FragmentScenario<HeadlinesFragment>
     private val expectedUiHeadlines =
         parseFeedlyResponseJsonToNewsHeadlines(getJsonBodyFromResource(TEST_WEB_JSON))
 
@@ -76,7 +76,7 @@ class HeadlineSharedSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
     @Given("^User opened news headline screen$")
     fun userOpenedNewsHeadlineScreen() {
-        scenario = FragmentScenario.launchInContainer(MoviesHeadlinesFragment::class.java)
+        scenario = FragmentScenario.launchInContainer(HeadlinesFragment::class.java)
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 
@@ -93,7 +93,7 @@ class HeadlineSharedSteps(server: MockWebServer) : GreenCoffeeSteps() {
         expectedUiHeadlines.forEachIndexed { index, _ ->
             // Scroll to expected headline layout position
             onView(withId(R.id.headlines))
-                .perform(scrollToPosition<NewsHeadlineViewHolder>(index))
+                .perform(scrollToPosition<HeadlineViewHolder>(index))
 
             Shadows.shadowOf(Looper.getMainLooper()).idle()
 
@@ -111,7 +111,7 @@ class HeadlineSharedSteps(server: MockWebServer) : GreenCoffeeSteps() {
     fun userSelectToShareTheFirstHeadline() {
         // Scroll to first headline
         onView(withId(R.id.headlines))
-            .perform(scrollToPosition<NewsHeadlineViewHolder>(0))
+            .perform(scrollToPosition<HeadlineViewHolder>(0))
 
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 

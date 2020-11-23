@@ -2,7 +2,7 @@ package com.diskin.alon.movieguide.news.appservices
 
 import com.diskin.alon.movieguide.common.appservices.AppError
 import com.diskin.alon.movieguide.common.appservices.Result
-import com.diskin.alon.movieguide.news.appservices.model.ArticleDto
+import com.diskin.alon.movieguide.news.appservices.data.ArticleDto
 import com.diskin.alon.movieguide.news.domain.ArticleEntity
 import com.diskin.alon.movieguide.news.domain.HeadlineEntity
 

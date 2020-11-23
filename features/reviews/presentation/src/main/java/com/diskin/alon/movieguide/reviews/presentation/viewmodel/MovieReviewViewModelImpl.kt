@@ -49,7 +49,7 @@ class MovieReviewViewModelImpl(
                                     idSubject.onNext(movieId)
                                 }
                             } else {
-                                ViewDataError.NoTRetriable(result.error.cause)
+                                ViewDataError.NotRetriable(result.error.cause)
                             }
                         )
                     }

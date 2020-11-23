@@ -3,7 +3,7 @@ package com.diskin.alon.movieguide.news.featuretesting.util
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.diskin.alon.movieguide.news.featuretesting.R
-import com.diskin.alon.movieguide.news.presentation.model.NewsHeadline
+import com.diskin.alon.movieguide.news.presentation.data.Headline
 import org.joda.time.LocalDateTime
 import org.json.JSONObject
 import java.io.File
@@ -16,10 +16,10 @@ fun getJsonBodyFromResource(resourceName: String): String {
     return File(jsonResource.toURI()).readText()
 }
 
-fun parseFeedlyResponseJsonToNewsHeadlines(json: String): List<NewsHeadline> {
+fun parseFeedlyResponseJsonToNewsHeadlines(json: String): List<Headline> {
     val jsonResponseObject = JSONObject(json)
     val jsonItemsArray = jsonResponseObject.getJSONArray("items")
-    val newsHeadlines = mutableListOf<NewsHeadline>()
+    val newsHeadlines = mutableListOf<Headline>()
     val headlinesDateFormat = ApplicationProvider
         .getApplicationContext<Context>()
         .getString(R.string.headline_date_format)
@@ -27,7 +27,7 @@ fun parseFeedlyResponseJsonToNewsHeadlines(json: String): List<NewsHeadline> {
     for (i in 0 until jsonItemsArray.length()) {
         val jsonItemObject = jsonItemsArray.getJSONObject(i)
         newsHeadlines.add(
-            NewsHeadline(
+            Headline(
                 jsonItemObject.getString("id"),
                 jsonItemObject.getString("title"),
                 LocalDateTime(jsonItemObject.getLong("published")).toString(headlinesDateFormat),

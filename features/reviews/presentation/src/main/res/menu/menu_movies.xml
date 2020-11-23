@@ -17,7 +17,7 @@
                     android:title="@string/title_action_sort_rating"/>
                 <item
                     android:id="@+id/action_sort_date"
-                    android:title="@string/title_action_sort_newest"/>
+                    android:title="@string/title_action_sort_date"/>
             </group>
         </menu>
     </item>

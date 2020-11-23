@@ -6,9 +6,11 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
-@Module
+@Module(includes = [
+    TestNetworkingModule::class,
+    TestDataModule::class
+])
 object TestAppModule {
-
     @JvmStatic
     @Singleton
     @Provides

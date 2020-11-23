@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 29
@@ -31,10 +32,20 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    // for robolectric testing
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+        }
+    }
 }
 
 dependencies {
-    def paging_version = "3.0.0-alpha08"
+    def paging_version = "3.0.0-alpha09"
+    def room_version = "2.2.5"
+    def robolectric_version = "4.3.1"
 
     // Project modules
     implementation project (':features:news:appServices')
@@ -44,7 +55,7 @@ dependencies {
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.3.1'
+    implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.appcompat:appcompat:1.2.0'
 
     // Retrofit
@@ -58,6 +69,11 @@ dependencies {
     // Javax annotation
     implementation "javax.inject:javax.inject:1"
 
+    // Room
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-rxjava2:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
     // Unit/Local testing
     testImplementation project(':features:common:localTesting')
     testImplementation "com.squareup.okhttp3:mockwebserver:3.9.1"
@@ -65,5 +81,11 @@ dependencies {
     testImplementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
     testImplementation "androidx.paging:paging-common-ktx:$paging_version"
     testImplementation 'com.google.code.gson:gson:2.8.6'
-
+    testImplementation "androidx.room:room-testing:$room_version"
+    testImplementation "org.robolectric:robolectric:$robolectric_version"
+    testImplementation 'androidx.test.ext:junit:1.1.2'
+    testImplementation 'androidx.test:rules:1.3.0'
+    testImplementation 'androidx.test:core:1.3.0'
+    testImplementation "androidx.arch.core:core-testing:2.1.0"
+    kaptTest "androidx.room:room-compiler:$room_version"
 }

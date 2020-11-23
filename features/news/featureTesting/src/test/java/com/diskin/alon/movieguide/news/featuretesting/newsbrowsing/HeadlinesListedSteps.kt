@@ -13,10 +13,10 @@ import com.diskin.alon.movieguide.common.uitesting.swipeToRefresh
 import com.diskin.alon.movieguide.news.featuretesting.R
 import com.diskin.alon.movieguide.news.featuretesting.util.getJsonBodyFromResource
 import com.diskin.alon.movieguide.news.featuretesting.util.parseFeedlyResponseJsonToNewsHeadlines
-import com.diskin.alon.movieguide.news.presentation.controller.MoviesHeadlinesFragment
-import com.diskin.alon.movieguide.news.presentation.viewmodel.MoviesHeadlinesViewModelImpl.Companion.PAGE_SIZE
-import com.diskin.alon.movieguide.news.presentation.model.NewsHeadline
-import com.diskin.alon.movieguide.news.presentation.controller.NewsHeadlinesAdapter.NewsHeadlineViewHolder
+import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesFragment
+import com.diskin.alon.movieguide.news.presentation.viewmodel.HeadlinesViewModelImpl.Companion.PAGE_SIZE
+import com.diskin.alon.movieguide.news.presentation.data.Headline
+import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesAdapter.HeadlineViewHolder
 import com.google.common.truth.Truth.assertThat
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.Given
@@ -41,7 +41,7 @@ class HeadlinesListedSteps(server: MockWebServer) : GreenCoffeeSteps() {
         private const val PAGES_NUM = 2
     }
 
-    private lateinit var scenario: FragmentScenario<MoviesHeadlinesFragment>
+    private lateinit var scenario: FragmentScenario<HeadlinesFragment>
     private val dispatcher = HeadlinesDispatcher()
 
     init {
@@ -55,7 +55,7 @@ class HeadlinesListedSteps(server: MockWebServer) : GreenCoffeeSteps() {
     @Given("^User opened news headlines screen$")
     fun userOpenedNewsHeadlinesScreen() {
         // launch movies headlines fragment
-        scenario = FragmentScenario.launchInContainer(MoviesHeadlinesFragment::class.java)
+        scenario = FragmentScenario.launchInContainer(HeadlinesFragment::class.java)
     }
 
     @When("^User scrolls to bottom of ui$")
@@ -114,12 +114,12 @@ class HeadlinesListedSteps(server: MockWebServer) : GreenCoffeeSteps() {
         }
     }
 
-    private fun verifyHeadlinesShown(headlines: List<NewsHeadline>) {
+    private fun verifyHeadlinesShown(headlines: List<Headline>) {
         // Verify all server feed entries are displayed as expected
         headlines.forEachIndexed { i, headline ->
             // Scroll to expected headline layout position
             onView(withId(R.id.headlines))
-                .perform(scrollToPosition<NewsHeadlineViewHolder>(i))
+                .perform(scrollToPosition<HeadlineViewHolder>(i))
 
             Shadows.shadowOf(Looper.getMainLooper()).idle()
 
@@ -154,24 +154,24 @@ class HeadlinesListedSteps(server: MockWebServer) : GreenCoffeeSteps() {
         }
     }
 
-    private fun getExpectedUiHeadlines(): List<NewsHeadline> {
+    private fun getExpectedUiHeadlines(): List<Headline> {
         val initialPageJson = getJsonBodyFromResource("json/feed_init_page.json")
         val lastPageJson = getJsonBodyFromResource("json/feed_last_page.json")
         val initialPageHeadlines = parseFeedlyResponseJsonToNewsHeadlines(initialPageJson)
         val lastPageHeadlines = parseFeedlyResponseJsonToNewsHeadlines(lastPageJson)
-        val result = mutableListOf<NewsHeadline>()
+        val result = mutableListOf<Headline>()
 
         result.addAll(initialPageHeadlines)
         result.addAll(lastPageHeadlines)
         return result
     }
 
-    private fun getExpectedRefreshedUiHeadlines(): List<NewsHeadline> {
+    private fun getExpectedRefreshedUiHeadlines(): List<Headline> {
         val initialPageJson = getJsonBodyFromResource("json/refresh_feed_init_page.json")
         val lastPageJson = getJsonBodyFromResource("json/refresh_feed_last_page.json")
         val initialPageHeadlines = parseFeedlyResponseJsonToNewsHeadlines(initialPageJson)
         val lastPageHeadlines = parseFeedlyResponseJsonToNewsHeadlines(lastPageJson)
-        val result = mutableListOf<NewsHeadline>()
+        val result = mutableListOf<Headline>()
 
         result.addAll(initialPageHeadlines)
         result.addAll(lastPageHeadlines)

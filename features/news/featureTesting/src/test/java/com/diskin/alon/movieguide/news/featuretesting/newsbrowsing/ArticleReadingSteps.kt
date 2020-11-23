@@ -18,10 +18,10 @@ import com.diskin.alon.movieguide.news.data.remote.*
 import com.diskin.alon.movieguide.news.featuretesting.R
 import com.diskin.alon.movieguide.news.featuretesting.util.getJsonBodyFromResource
 import com.diskin.alon.movieguide.news.presentation.controller.ArticleActivity
-import com.diskin.alon.movieguide.news.presentation.controller.MoviesHeadlinesFragment
-import com.diskin.alon.movieguide.news.presentation.controller.NewsHeadlinesAdapter.NewsHeadlineViewHolder
-import com.diskin.alon.movieguide.news.presentation.model.Article
-import com.diskin.alon.movieguide.news.presentation.viewmodel.MoviesHeadlinesViewModelImpl.Companion.PAGE_SIZE
+import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesFragment
+import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesAdapter.HeadlineViewHolder
+import com.diskin.alon.movieguide.news.presentation.data.Article
+import com.diskin.alon.movieguide.news.presentation.viewmodel.HeadlinesViewModelImpl.Companion.PAGE_SIZE
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.And
 import com.mauriciotogneri.greencoffee.annotations.Given
@@ -45,7 +45,7 @@ class ArticleReadingSteps(server: MockWebServer) : GreenCoffeeSteps() {
         private const val TEST_WEB_ENTRY_JSON = "json/feedly_entry.json"
     }
 
-    private lateinit var movieHeadlinesScenario: FragmentScenario<MoviesHeadlinesFragment>
+    private lateinit var movieHeadlinesScenario: FragmentScenario<HeadlinesFragment>
     private lateinit var articleScenario: ActivityScenario<ArticleActivity>
     private val navController = TestNavHostController(getApplicationContext())
 
@@ -107,7 +107,7 @@ class ArticleReadingSteps(server: MockWebServer) : GreenCoffeeSteps() {
     @Given("^User opened headlines screen$")
     fun userOpenedHeadlinesScreen() {
         // launch movies headlines fragment
-        movieHeadlinesScenario = FragmentScenario.launchInContainer(MoviesHeadlinesFragment::class.java)
+        movieHeadlinesScenario = FragmentScenario.launchInContainer(HeadlinesFragment::class.java)
         // Set test nav controller on headlines fragment
         movieHeadlinesScenario.onFragment { Navigation.setViewNavController(it.requireView(), navController) }
         Shadows.shadowOf(Looper.getMainLooper()).idle()
@@ -116,7 +116,7 @@ class ArticleReadingSteps(server: MockWebServer) : GreenCoffeeSteps() {
     @When("^User selects first shown headline$")
     fun userSelectsFirstShownHeadline() {
         onView(withId(R.id.headlines))
-            .perform(actionOnItemAtPosition<NewsHeadlineViewHolder>(0, click()))
+            .perform(actionOnItemAtPosition<HeadlineViewHolder>(0, click()))
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 

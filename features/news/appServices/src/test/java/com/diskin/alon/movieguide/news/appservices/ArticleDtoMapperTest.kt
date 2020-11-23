@@ -1,8 +1,8 @@
 package com.diskin.alon.movieguide.news.appservices
 
 import com.diskin.alon.movieguide.common.appservices.Result
-import com.diskin.alon.movieguide.news.appservices.model.ArticleDto
-import com.diskin.alon.movieguide.news.appservices.usecase.ArticleDtoMapper
+import com.diskin.alon.movieguide.news.appservices.data.ArticleDto
+import com.diskin.alon.movieguide.news.appservices.util.ArticleDtoMapper
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test

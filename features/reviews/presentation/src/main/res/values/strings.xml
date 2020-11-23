@@ -9,7 +9,7 @@
     <string name="title_action_sort">Sort</string>
     <string name="title_action_sort_popular">Popular</string>
     <string name="title_action_sort_rating">Rating</string>
-    <string name="title_action_sort_newest">Newest</string>
+    <string name="title_action_sort_date">Newest</string>
     <string name="action_retry">retry</string>
     <string name="unknown_error">unknown error</string>
     <string name="label_trailers">Trailers:</string>

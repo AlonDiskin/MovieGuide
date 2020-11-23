@@ -13,7 +13,7 @@ import com.diskin.alon.movieguide.news.data.remote.FEEDLY_ENTRY_PATH
 import com.diskin.alon.movieguide.news.featuretesting.R
 import com.diskin.alon.movieguide.news.featuretesting.util.getJsonBodyFromResource
 import com.diskin.alon.movieguide.news.presentation.controller.ArticleActivity
-import com.diskin.alon.movieguide.news.presentation.model.Article
+import com.diskin.alon.movieguide.news.presentation.data.Article
 import com.diskin.alonmovieguide.common.data.NetworkErrorHandler.Companion.ERR_API_SERVER
 import com.diskin.alonmovieguide.common.data.NetworkErrorHandler.Companion.ERR_DEVICE_NETWORK
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps

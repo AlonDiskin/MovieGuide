@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bookmarks"
+    app:startDestination="@id/bookmarksFragment">
+
+    <fragment
+        android:id="@+id/bookmarksFragment"
+        android:name="com.diskin.alon.movieguide.news.presentation.controller.BookmarksFragment"
+        android:label="BookmarksFragment"
+        tools:layout="@layout/fragment_bookmarks">
+        <action
+            android:id="@+id/action_bookmarksFragment_to_articleActivity2"
+            app:destination="@id/articleActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/articleActivity"
+        android:name="com.diskin.alon.movieguide.news.presentation.controller.ArticleActivity"
+        android:label="activity_article"
+        tools:layout="@layout/activity_article" />
+</navigation>

@@ -3,7 +3,7 @@ package com.diskin.alon.movieguide.news.data
 import androidx.paging.PagingSource
 import androidx.paging.PagingSource.LoadParams
 import com.diskin.alon.movieguide.common.appservices.AppError
-import com.diskin.alon.movieguide.news.data.local.MoviesHeadlinesPagingSource
+import com.diskin.alon.movieguide.news.data.remote.MoviesHeadlinesPagingSource
 import com.diskin.alon.movieguide.news.data.remote.FeedlyApi
 import com.diskin.alon.movieguide.news.data.remote.FeedlyFeedResponse
 import com.diskin.alon.movieguide.news.data.remote.MOVIES_NEWS_FEED

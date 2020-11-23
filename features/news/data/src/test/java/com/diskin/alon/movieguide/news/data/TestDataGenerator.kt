@@ -1,5 +1,6 @@
 package com.diskin.alon.movieguide.news.data
 
+import com.diskin.alon.movieguide.news.data.local.Bookmark
 import com.diskin.alon.movieguide.news.data.remote.FeedlyEntryResponse
 import com.diskin.alon.movieguide.news.data.remote.FeedlyFeedResponse
 import com.diskin.alon.movieguide.news.data.remote.FeedlyFeedResponse.FeedEntry
@@ -126,4 +127,12 @@ fun getArticleEntity(entry: FeedlyEntryResponse): ArticleEntity {
 
 fun createIllegalPathId(): String {
     return "uM+MqpK9duOyb/imN0cFmOAhKFCAsXozhxb+qTAQU1w=_174af56171b:70b9d4:70edfa5f"
+}
+
+fun createLocalHeadlines(): Array<Bookmark> {
+    return arrayOf(
+        Bookmark("article_id_1","title1",120L,"umg_url1","articleUrl1"),
+        Bookmark("article_id_2","title2",120L,"umg_url2","articleUrl2"),
+        Bookmark("article_id_3","title3",120L,"umg_url3","articleUrl3")
+    )
 }

@@ -2,7 +2,7 @@ package com.diskin.alon.movieguide.news.featuretesting.newsbrowsing
 
 import com.diskin.alon.movieguide.news.data.remote.*
 import com.diskin.alon.movieguide.news.featuretesting.util.getJsonBodyFromResource
-import com.diskin.alon.movieguide.news.presentation.viewmodel.MoviesHeadlinesViewModelImpl.Companion.PAGE_SIZE
+import com.diskin.alon.movieguide.news.presentation.viewmodel.HeadlinesViewModelImpl.Companion.PAGE_SIZE
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.RecordedRequest

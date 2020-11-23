@@ -2,8 +2,6 @@ package com.diskin.alon.movieguide.di
 
 import android.app.Application
 import com.diskin.alon.movieguide.home.di.MainActivityInjectionModule
-import com.diskin.alon.movieguide.news.di.ArticleActivityInjectionModule
-import com.diskin.alon.movieguide.news.di.MoviesHeadlinesFragmentInjectionModule
 import com.diskin.alon.movieguide.reviews.di.MovieReviewActivityInjectionModule
 import com.diskin.alon.movieguide.reviews.di.MoviesFragmentInjectionModule
 import com.diskin.alon.movieguide.runner.TestApp

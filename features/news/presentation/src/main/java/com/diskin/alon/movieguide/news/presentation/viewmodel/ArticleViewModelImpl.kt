@@ -9,10 +9,10 @@ import com.diskin.alon.movieguide.common.appservices.UseCase
 import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.common.presentation.LoadState
 import com.diskin.alon.movieguide.common.presentation.RxViewModel
-import com.diskin.alon.movieguide.news.appservices.model.ArticleDto
-import com.diskin.alon.movieguide.news.appservices.model.ArticleRequest
+import com.diskin.alon.movieguide.news.appservices.data.ArticleDto
+import com.diskin.alon.movieguide.news.appservices.data.ArticleRequest
 import com.diskin.alon.movieguide.news.presentation.R
-import com.diskin.alon.movieguide.news.presentation.model.Article
+import com.diskin.alon.movieguide.news.presentation.data.Article
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.BehaviorSubject

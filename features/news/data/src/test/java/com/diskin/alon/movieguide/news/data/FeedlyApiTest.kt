@@ -10,6 +10,7 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Test
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -20,6 +21,16 @@ import java.net.HttpURLConnection
  * [FeedlyApi] integration test.
  */
 class FeedlyApiTest {
+
+    companion object {
+
+        @JvmStatic
+        @BeforeClass
+        fun setupClass() {
+            // Fix MockWebServer 'No password supplied for PKCS#12 KeyStore' bug on CI machine
+            System.setProperty("javax.net.ssl.trustStore", "NONE")
+        }
+    }
 
     private lateinit var api: FeedlyApi
     private val server = MockWebServer()

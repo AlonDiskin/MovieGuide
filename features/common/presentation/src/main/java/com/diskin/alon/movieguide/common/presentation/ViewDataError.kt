@@ -9,5 +9,5 @@ sealed class ViewDataError(val reason: String) : Throwable() {
         }
     }
 
-    class NoTRetriable(reason: String): ViewDataError(reason)
+    class NotRetriable(reason: String): ViewDataError(reason)
 }

@@ -6,7 +6,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.movieguide.news.data.remote.FEEDLY_FEED_PATH
-import com.diskin.alon.movieguide.news.presentation.controller.MoviesHeadlinesFragment
+import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesFragment
 import com.diskin.alon.movieguide.news.presentation.R
 import com.diskin.alonmovieguide.common.data.NetworkErrorHandler.Companion.ERR_API_SERVER
 import com.diskin.alonmovieguide.common.data.NetworkErrorHandler.Companion.ERR_DEVICE_NETWORK
@@ -27,7 +27,7 @@ import org.robolectric.Shadows
  */
 class HeadlinesListingErrorSteps(private val server: MockWebServer) : GreenCoffeeSteps(){
 
-    private lateinit var scenario: FragmentScenario<MoviesHeadlinesFragment>
+    private lateinit var scenario: FragmentScenario<HeadlinesFragment>
     private lateinit var expectedErrorMessage: String
 
     @Given("^Existing app error due to \"([^\"]*)\"$")
@@ -61,7 +61,7 @@ class HeadlinesListingErrorSteps(private val server: MockWebServer) : GreenCoffe
     fun userOpenNewsHeadlinesScreen() {
         // Launch movies headlines fragment
         scenario = FragmentScenario.launchInContainer(
-            MoviesHeadlinesFragment::class.java,
+            HeadlinesFragment::class.java,
             null,
             R.style.AppTheme,
             null

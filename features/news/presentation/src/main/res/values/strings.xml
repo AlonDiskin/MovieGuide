@@ -14,4 +14,7 @@
     <string name="title_share_headline_chooser">Share headline</string>
     <string name="stub_article_author">Dave Trumbore</string>
     <string name="title_article_activity"></string>
+    <string name="title_action_sort">Sort</string>
+    <string name="title_action_sort_newest">Newest first</string>
+    <string name="title_action_sort_oldest">Oldest first</string>
 </resources>

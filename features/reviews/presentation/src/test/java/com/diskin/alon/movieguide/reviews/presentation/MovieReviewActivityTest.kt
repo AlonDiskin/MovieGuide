@@ -183,7 +183,7 @@ class MovieReviewActivityTest {
         // Given a resumed activity
 
         // When review ui state related error happen
-        val error = ViewDataError.NoTRetriable("message")
+        val error = ViewDataError.NotRetriable("message")
         movieReview.value = ViewData.Error(error)
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
@@ -233,7 +233,7 @@ class MovieReviewActivityTest {
         // Given a resumed activity
 
         // When review ui state related retriable error happen
-        movieReview.value = ViewData.Error(ViewDataError.NoTRetriable(""))
+        movieReview.value = ViewData.Error(ViewDataError.NotRetriable(""))
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // And review is updated
