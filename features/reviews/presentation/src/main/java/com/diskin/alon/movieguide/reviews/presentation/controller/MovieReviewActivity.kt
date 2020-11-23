@@ -1,5 +1,7 @@
 package com.diskin.alon.movieguide.reviews.presentation.controller
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -11,11 +13,11 @@ import androidx.databinding.DataBindingUtil
 import com.diskin.alon.movieguide.common.presentation.ViewData
 import com.diskin.alon.movieguide.common.presentation.ViewDataError
 import com.diskin.alon.movieguide.reviews.presentation.R
+import com.diskin.alon.movieguide.reviews.presentation.data.Trailer
 import com.diskin.alon.movieguide.reviews.presentation.databinding.ActivityMovieReviewBinding
 import com.diskin.alon.movieguide.reviews.presentation.viewmodel.MovieReviewViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.AndroidInjection
-import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.activity_movie_review.*
 import javax.inject.Inject
 
@@ -43,13 +45,13 @@ class MovieReviewActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // Setup trailers adapter
-        val adapter = TrailersAdapter()
+        val adapter = TrailersAdapter(this::openTrailerWebLink)
         binding.trailers.adapter = adapter
 
         // Observe view model review state
         viewModel.movieReview.observe(this,{ viewData ->
             // Update review data if available
-            adapter.submitList(viewData.data?.trailersUrls)
+            adapter.submitList(viewData.data?.trailers)
             binding.setReview(viewData.data)
 
             // Hide any prev error/loading notification
@@ -102,7 +104,7 @@ class MovieReviewActivity : AppCompatActivity() {
             ShareCompat.IntentBuilder
                 .from(this)
                 .setType(getString(R.string.mime_type_text))
-                .setText(review.trailersUrls.firstOrNull() ?: review.title)
+                .setText(review.webUrl)
                 .setChooserTitle(getString(R.string.title_share_review_chooser))
                 .startChooser()
         } ?: run {
@@ -112,5 +114,12 @@ class MovieReviewActivity : AppCompatActivity() {
                 Toast.LENGTH_LONG
             ).show()
         }
+    }
+
+    private fun openTrailerWebLink(trailer: Trailer) {
+        val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse(trailer.url))
+        val chooser = Intent.createChooser(webIntent, getString(R.string.title_trailer_view_chooser))
+
+        startActivity(chooser)
     }
 }

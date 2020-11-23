@@ -1,20 +1,25 @@
-package com.diskin.alon.movieguide.reviews.featuretesting.reviewsharing
+package com.diskin.alon.movieguide.reviews.featuretesting.trailerviewing
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Looper
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
 import com.diskin.alon.movieguide.reviews.data.BuildConfig
 import com.diskin.alon.movieguide.reviews.featuretesting.R
+import com.diskin.alon.movieguide.reviews.presentation.R.id
 import com.diskin.alon.movieguide.reviews.presentation.controller.MovieReviewActivity
-import com.google.common.truth.Truth
+import com.diskin.alon.movieguide.reviews.presentation.controller.TrailersAdapter.MovieTrailerViewHolder
+import com.google.android.material.appbar.AppBarLayout
+import com.google.common.truth.Truth.assertThat
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.Given
 import com.mauriciotogneri.greencoffee.annotations.Then
@@ -27,9 +32,9 @@ import org.json.JSONObject
 import org.robolectric.Shadows
 
 /**
- * Step definitions for 'Movie review is shared' scenario.
+ * Step definitions for 'User select movie trailer to view' scenario.
  */
-class ReviewSharingSteps(server: MockWebServer) : GreenCoffeeSteps() {
+class TrailerViewingSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
     private lateinit var scenario: ActivityScenario<MovieReviewActivity>
     private val dispatcher = TestDispatcher()
@@ -40,8 +45,8 @@ class ReviewSharingSteps(server: MockWebServer) : GreenCoffeeSteps() {
         server.setDispatcher(dispatcher)
     }
 
-    @Given("^User read movie review$")
-    fun userReadMovieReview() {
+    @Given("^User read movie review that has movie trailers web links$")
+    fun userReadMovieReviewThatHasMovieTrailerWebLinks() {
         val context = ApplicationProvider.getApplicationContext<Context>()!!
         val keyMovieId = context.getString(R.string.movie_id_arg)
         val movieIdArg = dispatcher.movieResourceId.toString()
@@ -52,36 +57,42 @@ class ReviewSharingSteps(server: MockWebServer) : GreenCoffeeSteps() {
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 
-    @When("^User Selects to share review data$")
-    fun userSelectsToShareReviewData() {
+    @When("^User selects to view the first trailer$")
+    fun userSelectsToViewTheFirstTrailer() {
         Intents.init()
 
-        onView(withId(R.id.action_share))
-            .perform(click())
+        scenario.onActivity { it.findViewById<AppBarLayout>(R.id.appBar).setExpanded(false) }
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        onView(withId(id.trailers))
+            .perform(
+                actionOnItemAtPosition<MovieTrailerViewHolder>(
+                    0,
+                    click()
+                )
+            )
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 
-    @Then("^Review web url should be shared$")
-    fun reviewShouldBeShared(){
-        Intents.intended(IntentMatchers.hasAction(Intent.ACTION_CHOOSER))
-        Intents.intended(IntentMatchers.hasExtraWithKey(Intent.EXTRA_INTENT))
-
+    @Then("^App should send user to view trailer via other device app$")
+    fun appShouldSendUserToViewTrailerViaOtherDeviceApp() {
         val intent = Intents.getIntents().first().extras?.get(Intent.EXTRA_INTENT) as Intent
-        val context = ApplicationProvider.getApplicationContext<Context>()!!
 
-        Truth.assertThat(intent.type)
-            .isEqualTo(context.getString(com.diskin.alon.movieguide.reviews.presentation.R.string.mime_type_text))
-        Truth.assertThat(intent.getStringExtra(Intent.EXTRA_TEXT))
-            .isEqualTo(expectedSharedMovieWebUrl())
+        Intents.intended(IntentMatchers.hasAction(Intent.ACTION_CHOOSER))
+        assertThat(intent.action).isEqualTo(Intent.ACTION_VIEW)
+        assertThat(intent.data).isEqualTo(Uri.parse(expectedTrailerUrl()))
 
         Intents.release()
     }
 
-    private fun expectedSharedMovieWebUrl(): String {
-        val movieDetailJson = getJsonFromResource(dispatcher.movieDetailResourcePath)
-        val jsonDetailObject = JSONObject(movieDetailJson)
+    private fun expectedTrailerUrl(): String {
+        val movieTrailersJson = getJsonFromResource(dispatcher.movieTrailersResourcePath)
+        val jsonTrailersObject = JSONObject(movieTrailersJson)
+        val jsonTrailersArray = jsonTrailersObject.getJSONArray("results")
 
-        return "https://www.themoviedb.org/movie/".plus(jsonDetailObject.getString("id"))
+        return "https://www.youtube.com/watch?v=".plus(
+            jsonTrailersArray.getJSONObject(0).getString("key")
+        )
     }
 
     private class TestDispatcher : Dispatcher() {

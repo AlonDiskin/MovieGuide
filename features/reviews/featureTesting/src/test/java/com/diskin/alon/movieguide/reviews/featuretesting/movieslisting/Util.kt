@@ -4,7 +4,7 @@ import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
 import com.diskin.alon.movieguide.reviews.data.remote.MOVIE_DB_BASE_POSTER_PATH
 import org.json.JSONObject
 
-fun getExpectedUiMoviesFromTestWebResource(path: String): List<UiMovieData> {
+fun expectedUiMovies(path: String): List<UiMovieData> {
     val json = getJsonFromResource(path)
     val jsonObject = JSONObject(json)
     val jsonArray = jsonObject.getJSONArray("results")

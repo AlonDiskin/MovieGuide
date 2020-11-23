@@ -27,7 +27,7 @@ class MovieReviewEntityTest {
             rating,
             100L,
             "url",
-            emptyList(),"summary","review", emptyList())
+            emptyList(),"summary","review","web_url" ,emptyList())
 
         // Then movie should throw an IllegalArgumentException
     }

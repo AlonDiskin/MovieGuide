@@ -2,6 +2,7 @@ package com.diskin.alon.movieguide.reviews.domain.entities
 
 import com.diskin.alon.movieguide.common.domain.Entity
 import com.diskin.alon.movieguide.reviews.domain.value.MovieGenre
+import com.diskin.alon.movieguide.reviews.domain.value.Trailer
 
 /**
  * Movie review entity class.
@@ -15,7 +16,8 @@ class MovieReviewEntity(
     val genres: List<MovieGenre>,
     val summary: String,
     val review: String,
-    val trailersUrl: List<String> = emptyList()
+    val webUrl: String,
+    val trailersUrl: List<Trailer> = emptyList(),
 ) : Entity<String> {
 
     init {

@@ -5,7 +5,7 @@ import org.joda.time.LocalDate
 import org.joda.time.LocalDateTime
 import org.json.JSONObject
 
-fun getExpectedUiMovieReviewFromTestResources(detailPath: String, trailersPath: String): UiMovieReviewData {
+fun expectedUiMovieReview(detailPath: String, trailersPath: String): UiMovieReviewData {
     val movieDetailJson = getJsonFromResource(detailPath)
     val movieTrailersJson = getJsonFromResource(trailersPath)
     val jsonDetailObject = JSONObject(movieDetailJson)

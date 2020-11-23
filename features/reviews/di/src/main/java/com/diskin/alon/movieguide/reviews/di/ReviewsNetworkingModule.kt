@@ -1,6 +1,6 @@
 package com.diskin.alon.movieguide.reviews.di
 
-import com.diskin.alon.movieguide.reviews.data.remote.MOVIE_DB_BASE
+import com.diskin.alon.movieguide.reviews.data.remote.MOVIE_DB_API_BASE
 import com.diskin.alon.movieguide.reviews.data.remote.TheMovieDbApi
 import dagger.Module
 import dagger.Provides
@@ -18,7 +18,7 @@ object ReviewsNetworkingModule {
     @Provides
     fun provideFeedlyApi(httpClient: OkHttpClient): TheMovieDbApi {
         return Retrofit.Builder()
-            .baseUrl(MOVIE_DB_BASE)
+            .baseUrl(MOVIE_DB_API_BASE)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .client(httpClient)

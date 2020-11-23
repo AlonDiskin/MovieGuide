@@ -4,7 +4,9 @@ import android.content.res.Resources
 import com.diskin.alon.movieguide.common.appservices.AppError
 import com.diskin.alon.movieguide.common.appservices.Result
 import com.diskin.alon.movieguide.reviews.appservices.data.MovieReviewDto
+import com.diskin.alon.movieguide.reviews.appservices.data.TrailerDto
 import com.diskin.alon.movieguide.reviews.presentation.data.MovieReview
+import com.diskin.alon.movieguide.reviews.presentation.data.Trailer
 import com.diskin.alon.movieguide.reviews.presentation.util.MovieReviewMapper
 import io.mockk.every
 import io.mockk.mockk
@@ -56,7 +58,8 @@ class MovieReviewMapperTest {
                         listOf("horror","comedy"),
                         "summary",
                         "review",
-                        listOf("url1","url2")
+                        "webUrl",
+                        listOf(TrailerDto("url1","url2"))
                     )
                 )
             ),
@@ -71,7 +74,8 @@ class MovieReviewMapperTest {
                     "summary",
                     "review",
                     "backdrop_url",
-                    listOf("url1","url2")
+                    "webUrl",
+                    listOf(Trailer("url1","url2"))
                 )
             )
         ),

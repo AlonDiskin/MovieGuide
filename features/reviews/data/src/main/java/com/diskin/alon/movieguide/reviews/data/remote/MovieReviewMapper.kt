@@ -6,8 +6,12 @@ import com.diskin.alon.movieguide.reviews.data.remote.data.MovieDetailResponse
 import com.diskin.alon.movieguide.reviews.data.remote.data.TrailersResponse
 import com.diskin.alon.movieguide.reviews.domain.value.MovieGenre
 import com.diskin.alon.movieguide.reviews.domain.entities.MovieReviewEntity
+import com.diskin.alon.movieguide.reviews.domain.value.Trailer
 import org.joda.time.LocalDate
 
+/**
+ * Map remote data model of movie reviews data,to domain data model.
+ */
 class MovieReviewMapper : Mapper2<MovieDetailResponse, TrailersResponse, Result<MovieReviewEntity>> {
 
     override fun map(source1: MovieDetailResponse, source2: TrailersResponse): Result<MovieReviewEntity> {
@@ -21,8 +25,12 @@ class MovieReviewMapper : Mapper2<MovieDetailResponse, TrailersResponse, Result<
                 source1.genres.map { MovieGenre(it.name) },
                 source1.overview,
                 "review_stub",
+                MOVIE_DB_BASE.plus(source1.id.toString()),
                 source2.results.map {
-                    YOUTUBE_THUMBNAIL_PATH.plus(it.key).plus(YOUTUBE_THUMBNAIL_PATH_END)
+                    Trailer(
+                        YOUTUBE_BASE_PATH.plus(it.key),
+                        YOUTUBE_THUMBNAIL_PATH.plus(it.key).plus(YOUTUBE_THUMBNAIL_PATH_END)
+                    )
                 }
             )
         )

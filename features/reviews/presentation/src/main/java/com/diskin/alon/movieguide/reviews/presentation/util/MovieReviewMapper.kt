@@ -6,6 +6,7 @@ import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.reviews.appservices.data.MovieReviewDto
 import com.diskin.alon.movieguide.reviews.presentation.R
 import com.diskin.alon.movieguide.reviews.presentation.data.MovieReview
+import com.diskin.alon.movieguide.reviews.presentation.data.Trailer
 import io.reactivex.Observable
 import org.joda.time.LocalDateTime
 import javax.inject.Inject
@@ -33,7 +34,8 @@ class MovieReviewMapper @Inject constructor(
                             dto.summary,
                             dto.review,
                             dto.backDropImageUrl,
-                            dto.trailersUrl
+                            dto.webUrl,
+                            dto.trailers.map { Trailer(it.url,it.thumbnailUrl) }
                         )
                     )
                 }

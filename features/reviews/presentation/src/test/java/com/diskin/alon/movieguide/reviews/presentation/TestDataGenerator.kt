@@ -2,6 +2,7 @@ package com.diskin.alon.movieguide.reviews.presentation
 
 import com.diskin.alon.movieguide.reviews.presentation.data.Movie
 import com.diskin.alon.movieguide.reviews.presentation.data.MovieReview
+import com.diskin.alon.movieguide.reviews.presentation.data.Trailer
 
 fun createMovies(): List<Movie> {
     return listOf(
@@ -36,6 +37,7 @@ fun createTestReview(): MovieReview {
         "summary",
         "review",
         "url",
-        listOf("url1","url2")
+        "webUrl",
+        listOf(Trailer("url1","url2"),Trailer("url3","url4"))
     )
 }
