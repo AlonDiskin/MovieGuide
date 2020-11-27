@@ -1,7 +1,8 @@
 package com.diskin.alon.movieguide.news.featuretesting
 
 import android.app.Application
-import com.diskin.alon.movieguide.news.di.entryinjection.NewsInjectionModule
+import com.diskin.alon.movieguide.news.di.common.NewsDataModule
+import com.diskin.alon.movieguide.news.di.common.NewsInjectionModule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjector
@@ -13,6 +14,7 @@ import javax.inject.Singleton
 @Component(modules = [
     AndroidSupportInjectionModule::class,
     NewsInjectionModule::class,
+    NewsDataModule::class,
     TestAppModule::class
 ])
 interface TestAppComponent : AndroidInjector<TestApp> {

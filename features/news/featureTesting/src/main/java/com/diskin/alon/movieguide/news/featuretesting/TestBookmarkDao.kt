@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.diskin.alon.movieguide.news.data.local.Bookmark
+import com.diskin.alon.movieguide.news.data.local.data.Bookmark
 import io.reactivex.Observable
 
 @Dao

@@ -7,11 +7,11 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
 import com.diskin.alon.movieguide.common.presentation.ImageLoader
 import com.diskin.alon.movieguide.common.uitesting.RecyclerViewMatcher.withRecyclerView
 import com.diskin.alon.movieguide.common.uitesting.swipeToRefresh
 import com.diskin.alon.movieguide.news.featuretesting.R
-import com.diskin.alon.movieguide.news.featuretesting.util.getJsonBodyFromResource
 import com.diskin.alon.movieguide.news.featuretesting.util.parseFeedlyResponseJsonToNewsHeadlines
 import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesFragment
 import com.diskin.alon.movieguide.news.presentation.viewmodel.HeadlinesViewModelImpl.Companion.PAGE_SIZE
@@ -155,8 +155,8 @@ class HeadlinesListedSteps(server: MockWebServer) : GreenCoffeeSteps() {
     }
 
     private fun getExpectedUiHeadlines(): List<Headline> {
-        val initialPageJson = getJsonBodyFromResource("json/feed_init_page.json")
-        val lastPageJson = getJsonBodyFromResource("json/feed_last_page.json")
+        val initialPageJson = getJsonFromResource("json/feed_init_page.json")
+        val lastPageJson = getJsonFromResource("json/feed_last_page.json")
         val initialPageHeadlines = parseFeedlyResponseJsonToNewsHeadlines(initialPageJson)
         val lastPageHeadlines = parseFeedlyResponseJsonToNewsHeadlines(lastPageJson)
         val result = mutableListOf<Headline>()
@@ -167,8 +167,8 @@ class HeadlinesListedSteps(server: MockWebServer) : GreenCoffeeSteps() {
     }
 
     private fun getExpectedRefreshedUiHeadlines(): List<Headline> {
-        val initialPageJson = getJsonBodyFromResource("json/refresh_feed_init_page.json")
-        val lastPageJson = getJsonBodyFromResource("json/refresh_feed_last_page.json")
+        val initialPageJson = getJsonFromResource("json/refresh_feed_init_page.json")
+        val lastPageJson = getJsonFromResource("json/refresh_feed_last_page.json")
         val initialPageHeadlines = parseFeedlyResponseJsonToNewsHeadlines(initialPageJson)
         val lastPageHeadlines = parseFeedlyResponseJsonToNewsHeadlines(lastPageJson)
         val result = mutableListOf<Headline>()

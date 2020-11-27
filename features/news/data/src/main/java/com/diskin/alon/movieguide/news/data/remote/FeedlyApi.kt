@@ -1,9 +1,10 @@
 package com.diskin.alon.movieguide.news.data.remote
 
+import com.diskin.alon.movieguide.news.data.remote.data.FeedlyArticleId
+import com.diskin.alon.movieguide.news.data.remote.data.FeedlyEntryResponse
+import com.diskin.alon.movieguide.news.data.remote.data.FeedlyFeedResponse
 import io.reactivex.Single
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 /**
  * Feedly REST api client interface, that loads data from [http://cloud.feedly.com/v3/].
@@ -25,4 +26,7 @@ interface FeedlyApi {
 
     @GET("$FEEDLY_ENTRY_PATH/{entryId}")
     fun getEntry(@Path(value = "entryId", encoded = true) entryId: String): Single<List<FeedlyEntryResponse>>
+
+    @POST(FEEDLY_ENTRIES_PATH)
+    fun getEntries(@Body ids: List<FeedlyArticleId>): Single<List<FeedlyEntryResponse>>
 }

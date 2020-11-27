@@ -1,6 +1,6 @@
 package com.diskin.alon.movieguide.di
 
-import com.diskin.alon.movieguide.news.di.singleton.NewsNetworkingModule
+import com.diskin.alon.movieguide.news.di.common.NewsNetworkingModule
 import com.diskin.alon.movieguide.reviews.di.ReviewsNetworkingModule
 import dagger.Module
 import dagger.Provides

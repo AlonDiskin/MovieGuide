@@ -1,7 +1,7 @@
 package com.diskin.alon.movieguide.news.featuretesting.newsbrowsing
 
+import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
 import com.diskin.alon.movieguide.news.data.remote.*
-import com.diskin.alon.movieguide.news.featuretesting.util.getJsonBodyFromResource
 import com.diskin.alon.movieguide.news.presentation.viewmodel.HeadlinesViewModelImpl.Companion.PAGE_SIZE
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
@@ -33,17 +33,17 @@ class HeadlinesDispatcher : Dispatcher() {
         return when(decodedPath) {
             INITIAL_PAGE_PATH -> {
                 MockResponse().setResponseCode(200)
-                    .setBody(getJsonBodyFromResource(pageSources.first))
+                    .setBody(getJsonFromResource(pageSources.first))
             }
 
             LAST_PAGE_PATH -> {
                 MockResponse().setResponseCode(200)
-                    .setBody(getJsonBodyFromResource(pageSources.second))
+                    .setBody(getJsonFromResource(pageSources.second))
             }
 
             REFRESH_LAST_PAGE_PATH -> {
                 MockResponse().setResponseCode(200)
-                    .setBody(getJsonBodyFromResource(pageSources.second))
+                    .setBody(getJsonFromResource(pageSources.second))
             }
 
             else -> throw IllegalArgumentException("unexpected request")

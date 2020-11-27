@@ -6,18 +6,18 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.rxjava2.cachedIn
-import com.diskin.alon.movieguide.common.appservices.UseCase
-import com.diskin.alon.movieguide.common.util.Mapper
+import com.diskin.alon.movieguide.common.presentation.Model
 import com.diskin.alon.movieguide.common.presentation.RxViewModel
-import com.diskin.alon.movieguide.news.appservices.data.HeadlineDto
-import com.diskin.alon.movieguide.news.appservices.data.HeadlinesRequest
 import com.diskin.alon.movieguide.news.presentation.data.Headline
-import io.reactivex.Observable
+import com.diskin.alon.movieguide.news.presentation.data.HeadlinesModelRequest
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 
+/**
+ * Stores and manage UI related data for the headlines UI controller.
+ */
 class HeadlinesViewModelImpl(
-    useCase: UseCase<HeadlinesRequest, Observable<PagingData<HeadlineDto>>>,
-    private val pagingMapper: Mapper<PagingData<HeadlineDto>, PagingData<Headline>>
+    private val model: Model
 ) : RxViewModel(), HeadlinesViewModel {
 
     companion object {
@@ -28,16 +28,14 @@ class HeadlinesViewModelImpl(
     override val headlines: LiveData<PagingData<Headline>> get() = _headlines
 
     init {
-        // Subscribe to headlines paging data updates, and update
-        // live data headlines state, upon use case updates
-        val headlinesSubscription = useCase.execute(
-            HeadlinesRequest(PagingConfig(pageSize = PAGE_SIZE))
-        )
+        addSubscription(createHeadlinesPagingSubscription())
+    }
+
+    private fun createHeadlinesPagingSubscription(): Disposable {
+        val modelRequest = HeadlinesModelRequest(PagingConfig(pageSize = PAGE_SIZE))
+        return model.execute(modelRequest)
             .cachedIn(viewModelScope)
             .subscribeOn(AndroidSchedulers.mainThread())
-            .map(pagingMapper::map)
             .subscribe { _headlines.value = it }
-
-        addSubscription(headlinesSubscription)
     }
 }

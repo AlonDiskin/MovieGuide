@@ -15,8 +15,8 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.diskin.alon.movieguide.common.appservices.AppError
-import com.diskin.alon.movieguide.common.presentation.LoadState
+import com.diskin.alon.movieguide.common.presentation.ViewData
+import com.diskin.alon.movieguide.common.presentation.ViewDataError
 import com.diskin.alon.movieguide.news.presentation.R
 import com.diskin.alon.movieguide.news.presentation.createTestArticle
 import com.diskin.alon.movieguide.news.presentation.data.Article
@@ -50,8 +50,7 @@ class ArticleActivityTest {
     private val viewModel = mockk<ArticleViewModel>()
 
     // Stub data
-    private val article = MutableLiveData<Article>()
-    private val loading = MutableLiveData<LoadState>()
+    private val article = MutableLiveData<ViewData<Article>>()
 
     @Before
     fun setUp() {
@@ -64,7 +63,6 @@ class ArticleActivityTest {
 
         // Stub mocked view model
         every { viewModel.article } returns article
-        every { viewModel.loading } returns loading
 
         // Launch activity under test
         scenario = ActivityScenario.launch(ArticleActivity::class.java)
@@ -75,22 +73,22 @@ class ArticleActivityTest {
         // Given a resumed activity
 
         // When view model update article state
-        val testArticle = createTestArticle()
-        article.value = testArticle
+        val articleData = createTestArticle()
+        article.value = ViewData.Data(articleData)
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then activity should show article data in its layout
         onView(withId(R.id.title))
-            .check(matches(withText(testArticle.title)))
+            .check(matches(withText(articleData.title)))
 
         onView(withId(R.id.published))
-            .check(matches(withText(testArticle.date)))
+            .check(matches(withText(articleData.date)))
 
         onView(withId(R.id.author))
-            .check(matches(withText(testArticle.author)))
+            .check(matches(withText(articleData.author)))
 
         onView(withId(R.id.content))
-            .check(matches(withText(testArticle.content)))
+            .check(matches(withText(articleData.content)))
     }
 
     @Test
@@ -100,7 +98,7 @@ class ArticleActivityTest {
 
         // Given a resumed activity with article state in view model
         val testArticle = createTestArticle()
-        article.value = testArticle
+        article.value = ViewData.Data(testArticle)
 
         // And user clicks on the share button
         onView(withId(R.id.action_share))
@@ -136,11 +134,11 @@ class ArticleActivityTest {
     }
 
     @Test
-    fun showProgressBarWhenArticleLoading() {
+    fun showProgressBarWhenArticleViewDataUpdating() {
         // Given a resumed activity
 
-        // When view model update loading state to 'loading'
-        loading.value = LoadState.Loading
+        // When article view data is updated
+        article.value = ViewData.Updating()
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then activity should show progress bar
@@ -149,11 +147,11 @@ class ArticleActivityTest {
     }
 
     @Test
-    fun hideProgressBarWhenArticleSuccessfullyLoaded() {
+    fun hideProgressBarWhenArticleViewDataNotUpdating() {
         // Given a resumed activity
 
-        // When view model update loading state to 'not loading'
-        loading.value = LoadState.Success
+        // When article view data is not updating
+        article.value = ViewData.Data(createTestArticle())
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then activity should hide progress bar
@@ -162,11 +160,11 @@ class ArticleActivityTest {
     }
 
     @Test
-    fun hideProgressBarWhenArticleLoadingFail() {
+    fun hideProgressBarWhenArticleViewDataError() {
         // Given a resumed activity
 
-        // When update loading state to 'not loading'
-        loading.value = LoadState.Error(AppError("error",false))
+        // When article view data fail
+        article.value = ViewData.Error(ViewDataError.NotRetriable("message"))
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then activity should show progress bar
@@ -175,19 +173,19 @@ class ArticleActivityTest {
     }
 
     @Test
-    fun showErrorNotificationWhenArticleLoadingFail() {
+    fun showErrorNotificationWhenArticleViewDataError() {
         // Given a resumed activity
 
-        // When update loading state to 'not loading' containing a retriable error
-        val testError = AppError("error",true)
-        loading.value = LoadState.Error(testError)
+        // When article view data fail with retriable error
+        val error = ViewDataError.Retriable("message"){}
+        article.value = ViewData.Error(error)
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then activity should display a snack bar with error message
         onView(withId(R.id.snackbar_text))
             .check(matches(
                 allOf(
-                    withText(testError.cause),
+                    withText(error.reason),
                     isDisplayed()
                 )
             ))
@@ -203,13 +201,16 @@ class ArticleActivityTest {
     }
 
     @Test
-    fun hideErrorNotificationWhenArticleLoading() {
-        // Given a resumed activity with failed loading state
-        loading.value = LoadState.Error(AppError("error",true))
+    fun hideErrorNotificationWhenArticleViewDataUpdating() {
+        // Given a resumed activity
+
+        // When article view data fail
+        val error = ViewDataError.Retriable("message"){}
+        article.value = ViewData.Error(error)
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-        // When update loading state to 'loading'
-        loading.value = LoadState.Loading
+        // And later article view data updates
+        article.value = ViewData.Updating()
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then activity should hide the error notification
@@ -218,21 +219,26 @@ class ArticleActivityTest {
     }
 
     @Test
-    fun retryArticleLoadingWhenLoadingFailWithRetriableError() {
+    fun provideErrorRetryWhenArticleViewDataFailWithRetriableError() {
         // Test case fixture
-        every { viewModel.reload() } returns Unit
+        val retryAction: () -> (Unit) = mockk()
 
-        // Given a resumed activity with failed retriable loading state
-        loading.value = LoadState.Error(AppError("error",true))
+        every { retryAction.invoke() } returns Unit
+
+        // Given a resumed activity
+
+        // When article view data fail with retriable error
+        val error = ViewDataError.Retriable("message",retryAction)
+        article.value = ViewData.Error(error)
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-        // When user click on snackbar action to retry loading
+        // And user click on snackbar action to retry loading
         onView(withId(R.id.snackbar_action))
             .perform(click())
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-        // Then activity should ask view model to reload article
-        verify { viewModel.reload() }
+        // Then activity should invoke error retry action
+        verify { retryAction.invoke() }
     }
 
     @Test

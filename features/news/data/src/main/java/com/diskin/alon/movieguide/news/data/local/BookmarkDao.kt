@@ -2,6 +2,7 @@ package com.diskin.alon.movieguide.news.data.local
 
 import androidx.room.Dao
 import androidx.room.Query
+import com.diskin.alon.movieguide.news.data.local.data.Bookmark
 import io.reactivex.Observable
 
 @Dao

@@ -17,7 +17,7 @@ class MockWebServerDispatcher : Dispatcher() {
         private const val MOVIE_NEWS_ENTRY_PATH = "/$FEEDLY_ENTRY_PATH/"
         private const val STUB_IMAGES_PATH = "assets/image/stub_image"
         private const val STUB_IMAGE_RES = "assets/image/taco.jpeg"
-        const val MOVIE_NEWS_STREAM_RES = "assets/json/feedly_movie_news_stream.json"
+        const val MOVIE_NEWS_STREAM_RES = "assets/json/feedly_movie_news_page.json"
         const val MOVIE_NEWS_ENTRY_RES =  "assets/json/feedly_movie_news_entry.json"
         const val MOVIES_POPULAR_RES = "assets/json/themoviedb_movies_sorted_by_popularity.json"
         const val MOVIE_DETAIL_RES = "assets/json/themoviedb_movie_detail.json"

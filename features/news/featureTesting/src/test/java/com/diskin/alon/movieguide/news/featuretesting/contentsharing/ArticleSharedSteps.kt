@@ -10,8 +10,8 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
 import com.diskin.alon.movieguide.news.data.remote.FEEDLY_ENTRY_PATH
-import com.diskin.alon.movieguide.news.featuretesting.util.getJsonBodyFromResource
 import com.diskin.alon.movieguide.news.presentation.R
 import com.diskin.alon.movieguide.news.presentation.controller.ArticleActivity
 import com.google.common.truth.Truth
@@ -47,7 +47,7 @@ class ArticleSharedSteps(server: MockWebServer) : GreenCoffeeSteps() {
                 return when(request.requestUrl.uri().path) {
                     supportedPath -> {
                         MockResponse()
-                            .setBody(getJsonBodyFromResource(TEST_WEB_JSON))
+                            .setBody(getJsonFromResource(TEST_WEB_JSON))
                             .setResponseCode(200)
                     }
 
@@ -95,7 +95,7 @@ class ArticleSharedSteps(server: MockWebServer) : GreenCoffeeSteps() {
     }
 
     private fun parseTestWebEntryResourceId(): String {
-        val json = getJsonBodyFromResource(TEST_WEB_JSON)
+        val json = getJsonFromResource(TEST_WEB_JSON)
         val jsonArray = JSONArray(json)
         val jsonEntryObject = jsonArray.getJSONObject(0)!!
 
@@ -103,7 +103,7 @@ class ArticleSharedSteps(server: MockWebServer) : GreenCoffeeSteps() {
     }
 
     private fun parseTestWebEntryResourceArticleUrl(): String {
-        val json = getJsonBodyFromResource(TEST_WEB_JSON)
+        val json = getJsonFromResource(TEST_WEB_JSON)
         val jsonArray = JSONArray(json)
         val jsonEntryObject = jsonArray.getJSONObject(0)!!
 

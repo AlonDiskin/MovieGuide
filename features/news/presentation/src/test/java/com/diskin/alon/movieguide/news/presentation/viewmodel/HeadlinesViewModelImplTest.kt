@@ -1,17 +1,18 @@
 package com.diskin.alon.movieguide.news.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.diskin.alon.movieguide.common.appservices.UseCase
-import com.diskin.alon.movieguide.common.util.Mapper
-import com.diskin.alon.movieguide.common.presentation.RxViewModel
-import com.diskin.alon.movieguide.news.appservices.data.HeadlineDto
-import com.diskin.alon.movieguide.news.appservices.data.HeadlinesRequest
+import com.diskin.alon.movieguide.common.localtesting.WhiteBox
+import com.diskin.alon.movieguide.common.presentation.Model
 import com.diskin.alon.movieguide.news.presentation.data.Headline
+import com.diskin.alon.movieguide.news.presentation.data.HeadlinesModelRequest
 import com.diskin.alon.movieguide.news.presentation.viewmodel.HeadlinesViewModelImpl.Companion.PAGE_SIZE
 import com.google.common.truth.Truth.assertThat
-import io.mockk.*
-import io.reactivex.Observable
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.verify
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -41,44 +42,39 @@ class HeadlinesViewModelImplTest {
     @Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    // Subject under test
+    // Test subject
     private lateinit var viewModel: HeadlinesViewModelImpl
 
     // Collaborators
-    private val useCase: UseCase<HeadlinesRequest,Observable<PagingData<HeadlineDto>>> = mockk()
-    private val pagingMapper: Mapper<PagingData<HeadlineDto>, PagingData<Headline>> = mockk()
+    private val model: Model = mockk()
 
     // Stub data
-    private val pagingDataSubject = PublishSubject.create<PagingData<HeadlineDto>>()
-    private val headlinesPaging: PagingData<Headline> = PagingData.empty()
+    private val modelHeadlinesSubject = PublishSubject.create<PagingData<Headline>>()
 
     // Capture args
-    private val useCaseRequestSlot = slot<HeadlinesRequest>()
+    private val modelRequestSlot = slot<HeadlinesModelRequest>()
 
     @Before
     fun setUp() {
         // Stub mocked collaborator
-        every { useCase.execute(capture(useCaseRequestSlot)) } returns pagingDataSubject
-        every { pagingMapper.map(any()) } returns headlinesPaging
+        every { model.execute(capture(modelRequestSlot)) } returns modelHeadlinesSubject
 
         // Init subject
-        viewModel = HeadlinesViewModelImpl(useCase,pagingMapper)
+        viewModel = HeadlinesViewModelImpl(model)
     }
 
     @Test
-    fun observeModelHeadlinePagingWhenCreated() {
+    fun fetchModelHeadlinePagingWhenCreated() {
         // Given an initialized view model
 
-        // Then view model should subscribe to headlines use case paging with const page size
-        verify { useCase.execute(any()) }
-        // Currently PagingConfig doe not implement equals(), so request verification
-        // should be based on checking each field/property :(
-        assertThat(useCaseRequestSlot.captured.pagingConfig.pageSize).isEqualTo(PAGE_SIZE)
+        // Then view model should subscribe to model headlines paging with defined paged size
+        val expectedModelRequest = HeadlinesModelRequest(PagingConfig(pageSize = PAGE_SIZE))
+        verify { model.execute(any<HeadlinesModelRequest>()) }
+        assertThat(modelRequestSlot.captured.pagingConfig.pageSize)
+            .isEqualTo(expectedModelRequest.pagingConfig.pageSize)
 
         // And add subscription to disposable container
-        val field = RxViewModel::class.java.getDeclaredField("container")
-        field.isAccessible = true
-        val disposable = field.get(viewModel) as CompositeDisposable
+        val disposable = WhiteBox.getInternalState(viewModel,"container") as CompositeDisposable
         assertThat(disposable.size()).isEqualTo(1)
     }
 
@@ -86,14 +82,11 @@ class HeadlinesViewModelImplTest {
     fun updateHeadlinesPagingStateWhenModelPagingUpdates() {
         // Given an initialized view model that subscribed to use case that emits headlines dto paging
 
-        // When use case emit paging
-        val useCasePaging = PagingData.empty<HeadlineDto>()
-        pagingDataSubject.onNext(useCasePaging)
+        // When model update headlines paging
+        modelHeadlinesSubject.onNext(PagingData.empty())
 
-        // Then view model should ask headlines mapper to map use case dto paging
-        verify { pagingMapper.map(any()) }
-
-        // And update its live data headlines paging state
-        assertThat(viewModel.headlines.value).isEqualTo(headlinesPaging)
+        // Then view model should update view headlines paging state
+        assertThat(viewModel.headlines.value).isNotNull()
+        assertThat(viewModel.headlines.value).isInstanceOf(PagingData::class.java)
     }
 }

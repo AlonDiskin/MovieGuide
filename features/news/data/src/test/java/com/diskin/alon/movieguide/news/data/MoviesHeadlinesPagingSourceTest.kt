@@ -5,9 +5,9 @@ import androidx.paging.PagingSource.LoadParams
 import com.diskin.alon.movieguide.common.appservices.AppError
 import com.diskin.alon.movieguide.news.data.remote.MoviesHeadlinesPagingSource
 import com.diskin.alon.movieguide.news.data.remote.FeedlyApi
-import com.diskin.alon.movieguide.news.data.remote.FeedlyFeedResponse
+import com.diskin.alon.movieguide.news.data.remote.data.FeedlyFeedResponse
 import com.diskin.alon.movieguide.news.data.remote.MOVIES_NEWS_FEED
-import com.diskin.alon.movieguide.news.domain.HeadlineEntity
+import com.diskin.alon.movieguide.news.domain.ArticleEntity
 import com.diskin.alonmovieguide.common.data.NetworkErrorHandler
 import io.mockk.every
 import io.mockk.mockk
@@ -54,7 +54,7 @@ class MoviesHeadlinesPagingSourceTest {
     @Test
     fun loadFirstRemotePageWhenInitiallyLoaded() {
         // Test case fixture
-        val apiResponse = getMappedFeedlyResponse()
+        val apiResponse = createFeedlyFeedResponse()
         every { api.getFeedItems(MOVIES_NEWS_FEED,any()) } returns Single.just(apiResponse)
 
         // Given an initialized paging source
@@ -74,7 +74,7 @@ class MoviesHeadlinesPagingSourceTest {
     @Test
     fun loadKeyedRemotePageWhenContinuallyLoaded() {
         // Test case fixture
-        val apiResponse = getMappedFeedlyResponse()
+        val apiResponse = createFeedlyFeedResponse()
         every { api.getFeedItemsPage(MOVIES_NEWS_FEED,any(),any()) } returns Single.just(apiResponse)
 
         // Given an initialized paging source
@@ -94,7 +94,7 @@ class MoviesHeadlinesPagingSourceTest {
     @Test
     fun loadKeyedRemoteLastPageWhenInitiallyLoaded() {
         // Test case fixture
-        val apiResponse = getMappedFeedlyLastPageResponse()
+        val apiResponse = createFeedlyFeedLastPageResponse()
         every { api.getFeedItems(MOVIES_NEWS_FEED,any()) } returns Single.just(apiResponse)
 
         // Given an initialized paging source
@@ -115,7 +115,7 @@ class MoviesHeadlinesPagingSourceTest {
     @Test
     fun loadKeyedRemoteLastPageWhenContinuallyLoaded() {
         // Test case fixture
-        val apiResponse = getMappedFeedlyLastPageResponse()
+        val apiResponse = createFeedlyFeedLastPageResponse()
         every { api.getFeedItemsPage(MOVIES_NEWS_FEED,any(),any()) } returns Single.just(apiResponse)
 
         // Given an initialized paging source
@@ -188,19 +188,21 @@ class MoviesHeadlinesPagingSourceTest {
         }
     }
 
-    private fun verifyPagingSourceMapLoadResult(loadResult: PagingSource.LoadResult<String, HeadlineEntity>,
+    private fun verifyPagingSourceMapLoadResult(loadResult: PagingSource.LoadResult<String, ArticleEntity>,
                                                 apiResponse: FeedlyFeedResponse
     ): Boolean {
-        val result: PagingSource.LoadResult.Page<String,HeadlineEntity> =
-            loadResult as PagingSource.LoadResult.Page<String, HeadlineEntity>
+        val result: PagingSource.LoadResult.Page<String,ArticleEntity> =
+            loadResult as PagingSource.LoadResult.Page<String, ArticleEntity>
         val expectedNextKey = apiResponse.continuation
         val expectedPrevKey = null
         val expectedHeadlines = apiResponse.items.map { entry ->
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = entry.published
-            HeadlineEntity(
+            ArticleEntity(
                 entry.id,
                 entry.title,
+                entry.summary.content,
+                entry.author,
                 entry.published,
                 entry.visual?.url ?: "",
                 entry.originId

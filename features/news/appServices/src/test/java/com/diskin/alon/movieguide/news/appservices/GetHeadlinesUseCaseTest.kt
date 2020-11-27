@@ -3,11 +3,11 @@ package com.diskin.alon.movieguide.news.appservices
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.diskin.alon.movieguide.common.util.Mapper
-import com.diskin.alon.movieguide.news.appservices.interfaces.HeadlineRepository
 import com.diskin.alon.movieguide.news.appservices.data.HeadlineDto
 import com.diskin.alon.movieguide.news.appservices.data.HeadlinesRequest
+import com.diskin.alon.movieguide.news.appservices.interfaces.ArticleRepository
 import com.diskin.alon.movieguide.news.appservices.usecase.GetHeadlinesUseCase
-import com.diskin.alon.movieguide.news.domain.HeadlineEntity
+import com.diskin.alon.movieguide.news.domain.ArticleEntity
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -24,8 +24,8 @@ class GetHeadlinesUseCaseTest {
     private lateinit var useCase: GetHeadlinesUseCase
 
     // Collaborators
-    private val repository: HeadlineRepository = mockk()
-    private val headlinesMapper: Mapper<PagingData<HeadlineEntity>, PagingData<HeadlineDto>> = mockk()
+    private val repository: ArticleRepository = mockk()
+    private val headlinesMapper: Mapper<PagingData<ArticleEntity>, PagingData<HeadlineDto>> = mockk()
 
     @Before
     fun setUp() {

@@ -10,6 +10,9 @@ import com.diskin.alon.movieguide.news.domain.ArticleEntity
 import io.reactivex.Observable
 import javax.inject.Inject
 
+/**
+ * Coordinate app operations to provide an existing article data.
+ */
 class GetArticleUseCase @Inject constructor(
     private val articleRepository: ArticleRepository,
     private val articleMapper: Mapper<Result<ArticleEntity>, Result<ArticleDto>>

@@ -16,12 +16,12 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
 import com.diskin.alon.movieguide.common.presentation.ImageLoader
 import com.diskin.alon.movieguide.common.uitesting.RecyclerViewMatcher.withRecyclerView
-import com.diskin.alon.movieguide.news.data.local.Bookmark
+import com.diskin.alon.movieguide.news.data.local.data.Bookmark
 import com.diskin.alon.movieguide.news.featuretesting.R
 import com.diskin.alon.movieguide.news.featuretesting.TestDatabase
-import com.diskin.alon.movieguide.news.featuretesting.util.getJsonBodyFromResource
 import com.diskin.alon.movieguide.news.presentation.R.id
 import com.diskin.alon.movieguide.news.presentation.controller.ArticleActivity
 import com.diskin.alon.movieguide.news.presentation.controller.BookmarksAdapter
@@ -41,6 +41,7 @@ import okhttp3.mockwebserver.RecordedRequest
 import org.hamcrest.CoreMatchers.allOf
 import org.joda.time.LocalDateTime
 import org.json.JSONArray
+import org.json.JSONObject
 import org.robolectric.Shadows
 
 /**
@@ -55,7 +56,6 @@ class BrowseBookmarksSteps(
     private lateinit var articleActivityScenario: ActivityScenario<ArticleActivity>
     private val navController = TestNavHostController(getApplicationContext())
     private val dispatcher = TestDispatcher()
-    private var selectedArticleId = ""
 
     init {
         // Set test nav controller
@@ -87,7 +87,7 @@ class BrowseBookmarksSteps(
 
     @Given("^User has previously bookmarked news$")
     fun user_has_previously_bookmarked_news() {
-        database.testBookmarkDao().insert(*createBookmarks().toTypedArray())
+        createBookmarks().forEach { database.testBookmarkDao().insert(it) }
     }
 
     @And("^User open bookmarks screen$")
@@ -106,35 +106,22 @@ class BrowseBookmarksSteps(
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 
-    @Then("^All bookmarks are listed by 'news first' sorting$")
-    fun all_bookmarks_are_listed_by_news_first_sorting() {
+    @Then("^All bookmarks are listed by newest first$")
+    fun all_bookmarks_are_listed_by_newest_first() {
         verifyBookmarksShow(expectedUiBookmarksByNewest())
     }
 
-    @When("^User select to sort bookmarks by \"([^\"]*)\"$")
-    fun user_select_to_sort_bookmarks(sorting: String) {
+    @When("^User select to sort bookmarks by oldest first$")
+    fun user_select_to_sort_bookmarks_by_oldest() {
         val context = getApplicationContext<Context>()
-        val menuItem = when(sorting) {
-            "newest" -> ActionMenuItem(
-                context,
-                0,
-                id.action_sort_newest,
-                0,
-                0,
-                null
-            )
-
-            "oldest" -> ActionMenuItem(
-                context,
-                0,
-                id.action_sort_oldest,
-                0,
-                0,
-                null
-            )
-
-            else -> throw IllegalArgumentException("Unknown scenario arg:${sorting}")
-        }
+        val menuItem = ActionMenuItem(
+            context,
+            0,
+            id.action_sort_oldest,
+            0,
+            0,
+            null
+        )
 
         bookmarksFragmentScenario.onFragment { fragment ->
             fragment.onOptionsItemSelected(menuItem)
@@ -145,19 +132,9 @@ class BrowseBookmarksSteps(
         Thread.sleep(500L)
     }
 
-    @Then("^Bookmarks should be sorted as \"([^\"]*)\"$")
-    fun bookmarks_should_be_sorted(sorting: String) {
-        when(sorting) {
-            "newest" -> {
-                verifyBookmarksShow(expectedUiBookmarksByNewest())
-            }
-
-            "oldest" -> {
-                verifyBookmarksShow(expectedUiBookmarksByOldest())
-            }
-
-            else -> throw IllegalArgumentException("Unknown scenario arg:${sorting}")
-        }
+    @Then("^Bookmarks should be sorted by oldest$")
+    fun bookmarks_should_be_sorted_by_oldest() {
+        verifyBookmarksShow(expectedUiBookmarksByOldest())
     }
 
     @When("^User select to read the first bookmark$")
@@ -239,29 +216,7 @@ class BrowseBookmarksSteps(
     }
 
     private fun createBookmarks(): List<Bookmark> {
-        return listOf(
-            Bookmark(
-                dispatcher.oldestArticleResourceId,
-                "title1",
-                LocalDateTime(2020, 10, 23, 12, 35).toDate().time,
-                "image_url1",
-                "article_url1"
-            ),
-            Bookmark(
-                "articleId",
-                "title2",
-                LocalDateTime(2020, 2, 17, 8, 5).toDate().time,
-                "image_url2",
-                "article_url2"
-            ),
-            Bookmark(
-                dispatcher.newestArticleResourceId,
-                "title3",
-                LocalDateTime(2020, 11, 10, 22, 55).toDate().time,
-                "image_url3",
-                "article_url3"
-            )
-        )
+        return dispatcher.entriesResources.keys.map { Bookmark(it) }
     }
 
     private fun expectedUiBookmarksByNewest(): List<UiBookmark> {
@@ -269,74 +224,116 @@ class BrowseBookmarksSteps(
             .getAll()
             .blockingFirst()
             .asReversed()
-            .map {
-                UiBookmark(
-                    it.title,
-                    LocalDateTime(it.date).toString("dd MMM HH:mm"),
-                    it.imageUrl
-                )
-            }
+            .map(::expectedUiBookmark)
     }
 
     private fun expectedUiBookmarksByOldest(): List<UiBookmark> {
         return database.testBookmarkDao()
             .getAll()
             .blockingFirst()
-            .map {
-                UiBookmark(
-                    it.title,
-                    LocalDateTime(it.date).toString("dd MMM HH:mm"),
-                    it.imageUrl
-                )
-            }
+            .map(::expectedUiBookmark)
+    }
+
+    private fun expectedUiBookmark(bookmark: Bookmark): UiBookmark {
+        val entryJson = getJsonFromResource(dispatcher.entriesResources.getValue(bookmark.articleId))
+        val entryJsonObject = JSONObject(entryJson)
+
+        return UiBookmark(
+            entryJsonObject.getString("title"),
+            LocalDateTime(entryJsonObject.getLong("published")).toString("dd MMM HH:mm"),
+            entryJsonObject.getJSONObject("visual").getString("url")
+        )
     }
 
     private fun expectedUiArticle(): UiArticle {
-        val json = getJsonBodyFromResource(dispatcher.getLastRequestedArticleResPath())
-        val jsonArray = JSONArray(json)
-        val jsonEntryObject = jsonArray.getJSONObject(0)!!
+         val articleId = database.testBookmarkDao()
+             .getAll()
+             .blockingFirst()
+             .first()
+             .articleId
+        val entryJson = getJsonFromResource(dispatcher.entriesResources.getValue(articleId))
+        val entryJsonObject = JSONObject(entryJson)
 
         return UiArticle(
-            jsonEntryObject.getString("title"),
-            jsonEntryObject.getString("author"),
-            jsonEntryObject.getJSONObject("summary").getString("content"),
-            LocalDateTime(jsonEntryObject.getLong("published")).toString("dd MMM HH:mm"),
-            jsonEntryObject.getJSONObject("visual").getString("url")
+            entryJsonObject.getString("title"),
+            entryJsonObject.getString("author"),
+            entryJsonObject.getJSONObject("summary").getString("content"),
+            LocalDateTime(entryJsonObject.getLong("published")).toString("dd MMM HH:mm"),
+            entryJsonObject.getJSONObject("visual").getString("url")
         )
     }
 
     private class TestDispatcher: Dispatcher() {
-        val oldestArticleResourcePath = "json/feedly_entry.json"
-        val oldestArticleResourceId = "uM+MqpK9duOyb/imN0cFmOAhKFCAsXozhxb+qTAQU1w=_174e6c31519:81d950:5d3e1c98"
-        val newestArticleResourcePath = "json/feedly_entry2.json"
-        val newestArticleResourceId = "uM+MqpK9duOyb/imN0cFmOAhKFCAsXozhxb+qTAQU1w=_174e66eaaf4:7efce1:58da7475"
-        private var lastRequestedArticlePath = ""
+        private val _entriesResources: MutableMap<String,String> = HashMap()
+        val entriesResources: Map<String,String> = _entriesResources
+
+        init {
+            _entriesResources.put(
+                "uM+MqpK9duOyb/imN0cFmOAhKFCAsXozhxb+qTAQU1w=_174e6c31519:81d950:5d3e1c98",
+                "json/feedly_entry.json"
+            )
+            _entriesResources.put(
+                "uM+MqpK9duOyb/imN0cFmOAhKFCAsXozhxb+qTAQU1w=_174e66eaaf4:7efce1:58da7475",
+                "json/feedly_entry2.json"
+            )
+            _entriesResources.put(
+                "uM+MqpK9duOyb/imN0cFmOAhKFCAsXozhxb+qTAQU1w=_174d698e29e:17ba657:951e5be4",
+                "json/feedly_entry3.json"
+            )
+        }
 
         override fun dispatch(request: RecordedRequest): MockResponse {
-            val oldestArticlePath = "/entries/$oldestArticleResourceId"
-            val newestArticlePath = "/entries/$newestArticleResourceId"
+            return when(request.method) {
+                "POST" -> {
+                    if (request.requestUrl.uri().path == "/entries/.mget") {
+                        buildEntriesPostResponse(request)
 
-
-            return when(request.requestUrl.uri().path) {
-                oldestArticlePath -> {
-                    lastRequestedArticlePath = oldestArticleResourcePath
-                    MockResponse()
-                        .setBody(getJsonBodyFromResource(oldestArticleResourcePath))
-                        .setResponseCode(200)
+                    } else {
+                        MockResponse().setResponseCode(404)
+                    }
                 }
 
-                newestArticlePath -> {
-                    lastRequestedArticlePath = newestArticleResourcePath
-                    MockResponse()
-                        .setBody(getJsonBodyFromResource(newestArticleResourcePath))
-                        .setResponseCode(200)
+                "GET" -> {
+                    if (entriesResources.keys.contains(request.requestUrl.pathSegments().last())) {
+                        buildEntryGetResponse(request)
+
+                    } else {
+                        MockResponse().setResponseCode(404)
+                    }
                 }
 
-                else -> MockResponse().setResponseCode(404)
+                else -> {
+                    MockResponse().setResponseCode(404)
+                }
             }
         }
 
-        fun getLastRequestedArticleResPath() = lastRequestedArticlePath
+        private fun buildEntriesPostResponse(request: RecordedRequest): MockResponse {
+            val requestIdsJsonArray = JSONArray(request.body.readUtf8())
+            val responseJson = JSONArray()
+
+            for (i in 0 until requestIdsJsonArray.length()) {
+                val requestedEntryId = requestIdsJsonArray.getJSONObject(i).getString("id")
+                val entryPath = _entriesResources[requestedEntryId]!!
+                val entryJson = getJsonFromResource(entryPath)
+                val entryJsonObject = JSONObject(entryJson)
+
+                responseJson.put(entryJsonObject)
+            }
+
+            return MockResponse()
+                .setBody(responseJson.toString())
+                .setResponseCode(200)
+        }
+
+        private fun buildEntryGetResponse(request: RecordedRequest): MockResponse {
+            val entryPath: String = entriesResources.getValue(request.requestUrl.pathSegments().last())
+            val entryJson = getJsonFromResource(entryPath)
+            val responseJson = JSONArray()
+            return MockResponse()
+                .setBody(responseJson.put(JSONObject(entryJson)).toString())
+                .setResponseCode(200)
+        }
     }
 
     private data class UiBookmark(val title: String, val date: String, val imageUrl: String)

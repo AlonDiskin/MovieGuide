@@ -5,7 +5,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.diskin.alon.movieguide.news.data.local.BookmarkDao
-import com.diskin.alon.movieguide.news.data.local.Bookmark
+import com.diskin.alon.movieguide.news.data.local.data.Bookmark
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
 import org.junit.Before
@@ -52,10 +52,6 @@ class BookmarkDaoTest {
         val expected = headlines.toList().mapIndexed { index, localHeadline ->
             Bookmark(
                 localHeadline.articleId,
-                localHeadline.title,
-                localHeadline.date,
-                localHeadline.imageUrl,
-                localHeadline.articleUrl,
                 index + 1
             )
         }
@@ -75,10 +71,6 @@ class BookmarkDaoTest {
         val expected = headlines.toList().reversed().mapIndexed { index, localHeadline ->
             Bookmark(
                 localHeadline.articleId,
-                localHeadline.title,
-                localHeadline.date,
-                localHeadline.imageUrl,
-                localHeadline.articleUrl,
                 headlines.size - index
             )
         }

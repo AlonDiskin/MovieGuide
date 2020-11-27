@@ -4,9 +4,9 @@ import com.diskin.alon.movieguide.common.appservices.Result
 import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.news.appservices.data.BookmarksRequest
 import com.diskin.alon.movieguide.news.appservices.data.HeadlineDto
-import com.diskin.alon.movieguide.news.appservices.interfaces.HeadlineRepository
+import com.diskin.alon.movieguide.news.appservices.interfaces.ArticleRepository
 import com.diskin.alon.movieguide.news.appservices.usecase.GetBookmarkedHeadlinesUseCase
-import com.diskin.alon.movieguide.news.domain.HeadlineEntity
+import com.diskin.alon.movieguide.news.domain.ArticleEntity
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -21,9 +21,9 @@ class GetBookmarkedHeadlinesUseCaseTest {
     @Test
     fun fetchBookmarkedHeadlinesWhenExecuted() {
         // Test case fixture
-        val repository: HeadlineRepository = mockk()
-        val mapper: Mapper<Result<List<HeadlineEntity>>, Result<List<HeadlineDto>>> = mockk()
-        val repositoryBookmarked: Result<List<HeadlineEntity>> = mockk()
+        val repository: ArticleRepository = mockk()
+        val mapper: Mapper<Result<List<ArticleEntity>>, Result<List<HeadlineDto>>> = mockk()
+        val repositoryBookmarked: Result<List<ArticleEntity>> = mockk()
         val mappedBookmarked: Result<List<HeadlineDto>> = mockk()
 
         every { repository.getBookmarked(any()) } returns Observable.just(repositoryBookmarked)

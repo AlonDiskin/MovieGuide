@@ -2,6 +2,7 @@ package com.diskin.alon.movieguide.news.data
 
 import com.diskin.alon.movieguide.common.appservices.Result
 import com.diskin.alon.movieguide.news.data.implementation.ArticleRepositoryImpl
+import com.diskin.alon.movieguide.news.data.local.BookmarkStore
 import com.diskin.alon.movieguide.news.data.remote.RemoteArticleStore
 import com.diskin.alon.movieguide.news.domain.ArticleEntity
 import io.mockk.every
@@ -21,11 +22,12 @@ class ArticleRepositoryImplTest {
 
     // Collaborators
     private val articleStore: RemoteArticleStore = mockk()
+    private val bookmarks: BookmarkStore = mockk()
 
     @Before
     fun setUp() {
         // Init subject
-        repository = ArticleRepositoryImpl(articleStore)
+        repository = ArticleRepositoryImpl(articleStore,bookmarks)
     }
 
     @Test

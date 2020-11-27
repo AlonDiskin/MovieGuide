@@ -1,0 +1,44 @@
+{
+  "id": "uM+MqpK9duOyb/imN0cFmOAhKFCAsXozhxb+qTAQU1w=_174d698e29e:17ba657:951e5be4",
+  "keywords": ["News", "Jurassic World VelociCoaster", "Theme Parks", "Universal Orlando", "Universal Orlando Resort", "Universal's Islands of Adventure"],
+  "originId": "https://collider.com/?p=932187",
+  "fingerprint": "1aa3c7d5",
+  "language": "en",
+  "title": "Universal Orlando Finally Reveals Jurassic World VelociCoaster Details, Intense Teaser Video",
+  "crawled": 1601328177822,
+  "author": "Adam Chitwood",
+  "origin": {
+    "streamId": "feed/http://www.collider.com/rss.asp",
+    "title": "Collider",
+    "htmlUrl": "https://collider.com"
+  },
+  "summary": {
+    "content": "Universal Orlando Resort has been constructing a new Jurassic World-themed roller coaster for many, many months, but has remained mum on what, exactly, it is. Until today. Universal Orlando has confirmed the existence of the Jurassic World VelociCoaster and released some images as well as a teaser trailer for Florida’s fastest and tallest launch coaster, which will officially open in Summer 2021. And it looks incredible. Described as a “new species of coaster,” the VelociCoaster will be the world’s first coaster based on the Jurassic franchise and touts a series of intense maneuvers that will send guests …",
+    "direction": "ltr"
+  },
+  "enclosure": [{
+    "href": "https://cdn.collider.com/wp-content/uploads/2020/09/jurassic-world-velocicoaster-slice.jpg",
+    "type": "image/jpg",
+    "length": 500000
+  }, {
+    "href": "https://cdn.collider.com/wp-content/uploads/2020/09/jurassic-world-velocicoaster-slice.jpg",
+    "width": 600,
+    "height": 200,
+    "type": "image/jpeg"
+  }],
+  "alternate": [{
+    "href": "https://collider.com/jurassic-world-velocicoaster-ride-details-teaser-video-universal-orlando/",
+    "type": "text/html"
+  }],
+  "published": 1601327798000,
+  "visual": {
+    "url": "https://cdn.collider.com/wp-content/uploads/2020/09/jurassic-world-velocicoaster-slice.jpg",
+    "width": 600,
+    "height": 200,
+    "processor": "feedly-nikon-v3.1",
+    "contentType": "image/jpeg"
+  },
+  "canonicalUrl": "https://collider.com/jurassic-world-velocicoaster-ride-details-teaser-video-universal-orlando/",
+  "unread": true,
+  "engagement": 882
+}

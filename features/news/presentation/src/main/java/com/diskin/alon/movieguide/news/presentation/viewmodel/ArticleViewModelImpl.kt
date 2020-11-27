@@ -1,60 +1,76 @@
 package com.diskin.alon.movieguide.news.presentation.viewmodel
 
-import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
+import com.diskin.alon.movieguide.common.appservices.AppError
 import com.diskin.alon.movieguide.common.appservices.Result
-import com.diskin.alon.movieguide.common.appservices.UseCase
-import com.diskin.alon.movieguide.common.util.Mapper
-import com.diskin.alon.movieguide.common.presentation.LoadState
+import com.diskin.alon.movieguide.common.presentation.Model
 import com.diskin.alon.movieguide.common.presentation.RxViewModel
-import com.diskin.alon.movieguide.news.appservices.data.ArticleDto
-import com.diskin.alon.movieguide.news.appservices.data.ArticleRequest
-import com.diskin.alon.movieguide.news.presentation.R
+import com.diskin.alon.movieguide.common.presentation.ViewData
+import com.diskin.alon.movieguide.common.presentation.ViewDataError
 import com.diskin.alon.movieguide.news.presentation.data.Article
-import io.reactivex.Observable
+import com.diskin.alon.movieguide.news.presentation.data.ArticleModelRequest
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 
+/**
+ * Stores and manage UI related data for the article UI controller.
+ */
 class ArticleViewModelImpl(
-    useCase: UseCase<ArticleRequest,Observable<Result<ArticleDto>>>,
-    mapper: Mapper<ArticleDto, Article>,
+    private val model: Model,
     private val stateHandle: SavedStateHandle,
-    private val resources: Resources
 ) : RxViewModel(), ArticleViewModel {
 
-    private val idSubject = BehaviorSubject.createDefault(getArticleIdState())
-    private val _article = MutableLiveData<Article>()
-    override val article: LiveData<Article> get() = _article
-    private val _loading = MutableLiveData<LoadState>(LoadState.Loading)
-    override val loading: LiveData<LoadState> get() = _loading
+    companion object {
+        const val KEY_ARTICLE_ID = "article_id"
+    }
+
+    private val idSubject = BehaviorSubject.createDefault(getArticleId())
+    private val _article = MutableLiveData<ViewData<Article>>(ViewData.Updating())
+    override val article: LiveData<ViewData<Article>> get() = _article
 
     init {
-        val articleSubscription = idSubject
-            .switchMap { useCase.execute(ArticleRequest(it)) }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                when(it) {
-                    is Result.Success -> {
-                        _article.value = mapper.map(it.data)
-                        _loading.value = LoadState.Success
-                    }
+        addSubscription(createArticleSubscription())
+    }
 
-                    is Result.Error -> _loading.value = LoadState.Error(it.error)
-                }
+    private fun getArticleId(): String {
+        return stateHandle.get<String>(KEY_ARTICLE_ID) ?:
+        throw IllegalArgumentException("must pass article id arg to ArticleViewModel stateHandle!")
+    }
+
+    private fun createArticleSubscription(): Disposable {
+        return idSubject.switchMap { model.execute(ArticleModelRequest(it)) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { handleArticleModelResult(it) }
+    }
+
+    private fun handleArticleModelResult(result: Result<Article>) {
+        when(result) {
+            is Result.Success -> handleModelArticleSuccessResult(result.data)
+            is Result.Error -> handleModelArticleError(result.error)
+        }
+    }
+
+    private fun handleModelArticleSuccessResult(article: Article) {
+        _article.value = ViewData.Data(article)
+    }
+
+    private fun handleModelArticleError(error: AppError) {
+        _article.value = if (error.retriable) {
+            val retryErrorAction = {
+                _article.value = ViewData.Updating(_article.value?.data)
+                idSubject.onNext(getArticleId())
             }
 
-        addSubscription(articleSubscription)
-    }
-
-    override fun reload() {
-        _loading.value = LoadState.Loading
-        idSubject.onNext(getArticleIdState())
-    }
-
-    private fun getArticleIdState(): String {
-        return stateHandle.get<String>(resources.getString(R.string.key_article_id)) ?:
-        throw IllegalArgumentException("must pass article id arg to ArticleViewModel stateHandle!")
+             ViewData.Error(
+                ViewDataError.Retriable(error.cause,retryErrorAction)
+            )
+        } else {
+            ViewData.Error(
+                ViewDataError.NotRetriable(error.cause)
+            )
+        }
     }
 }

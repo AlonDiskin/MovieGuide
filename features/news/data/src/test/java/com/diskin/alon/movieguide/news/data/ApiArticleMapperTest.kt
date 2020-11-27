@@ -1,7 +1,7 @@
 package com.diskin.alon.movieguide.news.data
 
 import com.diskin.alon.movieguide.common.appservices.Result
-import com.diskin.alon.movieguide.news.data.remote.ApiArticleMapper
+import com.diskin.alon.movieguide.news.data.remote.util.ApiArticleMapper
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -28,7 +28,7 @@ class ApiArticleMapperTest {
         val actual = mapper.map(entry)
 
         // Then mapper should map response to entity result
-        val expected = Result.Success(getArticleEntity(entry.first()))
+        val expected = Result.Success(getArticleEntity(entry))
         assertThat(actual).isEqualTo(expected)
     }
 }

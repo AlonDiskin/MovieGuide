@@ -1,21 +1,22 @@
 package com.diskin.alon.movieguide.news.data.remote
 
 import androidx.paging.rxjava2.RxPagingSource
-import com.diskin.alon.movieguide.news.domain.HeadlineEntity
+import com.diskin.alon.movieguide.news.data.remote.data.FeedlyFeedResponse
+import com.diskin.alon.movieguide.news.domain.ArticleEntity
 import com.diskin.alonmovieguide.common.data.NetworkErrorHandler
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
- * Provides paged [HeadlineEntity] from remote api.
+ * Provides a paging of articles from remote api.
  */
 class MoviesHeadlinesPagingSource @Inject constructor(
     private val api: FeedlyApi,
     private val networkErrorHandler: NetworkErrorHandler
-) : RxPagingSource<String,HeadlineEntity>() {
+) : RxPagingSource<String,ArticleEntity>() {
 
-    override fun loadSingle(params: LoadParams<String>): Single<LoadResult<String, HeadlineEntity>> {
+    override fun loadSingle(params: LoadParams<String>): Single<LoadResult<String, ArticleEntity>> {
         // Compose api call based on load type
         val apiCall = when(params) {
             is LoadParams.Refresh -> api.getFeedItems(MOVIES_NEWS_FEED,params.loadSize)
@@ -34,12 +35,14 @@ class MoviesHeadlinesPagingSource @Inject constructor(
     /**
      * Maps remote api [FeedlyFeedResponse] to a [LoadResult].
      */
-    private fun toLoadResult(response: FeedlyFeedResponse): LoadResult<String, HeadlineEntity> {
+    private fun toLoadResult(response: FeedlyFeedResponse): LoadResult<String, ArticleEntity> {
         return LoadResult.Page(
             response.items.map { entry ->
-                HeadlineEntity(
+                ArticleEntity(
                     entry.id,
                     entry.title,
+                    entry.summary.content,
+                    entry.author,
                     entry.published,
                     entry.visual?.url ?: "",
                     entry.originId
@@ -55,7 +58,7 @@ class MoviesHeadlinesPagingSource @Inject constructor(
     /**
      * Maps remote api errors, to [Throwable] containing description message about
      */
-    private fun toLoadResultError(e: Throwable): LoadResult<String,HeadlineEntity> {
+    private fun toLoadResultError(e: Throwable): LoadResult<String,ArticleEntity> {
         val networkError = networkErrorHandler.handle(e)
         val throwable = Throwable(networkError.cause)
 

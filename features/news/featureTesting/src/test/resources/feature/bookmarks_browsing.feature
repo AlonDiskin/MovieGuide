@@ -3,15 +3,11 @@ Feature: Bookmarked news content browsing
   #Rule: list all bookmarked news items by sorting criteria
 
   @list-bookmarks
-  Scenario Outline: User read bookmark
+  Scenario: User read bookmark
     Given User has previously bookmarked news
     And User open bookmarks screen
-    Then All bookmarks are listed by 'news first' sorting
-    When User select to sort bookmarks by "<sorting>"
-    Then Bookmarks should be sorted as "<sorting>"
+    Then All bookmarks are listed by newest first
+    When User select to sort bookmarks by oldest first
+    Then Bookmarks should be sorted by oldest
     When User select to read the first bookmark
     Then Bookmarked news article should be shown
-    Examples:
-      | sorting  |
-      | oldest   |
-      | newest   |

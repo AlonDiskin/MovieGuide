@@ -1,0 +1,87 @@
+[{
+  "id": "uM+MqpK9duOyb/imN0cFmOAhKFCAsXozhxb+qTAQU1w=_174e66eaaf4:7efce1:58da7475",
+  "keywords": ["News", "TV", "Alan Cumming", "Apple", "Apple TV", "Barry Sonnenfeld", "Cecily Strong", "Fred Armisen", "Jane Krakowski", "Keegan Michael Key", "Kristin Chenoweth", "Lorne Michaels"],
+  "originId": "http://collider.com/?p=933241",
+  "fingerprint": "fc2e9c63",
+  "language": "en",
+  "title": "Apple TV+ Unveils Impressive Ensemble Cast for Musical Comedy Series From Lorne Michaels",
+  "crawled": 1601593846516,
+  "author": "Tom Reimann",
+  "origin": {
+    "streamId": "feed/http://www.collider.com/rss.asp",
+    "title": "Collider",
+    "htmlUrl": "https://collider.com"
+  },
+  "summary": {
+    "content": "Apple TV+ unveiled an impressive ensemble cast for its upcoming musical comedy series from executive producer Lorne Michaels and creators Cinco Paul and Ken Daurio (the Despicable Me franchise). Cecily Strong will produce and lead the cast of the yet untitled series that will also star Keegan-Michael Key, Alan Cumming, Fred Armisen, Kristin Chenoweth, Aaron Tveit, Dove Cameron, Ariana DeBose, Jane Krakowski, and Ann Harada. [caption id=&quot;attachment_933251&quot; align=&quot;alignright&quot; width=&quot;360&quot;] Image via NBC / Warner Bros. Pictures[/caption] Set to debut globally on Apple TV+ next year, the new comedy series follows a couple on a backpacking trip …",
+    "direction": "ltr"
+  },
+  "enclosure": [{
+    "href": "https://cdn.collider.com/wp-content/uploads/2020/10/cecily-strong-keegan-michael-key-slice.jpg",
+    "type": "image/jpg",
+    "length": 500000
+  }, {
+    "href": "https://cdn.collider.com/wp-content/uploads/2020/10/cecily-strong-keegan-michael-key-slice.jpg",
+    "width": 600,
+    "height": 200,
+    "type": "image/jpeg"
+  }],
+  "alternate": [{
+    "href": "https://collider.com/lorne-michaels-apple-tv-plus-musical-comedy-series-cecily-strong-keegan-michael-key/",
+    "type": "text/html"
+  }],
+  "published": 1601592884000,
+  "visual": {
+    "url": "https://cdn.collider.com/wp-content/uploads/2020/10/cecily-strong-keegan-michael-key-slice.jpg",
+    "width": 600,
+    "height": 200,
+    "processor": "feedly-nikon-v3.1",
+    "contentType": "image/jpeg"
+  },
+  "canonicalUrl": "https://collider.com/lorne-michaels-apple-tv-plus-musical-comedy-series-cecily-strong-keegan-michael-key/",
+  "unread": true,
+  "engagement": 19
+}, {
+  "id": "uM+MqpK9duOyb/imN0cFmOAhKFCAsXozhxb+qTAQU1w=_17504636bf4:2bc6fd3:951e5be4",
+  "keywords": ["Entertainment", "Movie", "News", "Colin Trevorrow", "Jurassic World", "Jurassic World: Dominion"],
+  "originId": "https://collider.com/?p=934942",
+  "fingerprint": "9b6026ce",
+  "language": "en",
+  "title": "‘Jurassic World: Dominion’ Temporarily Pauses Filming After Positive COVID-19 Tests on Set",
+  "crawled": 1602096425972,
+  "author": "Haleigh Foutch",
+  "origin": {
+    "streamId": "feed/http://www.collider.com/rss.asp",
+    "title": "Collider",
+    "htmlUrl": "https://collider.com"
+  },
+  "summary": {
+    "content": "Jurassic World: Dominion is temporarily hitting pause on filming for the upcoming Universal sequel after positive COVID-19 tests were detected on set. Filmmaker Colin Trevorrow announced the news on social media today, saying, &quot;Woke up to the news we had a few positive Coronavirus tests on Jurassic World: Dominion. All tested negative shortly after, but due to our safety protocols we’re going to pause for two weeks. Back soon.&quot; Woke up to the news we had a few positive Coronavirus tests on Jurassic World: Dominion. All tested negative shortly after, but due to our safety protocols we’re …",
+    "direction": "ltr"
+  },
+  "enclosure": [{
+    "href": "https://cdn.collider.com/wp-content/uploads/2020/08/jurassic-world-dominion-dinosaur-rain-shot-slice.jpeg",
+    "type": "image/jpg",
+    "length": 500000
+  }, {
+    "href": "https://cdn.collider.com/wp-content/uploads/2020/08/jurassic-world-dominion-dinosaur-rain-shot-slice.jpeg",
+    "width": 600,
+    "height": 201,
+    "type": "image/jpeg"
+  }],
+  "alternate": [{
+    "href": "https://collider.com/jurassic-world-dominion-filming-paused-covid-19/",
+    "type": "text/html"
+  }],
+  "published": 1602095988000,
+  "visual": {
+    "url": "https://cdn.collider.com/wp-content/uploads/2020/08/jurassic-world-dominion-dinosaur-rain-shot-slice.jpeg",
+    "width": 600,
+    "height": 201,
+    "processor": "feedly-nikon-v3.1",
+    "contentType": "image/jpeg"
+  },
+  "canonicalUrl": "https://collider.com/jurassic-world-dominion-filming-paused-covid-19/",
+  "unread": true,
+  "engagement": 43
+}]

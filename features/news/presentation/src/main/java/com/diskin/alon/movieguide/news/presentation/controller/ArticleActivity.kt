@@ -8,9 +8,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ShareCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import com.diskin.alon.movieguide.common.appservices.AppError
-import com.diskin.alon.movieguide.common.presentation.LoadState
+import com.diskin.alon.movieguide.common.presentation.ViewData
+import com.diskin.alon.movieguide.common.presentation.ViewDataError
 import com.diskin.alon.movieguide.news.presentation.R
 import com.diskin.alon.movieguide.news.presentation.databinding.ActivityArticleBinding
 import com.diskin.alon.movieguide.news.presentation.viewmodel.ArticleViewModel
@@ -42,34 +41,29 @@ class ArticleActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // Observe view model article state
-        viewModel.article.observe(this, { binding.article = it })
+        viewModel.article.observe(this, {
+            // Update article if data update available
+            binding.article = it.data
 
-        // Observe view model article loading state
-        viewModel.loading.observe(this, { state ->
-            when(state) {
-                is LoadState.Loading -> {
-                    progress_bar.visibility = View.VISIBLE
-                    snackbar?.dismiss()
-                }
+            // Hide any prev error/loading notification
+            snackbar?.dismiss()
+            progress_bar?.visibility = View.GONE
 
-                is LoadState.Success -> progress_bar.visibility = View.GONE
-
-                is LoadState.Error -> {
-                    progress_bar.visibility = View.GONE
-                    showLoadingError(state.error)
-                }
+            when(it) {
+                is ViewData.Updating -> progress_bar?.visibility = View.VISIBLE
+                is ViewData.Error -> handleArticleStateError(it.error)
             }
         })
     }
 
-    private fun showLoadingError(error: AppError) {
+    private fun handleArticleStateError(error: ViewDataError) {
         snackbar = Snackbar.make(
             nestedScrollView,
-            error.cause,
+            error.reason,
             Snackbar.LENGTH_INDEFINITE)
 
-        if (error.retriable) {
-            snackbar?.setAction(getString(R.string.action_retry)) { viewModel.reload() }
+        if (error is ViewDataError.Retriable) {
+            snackbar?.setAction(getString(R.string.action_retry)) { error.retry() }
         }
 
         snackbar?.show()
@@ -97,7 +91,7 @@ class ArticleActivity : AppCompatActivity() {
     }
 
     private fun shareArticle() {
-        viewModel.article.value?.let { article ->
+        viewModel.article.value?.data?.let { article ->
             ShareCompat.IntentBuilder
                 .from(this)
                 .setType(getString(R.string.mime_type_text))

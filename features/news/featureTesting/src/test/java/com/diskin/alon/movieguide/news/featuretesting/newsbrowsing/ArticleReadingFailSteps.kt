@@ -9,9 +9,9 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
 import com.diskin.alon.movieguide.news.data.remote.FEEDLY_ENTRY_PATH
 import com.diskin.alon.movieguide.news.featuretesting.R
-import com.diskin.alon.movieguide.news.featuretesting.util.getJsonBodyFromResource
 import com.diskin.alon.movieguide.news.presentation.controller.ArticleActivity
 import com.diskin.alon.movieguide.news.presentation.data.Article
 import com.diskin.alonmovieguide.common.data.NetworkErrorHandler.Companion.ERR_API_SERVER
@@ -144,7 +144,7 @@ class ArticleReadingFailSteps(private val server: MockWebServer) : GreenCoffeeSt
                         return when (request.requestUrl.uri().path) {
                             apiEntryPath -> MockResponse()
                                 .setResponseCode(200)
-                                .setBody(getJsonBodyFromResource(TEST_WEB_ENTRY_JSON))
+                                .setBody(getJsonFromResource(TEST_WEB_ENTRY_JSON))
 
                             else -> throw IllegalArgumentException("unexpected request")
                         }
@@ -216,7 +216,7 @@ class ArticleReadingFailSteps(private val server: MockWebServer) : GreenCoffeeSt
     }
 
     private fun getTestWebEntryId(): String {
-        val json = getJsonBodyFromResource(TEST_WEB_ENTRY_JSON)
+        val json = getJsonFromResource(TEST_WEB_ENTRY_JSON)
         val jsonResponseArray = JSONArray(json)
         val jsonEntry = jsonResponseArray.getJSONObject(0)!!
 
@@ -224,7 +224,7 @@ class ArticleReadingFailSteps(private val server: MockWebServer) : GreenCoffeeSt
     }
 
     private fun parseTestWebEntryResourceArticle(): Article {
-        val json = getJsonBodyFromResource(TEST_WEB_ENTRY_JSON)
+        val json = getJsonFromResource(TEST_WEB_ENTRY_JSON)
         val jsonArray = JSONArray(json)
         val jsonEntryObject = jsonArray.getJSONObject(0)!!
         val context = getApplicationContext<Context>()!!

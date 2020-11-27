@@ -14,9 +14,9 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
 import com.diskin.alon.movieguide.news.data.remote.*
 import com.diskin.alon.movieguide.news.featuretesting.R
-import com.diskin.alon.movieguide.news.featuretesting.util.getJsonBodyFromResource
 import com.diskin.alon.movieguide.news.presentation.controller.ArticleActivity
 import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesFragment
 import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesAdapter.HeadlineViewHolder
@@ -83,7 +83,7 @@ class ArticleReadingSteps(server: MockWebServer) : GreenCoffeeSteps() {
                                 "$FEEDLY_FEED_SIZE_PARAM=${PAGE_SIZE * 3}"
                         if (request.requestUrl.query() == feedQuery) {
                             MockResponse()
-                                .setBody(getJsonBodyFromResource(TEST_WEB_FEED_JSON))
+                                .setBody(getJsonFromResource(TEST_WEB_FEED_JSON))
                                 .setResponseCode(200)
                         } else{
                             MockResponse().setResponseCode(404)
@@ -92,7 +92,7 @@ class ArticleReadingSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
                     supportedEntryPath -> {
                         MockResponse()
-                            .setBody(getJsonBodyFromResource(TEST_WEB_ENTRY_JSON))
+                            .setBody(getJsonFromResource(TEST_WEB_ENTRY_JSON))
                             .setResponseCode(200)
                     }
 
@@ -142,7 +142,7 @@ class ArticleReadingSteps(server: MockWebServer) : GreenCoffeeSteps() {
     }
 
     private fun parseTestWebEntryResourceId(): String {
-        val json = getJsonBodyFromResource(TEST_WEB_ENTRY_JSON)
+        val json = getJsonFromResource(TEST_WEB_ENTRY_JSON)
         val jsonArray = JSONArray(json)
         val jsonEntryObject = jsonArray.getJSONObject(0)!!
 
@@ -150,7 +150,7 @@ class ArticleReadingSteps(server: MockWebServer) : GreenCoffeeSteps() {
     }
 
     private fun parseTestWebEntryResourceArticle(): Article {
-        val json = getJsonBodyFromResource(TEST_WEB_ENTRY_JSON)
+        val json = getJsonFromResource(TEST_WEB_ENTRY_JSON)
         val jsonArray = JSONArray(json)
         val jsonEntryObject = jsonArray.getJSONObject(0)!!
         val context = getApplicationContext<Context>()!!

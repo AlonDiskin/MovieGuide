@@ -14,13 +14,13 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
 import com.diskin.alon.movieguide.common.uitesting.RecyclerViewMatcher.withRecyclerView
 import com.diskin.alon.movieguide.news.data.remote.FEEDLY_FEED_ID_PARAM
 import com.diskin.alon.movieguide.news.data.remote.FEEDLY_FEED_PATH
 import com.diskin.alon.movieguide.news.data.remote.FEEDLY_FEED_SIZE_PARAM
 import com.diskin.alon.movieguide.news.data.remote.MOVIES_NEWS_FEED
 import com.diskin.alon.movieguide.news.featuretesting.R
-import com.diskin.alon.movieguide.news.featuretesting.util.getJsonBodyFromResource
 import com.diskin.alon.movieguide.news.featuretesting.util.parseFeedlyResponseJsonToNewsHeadlines
 import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesFragment
 import com.diskin.alon.movieguide.news.presentation.viewmodel.HeadlinesViewModelImpl.Companion.PAGE_SIZE
@@ -47,7 +47,7 @@ class HeadlineSharedSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
     private lateinit var scenario: FragmentScenario<HeadlinesFragment>
     private val expectedUiHeadlines =
-        parseFeedlyResponseJsonToNewsHeadlines(getJsonBodyFromResource(TEST_WEB_JSON))
+        parseFeedlyResponseJsonToNewsHeadlines(getJsonFromResource(TEST_WEB_JSON))
 
     init {
         // Prepare mock web server for test scenario
@@ -62,7 +62,7 @@ class HeadlineSharedSteps(server: MockWebServer) : GreenCoffeeSteps() {
                 return when(requestPath) {
                     supportedPath -> {
                         MockResponse()
-                            .setBody(getJsonBodyFromResource(TEST_WEB_JSON))
+                            .setBody(getJsonFromResource(TEST_WEB_JSON))
                             .setResponseCode(200)
                     }
 
