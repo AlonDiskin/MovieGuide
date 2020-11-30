@@ -15,10 +15,12 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.diskin.alon.movieguide.common.presentation.ViewData
-import com.diskin.alon.movieguide.common.presentation.ViewDataError
+import com.diskin.alon.movieguide.common.presentation.ErrorViewData
+import com.diskin.alon.movieguide.common.presentation.UpdateViewData
 import com.diskin.alon.movieguide.news.presentation.R
+import com.diskin.alon.movieguide.news.presentation.createBookmarkedTestArticle
 import com.diskin.alon.movieguide.news.presentation.createTestArticle
+import com.diskin.alon.movieguide.news.presentation.createUnBookmarkedTestArticle
 import com.diskin.alon.movieguide.news.presentation.data.Article
 import com.diskin.alon.movieguide.news.presentation.viewmodel.ArticleViewModel
 import com.google.common.truth.Truth.assertThat
@@ -35,7 +37,7 @@ import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowToast
 
 /**
- * [ArticleActivity] unit test.
+ * [ArticleActivity] hermetic ui test class.
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -50,7 +52,9 @@ class ArticleActivityTest {
     private val viewModel = mockk<ArticleViewModel>()
 
     // Stub data
-    private val article = MutableLiveData<ViewData<Article>>()
+    private val articleViewData = MutableLiveData<Article>()
+    private val errorViewData =  MutableLiveData<ErrorViewData>()
+    private val updateViewData = MutableLiveData<UpdateViewData>()
 
     @Before
     fun setUp() {
@@ -62,7 +66,9 @@ class ArticleActivityTest {
         }
 
         // Stub mocked view model
-        every { viewModel.article } returns article
+        every { viewModel.article } returns articleViewData
+        every { viewModel.update } returns updateViewData
+        every { viewModel.error } returns errorViewData
 
         // Launch activity under test
         scenario = ActivityScenario.launch(ArticleActivity::class.java)
@@ -73,22 +79,30 @@ class ArticleActivityTest {
         // Given a resumed activity
 
         // When view model update article state
-        val articleData = createTestArticle()
-        article.value = ViewData.Data(articleData)
+        val article = createTestArticle()
+        articleViewData.value = article
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then activity should show article data in its layout
         onView(withId(R.id.title))
-            .check(matches(withText(articleData.title)))
+            .check(matches(withText(article.title)))
 
         onView(withId(R.id.published))
-            .check(matches(withText(articleData.date)))
+            .check(matches(withText(article.date)))
 
         onView(withId(R.id.author))
-            .check(matches(withText(articleData.author)))
+            .check(matches(withText(article.author)))
 
         onView(withId(R.id.content))
-            .check(matches(withText(articleData.content)))
+            .check(matches(withText(article.content)))
+
+        onView(withId(R.id.action_bookmarking))
+            .check(matches(withContentDescription(
+                if (article.bookmarked)
+                    R.string.title_action_unbookmark
+                else
+                    R.string.title_action_bookmark
+            )))
     }
 
     @Test
@@ -97,8 +111,8 @@ class ArticleActivityTest {
         Intents.init()
 
         // Given a resumed activity with article state in view model
-        val testArticle = createTestArticle()
-        article.value = ViewData.Data(testArticle)
+        val article = createTestArticle()
+        articleViewData.value = article
 
         // And user clicks on the share button
         onView(withId(R.id.action_share))
@@ -113,7 +127,7 @@ class ArticleActivityTest {
 
         assertThat(intent.type).isEqualTo(context.getString(R.string.mime_type_text))
         assertThat(intent.getStringExtra(Intent.EXTRA_TEXT))
-            .isEqualTo(testArticle.articleUrl)
+            .isEqualTo(article.articleUrl)
 
         Intents.release()
     }
@@ -134,11 +148,11 @@ class ArticleActivityTest {
     }
 
     @Test
-    fun showProgressBarWhenArticleViewDataUpdating() {
+    fun showProgressBarWhenViewDataUpdating() {
         // Given a resumed activity
 
-        // When article view data is updated
-        article.value = ViewData.Updating()
+        // When view data is updated
+        updateViewData.value = UpdateViewData.Update
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then activity should show progress bar
@@ -147,11 +161,11 @@ class ArticleActivityTest {
     }
 
     @Test
-    fun hideProgressBarWhenArticleViewDataNotUpdating() {
+    fun hideProgressBarWhenViewDataNotUpdating() {
         // Given a resumed activity
 
-        // When article view data is not updating
-        article.value = ViewData.Data(createTestArticle())
+        // When view data is not updating
+        updateViewData.value = UpdateViewData.EndUpdate
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then activity should hide progress bar
@@ -160,25 +174,12 @@ class ArticleActivityTest {
     }
 
     @Test
-    fun hideProgressBarWhenArticleViewDataError() {
+    fun showErrorNotificationViewDataUponError() {
         // Given a resumed activity
 
-        // When article view data fail
-        article.value = ViewData.Error(ViewDataError.NotRetriable("message"))
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
-
-        // Then activity should show progress bar
-        onView(withId(R.id.progress_bar))
-            .check(matches(withEffectiveVisibility(Visibility.GONE)))
-    }
-
-    @Test
-    fun showErrorNotificationWhenArticleViewDataError() {
-        // Given a resumed activity
-
-        // When article view data fail with retriable error
-        val error = ViewDataError.Retriable("message"){}
-        article.value = ViewData.Error(error)
+        // When view data fail with retriable error
+        val error = ErrorViewData.Retriable("message"){}
+        errorViewData.value = error
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then activity should display a snack bar with error message
@@ -201,44 +202,16 @@ class ArticleActivityTest {
     }
 
     @Test
-    fun hideErrorNotificationWhenArticleViewDataUpdating() {
+    fun hideErrorNotificationWhenViewDataHasNoError() {
         // Given a resumed activity
 
-        // When article view data fail
-        val error = ViewDataError.Retriable("message"){}
-        article.value = ViewData.Error(error)
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
-
-        // And later article view data updates
-        article.value = ViewData.Updating()
+        // When article view data has no errors
+        errorViewData.value = ErrorViewData.NoError
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then activity should hide the error notification
         onView(withId(R.id.snackbar_text))
             .check(doesNotExist())
-    }
-
-    @Test
-    fun provideErrorRetryWhenArticleViewDataFailWithRetriableError() {
-        // Test case fixture
-        val retryAction: () -> (Unit) = mockk()
-
-        every { retryAction.invoke() } returns Unit
-
-        // Given a resumed activity
-
-        // When article view data fail with retriable error
-        val error = ViewDataError.Retriable("message",retryAction)
-        article.value = ViewData.Error(error)
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
-
-        // And user click on snackbar action to retry loading
-        onView(withId(R.id.snackbar_action))
-            .perform(click())
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
-
-        // Then activity should invoke error retry action
-        verify { retryAction.invoke() }
     }
 
     @Test
@@ -266,5 +239,41 @@ class ArticleActivityTest {
         // Then activity should display land layout
         onView(withId(R.id.article_root_land))
             .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun bookmarkArticleWhenUserSelectForUnbookmarkedArticle() {
+        // Test case fixture
+        every { viewModel.bookmark() } returns Unit
+
+        // Given a resumed activity with displayed unbookmarked article
+        articleViewData.value = createUnBookmarkedTestArticle()
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // When user select to bookmark article
+        onView(withId(R.id.action_bookmarking))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then activity should ask view model to bookmark article
+        verify { viewModel.bookmark() }
+    }
+
+    @Test
+    fun uBookmarkArticleWhenUserSelectForBookmarkedArticle() {
+        // Test case fixture
+        every { viewModel.unBookmark() } returns Unit
+
+        // Given a resumed activity with displayed bookmarked article
+        articleViewData.value = createBookmarkedTestArticle()
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // When user select to un bookmark article
+        onView(withId(R.id.action_bookmarking))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then activity should ask view model to un bookmark article
+        verify { viewModel.unBookmark() }
     }
 }

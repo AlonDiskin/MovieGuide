@@ -55,6 +55,7 @@ dependencies {
     def dagger_version = "2.25.4"
     def uiautomator_version = "2.2.0"
     def greencoffee_version = "3.5.0"
+    def room_version = "2.2.5"
 
     // Multidex
     implementation 'androidx.multidex:multidex:2.0.1'
@@ -79,6 +80,11 @@ dependencies {
 
     // Paging
     implementation "androidx.paging:paging-common-ktx:3.0.0-alpha07"
+
+    // Room
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-rxjava2:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
 
     // Local/Unit testing
     testImplementation project(':features:common:uiTesting')

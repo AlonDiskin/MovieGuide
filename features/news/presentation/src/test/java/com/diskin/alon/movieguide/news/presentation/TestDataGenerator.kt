@@ -36,5 +36,28 @@ fun createTestArticle() =
         "author",
         "content",
         "date",
-        "image_url"
+        "image_url",
+        true
+    )
+
+fun createUnBookmarkedTestArticle() =
+    Article(
+        "url",
+        "title",
+        "author",
+        "content",
+        "date",
+        "image_url",
+        false
+    )
+
+fun createBookmarkedTestArticle() =
+    Article(
+        "url",
+        "title",
+        "author",
+        "content",
+        "date",
+        "image_url",
+        true
     )

@@ -1,6 +1,5 @@
 package com.diskin.alonmovieguide.common.data
 
-import android.util.Log
 import com.diskin.alon.movieguide.common.appservices.AppError
 import retrofit2.HttpException
 import java.io.IOException

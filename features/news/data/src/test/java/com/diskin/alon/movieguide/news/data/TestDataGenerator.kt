@@ -5,19 +5,6 @@ import com.diskin.alon.movieguide.news.data.remote.data.FeedlyEntryResponse
 import com.diskin.alon.movieguide.news.data.remote.data.FeedlyEntryResponse.Summary
 import com.diskin.alon.movieguide.news.data.remote.data.FeedlyEntryResponse.Visual
 import com.diskin.alon.movieguide.news.data.remote.data.FeedlyFeedResponse
-import com.diskin.alon.movieguide.news.domain.ArticleEntity
-
-fun createApiEntryResponse(): FeedlyEntryResponse {
-    return FeedlyEntryResponse(
-        "id",
-        "title",
-        "author",
-        100L,
-        Visual("url"),
-        "originId",
-        Summary("content")
-    )
-}
 
 fun createFeedlyFeedResponse(): FeedlyFeedResponse {
     return FeedlyFeedResponse(
@@ -43,6 +30,10 @@ fun createFeedlyFeedResponse(): FeedlyFeedResponse {
         ),
         "continuation"
     )
+}
+
+fun createFeedlyEntries(): List<FeedlyEntryResponse> {
+    return createFeedlyFeedResponse().items
 }
 
 fun createFeedlyFeedLastPageResponse(): FeedlyFeedResponse {
@@ -71,23 +62,11 @@ fun createFeedlyFeedLastPageResponse(): FeedlyFeedResponse {
     )
 }
 
-fun getArticleEntity(entry: FeedlyEntryResponse): ArticleEntity {
-    return ArticleEntity(
-        entry.id,
-        entry.title,
-        entry.summary.content,
-        entry.author,
-        entry.published,
-        entry.visual?.url ?: "",
-        entry.originId
-    )
-}
-
 fun createIllegalPathId(): String {
     return "uM+MqpK9duOyb/imN0cFmOAhKFCAsXozhxb+qTAQU1w=_174af56171b:70b9d4:70edfa5f"
 }
 
-fun createLocalHeadlines(): Array<Bookmark> {
+fun createBookmarks(): Array<Bookmark> {
     return arrayOf(
         Bookmark("article_id_1"),
         Bookmark("article_id_2"),

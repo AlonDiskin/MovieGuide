@@ -7,8 +7,7 @@ import com.diskin.alon.movieguide.news.appservices.data.HeadlineDto
 import com.diskin.alon.movieguide.news.domain.ArticleEntity
 import javax.inject.Inject
 
-class HeadlinesDtoPagingMapper @Inject constructor() :
-    Mapper<PagingData<ArticleEntity>, PagingData<HeadlineDto>> {
+class HeadlinesDtoPagingMapper @Inject constructor() : Mapper<PagingData<ArticleEntity>, PagingData<HeadlineDto>> {
     override fun map(source: PagingData<ArticleEntity>): PagingData<HeadlineDto> {
         return source.map {
             HeadlineDto(

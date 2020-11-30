@@ -1,7 +1,6 @@
 package com.diskin.alon.movieguide.news.appservices
 
 import com.diskin.alon.movieguide.common.appservices.AppError
-import com.diskin.alon.movieguide.common.appservices.Result
 import com.diskin.alon.movieguide.news.appservices.data.ArticleDto
 import com.diskin.alon.movieguide.news.domain.ArticleEntity
 
@@ -37,7 +36,7 @@ fun createHeadlines(): List<ArticleEntity> {
     )
 }
 
-fun createArticleEntity(): ArticleEntity {
+fun createArticle(): ArticleEntity {
     return ArticleEntity(
         "id",
         "title",
@@ -49,18 +48,17 @@ fun createArticleEntity(): ArticleEntity {
     )
 }
 
-fun mapArticleDtoSuccessResult(entity: ArticleEntity): Result.Success<ArticleDto> {
-    return Result.Success(
-        ArticleDto(
-            entity.title,
-            entity.content,
-            entity.author,
-            entity.date,
-            entity.imageUrl,
-            entity.articleUrl
-        )
+fun createArticleDto(article: ArticleEntity,bookmarked: Boolean) =
+    ArticleDto(
+        article.id,
+        article.title,
+        article.content,
+        article.author,
+        article.date,
+        article.imageUrl,
+        article.articleUrl,
+        bookmarked
     )
-}
 
 fun createAppError(): AppError {
     return AppError(

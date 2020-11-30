@@ -20,7 +20,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.diskin.alon.movieguide.common.presentation.ImageLoader
 import com.diskin.alon.movieguide.common.presentation.ViewData
-import com.diskin.alon.movieguide.common.presentation.ViewDataError
+import com.diskin.alon.movieguide.common.presentation.ErrorViewData
 import com.diskin.alon.movieguide.reviews.presentation.controller.MovieReviewActivity
 import com.diskin.alon.movieguide.reviews.presentation.controller.TrailersAdapter.MovieTrailerViewHolder
 import com.diskin.alon.movieguide.reviews.presentation.data.MovieReview
@@ -183,7 +183,7 @@ class MovieReviewActivityTest {
         // Given a resumed activity
 
         // When review ui state related error happen
-        val error = ViewDataError.NotRetriable("message")
+        val error = ErrorViewData.NotRetriable("message")
         movieReview.value = ViewData.Error(error)
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
@@ -206,7 +206,7 @@ class MovieReviewActivityTest {
         // Given a resumed activity
 
         // When review ui state related retriable error happen
-        val error = ViewDataError.Retriable("message",retryAction)
+        val error = ErrorViewData.Retriable("message",retryAction)
         movieReview.value = ViewData.Error(error)
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
@@ -233,7 +233,7 @@ class MovieReviewActivityTest {
         // Given a resumed activity
 
         // When review ui state related retriable error happen
-        movieReview.value = ViewData.Error(ViewDataError.NotRetriable(""))
+        movieReview.value = ViewData.Error(ErrorViewData.NotRetriable(""))
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // And review is updated

@@ -15,4 +15,7 @@ interface HomeNavigator {
 
     @NavigationRes
     fun getSettingsNavGraph(): Int
+
+    @NavigationRes
+    fun getBookmarksNavGraph(): Int
 }

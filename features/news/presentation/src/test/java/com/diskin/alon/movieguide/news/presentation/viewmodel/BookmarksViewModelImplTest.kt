@@ -5,7 +5,6 @@ import androidx.lifecycle.SavedStateHandle
 import com.diskin.alon.movieguide.common.appservices.Result
 import com.diskin.alon.movieguide.common.localtesting.WhiteBox
 import com.diskin.alon.movieguide.common.presentation.Model
-import com.diskin.alon.movieguide.common.presentation.ViewData
 import com.diskin.alon.movieguide.news.appservices.data.BookmarkSorting
 import com.diskin.alon.movieguide.news.presentation.createNewsHeadlines
 import com.diskin.alon.movieguide.news.presentation.data.BookmarksModelRequest
@@ -64,14 +63,6 @@ class BookmarksViewModelImplTest {
     }
 
     @Test
-    fun initBookmarksViewStateAsUpdatingWhenCreated() {
-        // Given an initialized view model
-
-        // Then view model should have initialized sorting view state as updating
-        assertThat(viewModel.bookmarks.value).isInstanceOf(ViewData.Updating::class.java)
-    }
-
-    @Test
     fun initDefaultSelectedSortingWhenCreatedWithoutSavedSorting() {
         // Given an initialized view model that was created without saved sorting state
 
@@ -113,8 +104,7 @@ class BookmarksViewModelImplTest {
         modelBookmarksSubject.onNext(Result.Success(modelBookmarks))
 
         // Then view model should update view bookmarks state
-        assertThat(viewModel.bookmarks.value).isInstanceOf(ViewData.Data::class.java)
-        assertThat(viewModel.bookmarks.value!!.data).isEqualTo(modelBookmarks)
+        assertThat(viewModel.bookmarks.value).isEqualTo(modelBookmarks)
 
         // And update view sorting state to the selected sorting value
         val selectedSorting =

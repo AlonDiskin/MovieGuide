@@ -25,38 +25,36 @@ class GetHeadlinesUseCaseTest {
 
     // Collaborators
     private val repository: ArticleRepository = mockk()
-    private val headlinesMapper: Mapper<PagingData<ArticleEntity>, PagingData<HeadlineDto>> = mockk()
+    private val mapper: Mapper<PagingData<ArticleEntity>, PagingData<HeadlineDto>> = mockk()
 
     @Before
     fun setUp() {
         // Init subject under test
-        useCase = GetHeadlinesUseCase(repository,headlinesMapper)
+        useCase = GetHeadlinesUseCase(repository,mapper)
     }
 
     @Test
     fun getHeadlinesPagingWhenExecuted() {
         // Test case fixture
+        val repoPaging: PagingData<ArticleEntity> = mockk()
+        val mappedPaging: PagingData<HeadlineDto> = mockk()
 
-        val repoHeadlines = createHeadlines()
-        val pageConfig = PagingConfig(pageSize = 10)
-        val repoPaging = PagingData.from(repoHeadlines)
-        val mappedPaging = PagingData.empty<HeadlineDto>()
-
-        every { repository.getPaging(pageConfig) } returns
-                Observable.just(repoPaging)
-
-        every { headlinesMapper.map(repoPaging) } returns mappedPaging
+        every { repository.getPaging(any()) } returns Observable.just(repoPaging)
+        every { mapper.map(any()) } returns mappedPaging
 
         // Given an initialized use case
 
         // When use case is executed
-        val testRequest = HeadlinesRequest(pageConfig)
-        val testObserver = useCase.execute(testRequest).test()
+        val request = HeadlinesRequest(PagingConfig(pageSize = 10))
+        val testObserver = useCase.execute(request).test()
 
         // Then use case should retrieve headlines from repository
-        verify { repository.getPaging(testRequest.pagingConfig) }
+        verify { repository.getPaging(request.pagingConfig) }
 
-        // And return an observable mapping repository headlines
+        // And map repository paging
+        verify { mapper.map(repoPaging) }
+
+        // And emit mapped paging that has expected dtos
         testObserver.assertValue(mappedPaging)
     }
 }

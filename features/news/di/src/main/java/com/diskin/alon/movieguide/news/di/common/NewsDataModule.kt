@@ -5,6 +5,8 @@ import com.diskin.alon.movieguide.news.appservices.interfaces.ArticleRepository
 import com.diskin.alon.movieguide.news.data.implementation.ArticleRepositoryImpl
 import com.diskin.alon.movieguide.news.data.local.BookmarkStore
 import com.diskin.alon.movieguide.news.data.local.BookmarkStoreImpl
+import com.diskin.alon.movieguide.news.data.local.StorageErrorHandler
+import com.diskin.alon.movieguide.news.data.local.StorageErrorHandlerImpl
 import com.diskin.alon.movieguide.news.data.remote.RemoteArticleStore
 import com.diskin.alon.movieguide.news.data.remote.RemoteArticleStoreImpl
 import com.diskin.alon.movieguide.news.data.remote.data.FeedlyEntryResponse
@@ -28,4 +30,7 @@ abstract class NewsDataModule {
 
     @Binds
     abstract fun bindsApiArticleMapper(mapper: ApiArticleMapper): Mapper<FeedlyEntryResponse, ArticleEntity>
+
+    @Binds
+    abstract fun bindsStorageErrorHandler(handler: StorageErrorHandlerImpl): StorageErrorHandler
 }

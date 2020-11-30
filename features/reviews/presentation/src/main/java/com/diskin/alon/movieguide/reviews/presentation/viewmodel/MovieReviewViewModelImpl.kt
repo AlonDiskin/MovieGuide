@@ -7,7 +7,7 @@ import com.diskin.alon.movieguide.common.appservices.Result
 import com.diskin.alon.movieguide.common.presentation.Model
 import com.diskin.alon.movieguide.common.presentation.RxViewModel
 import com.diskin.alon.movieguide.common.presentation.ViewData
-import com.diskin.alon.movieguide.common.presentation.ViewDataError
+import com.diskin.alon.movieguide.common.presentation.ErrorViewData
 import com.diskin.alon.movieguide.reviews.presentation.data.MovieReview
 import com.diskin.alon.movieguide.reviews.presentation.data.ReviewModelRequest
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -44,12 +44,12 @@ class MovieReviewViewModelImpl(
 
                         is Result.Error -> _modelReview.value = ViewData.Error(
                             if (result.error.retriable) {
-                                ViewDataError.Retriable(result.error.cause) {
+                                ErrorViewData.Retriable(result.error.description) {
                                     _modelReview.value = ViewData.Updating(_modelReview.value?.data)
                                     idSubject.onNext(movieId)
                                 }
                             } else {
-                                ViewDataError.NotRetriable(result.error.cause)
+                                ErrorViewData.NotRetriable(result.error.description)
                             }
                         )
                     }

@@ -8,8 +8,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ShareCompat
 import androidx.databinding.DataBindingUtil
-import com.diskin.alon.movieguide.common.presentation.ViewData
-import com.diskin.alon.movieguide.common.presentation.ViewDataError
+import com.diskin.alon.movieguide.common.presentation.ErrorViewData
+import com.diskin.alon.movieguide.common.presentation.UpdateViewData
 import com.diskin.alon.movieguide.news.presentation.R
 import com.diskin.alon.movieguide.news.presentation.databinding.ActivityArticleBinding
 import com.diskin.alon.movieguide.news.presentation.viewmodel.ArticleViewModel
@@ -22,7 +22,7 @@ class ArticleActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModel: ArticleViewModel
-    private var snackbar: Snackbar? = null
+    private var errorSnackbar: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,36 +41,53 @@ class ArticleActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // Observe view model article state
-        viewModel.article.observe(this, {
-            // Update article if data update available
-            binding.article = it.data
+        viewModel.article.observe(this) { article -> binding.article = article }
 
-            // Hide any prev error/loading notification
-            snackbar?.dismiss()
-            progress_bar?.visibility = View.GONE
-
-            when(it) {
-                is ViewData.Updating -> progress_bar?.visibility = View.VISIBLE
-                is ViewData.Error -> handleArticleStateError(it.error)
+        // Observe view model update state
+        viewModel.update.observe(this) { update ->
+            when(update) {
+                is UpdateViewData.Update -> progress_bar?.visibility = View.VISIBLE
+                is UpdateViewData.EndUpdate -> progress_bar?.visibility = View.GONE
             }
-        })
-    }
-
-    private fun handleArticleStateError(error: ViewDataError) {
-        snackbar = Snackbar.make(
-            nestedScrollView,
-            error.reason,
-            Snackbar.LENGTH_INDEFINITE)
-
-        if (error is ViewDataError.Retriable) {
-            snackbar?.setAction(getString(R.string.action_retry)) { error.retry() }
         }
 
-        snackbar?.show()
+        // Observe view model error state
+        viewModel.error.observe(this) { error ->
+            when(error) {
+                is ErrorViewData.NoError -> errorSnackbar?.dismiss()
+                is ErrorViewData.NotRetriable -> showNotRetriableError(error)
+                is ErrorViewData.Retriable -> showRetriableError(error)
+            }
+        }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_article, menu)
+        viewModel.article.observe(this) { article ->
+            article?.let {
+                val bookmarkingItem = menu.findItem(R.id.action_bookmarking)
+                bookmarkingItem.isEnabled = true
+
+                when (it.bookmarked) {
+                    true -> bookmarkingItem
+                        .setTitle(getString(R.string.title_action_unbookmark))
+                        .setIcon(R.drawable.ic_bookmarked_24)
+                        .setOnMenuItemClickListener {
+                            viewModel.unBookmark()
+                            true
+                        }
+
+                    false -> bookmarkingItem
+                        .setTitle(getString(R.string.title_action_bookmark))
+                        .setIcon(R.drawable.ic_not_bookmarked_24)
+                        .setOnMenuItemClickListener {
+                            viewModel.bookmark()
+                            true
+                        }
+                }
+            }
+        }
+
         return true
     }
 
@@ -90,8 +107,27 @@ class ArticleActivity : AppCompatActivity() {
         return true
     }
 
+    private fun showNotRetriableError(error: ErrorViewData.NotRetriable) {
+        errorSnackbar = Snackbar.make(
+            nestedScrollView,
+            error.reason,
+            Snackbar.LENGTH_INDEFINITE)
+
+        errorSnackbar?.show()
+    }
+
+    private fun showRetriableError(error: ErrorViewData.Retriable) {
+        errorSnackbar = Snackbar.make(
+            nestedScrollView,
+            error.reason,
+            Snackbar.LENGTH_INDEFINITE)
+            .setAction(getString(R.string.action_retry)) { error.retry() }
+
+        errorSnackbar?.show()
+    }
+
     private fun shareArticle() {
-        viewModel.article.value?.data?.let { article ->
+        viewModel.article.value?.let { article ->
             ShareCompat.IntentBuilder
                 .from(this)
                 .setType(getString(R.string.mime_type_text))

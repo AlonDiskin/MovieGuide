@@ -49,7 +49,7 @@ class MoviePagingSourceTest {
 
     // Stub data
     private val apiMoviesSubject = SingleSubject.create<MoviesResponse>()
-    val mappedMovies = emptyList<MovieEntity>()
+    private val mappedMovies = emptyList<MovieEntity>()
 
     @Before
     fun setUp() {
@@ -117,7 +117,7 @@ class MoviePagingSourceTest {
 
     @Test
     @Parameters(method = "pageResultNextKeyParams")
-    fun setPagingResultKeyAccordingToApiResponseWhenApiLoadMovies(
+    fun calcPagingResultKeyAccordingToApiResponseWhenApiLoadMovies(
         sorting: MovieSorting,
         params: LoadParams<String>,
         apiResponse: MoviesResponse,
@@ -167,7 +167,7 @@ class MoviePagingSourceTest {
             val result = it as PagingSource.LoadResult.Error
             val errorMessage = result.throwable.message!!
 
-            errorMessage == appError.cause
+            errorMessage == appError.description
         }
     }
 

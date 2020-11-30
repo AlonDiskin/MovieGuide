@@ -5,15 +5,14 @@ package com.diskin.alon.movieguide.common.presentation
  */
 sealed class ViewData<T>(val data: T?) {
 
-    /**
-     * Transition update state.
-     */
     class Updating<T>(data: T? = null) : ViewData<T>(data)
+
+    class Updated<T>(data: T? = null) : ViewData<T>(data)
 
     class Data<T>(data: T): ViewData<T>(data)
 
     /**
      * Error state.
      */
-    class Error<T>(val error: ViewDataError,data: T? = null): ViewData<T>(data)
+    class Error<T>(val error: ErrorViewData, data: T? = null): ViewData<T>(data)
 }

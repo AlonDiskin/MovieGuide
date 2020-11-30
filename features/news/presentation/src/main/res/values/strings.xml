@@ -17,4 +17,15 @@
     <string name="title_action_sort">Sort</string>
     <string name="title_action_sort_newest">Newest first</string>
     <string name="title_action_sort_oldest">Oldest first</string>
+    <string name="title_action_unbookmark">Unbookmark</string>
+    <string name="title_action_bookmark">Bookmark</string>
+    <string name="remove_bookamrks_dialog_message">Remove selected  bookmarks?</string>
+    <string name="remove_bookmarks_dialog_title">Remove bookmarks</string>
+    <string name="dialog_pos_label">ok</string>
+    <string name="dialog_neg_label">cancel</string>
+    <string name="title_action_remove_bookmark">Remove</string>
+    <string name="title_action_share_bookmark">Share</string>
+    <string name="title_share_bookmark_chooser">Share bookmark</string>
+    <string name="remove_bookamrk_dialog_message">Remove bookmark?</string>
+    <string name="remove_bookmark_dialog_title">Remove bookmark</string>
 </resources>

@@ -15,11 +15,11 @@ import javax.inject.Inject
  */
 class GetHeadlinesUseCase @Inject constructor(
     private val repository: ArticleRepository,
-    private val headlineMapper: Mapper<PagingData<ArticleEntity>, PagingData<HeadlineDto>>
+    private val mapper: Mapper<PagingData<ArticleEntity>, PagingData<HeadlineDto>>
 ) : UseCase<HeadlinesRequest,Observable<PagingData<HeadlineDto>>> {
 
     override fun execute(param: HeadlinesRequest): Observable<PagingData<HeadlineDto>> {
         return repository.getPaging(param.pagingConfig)
-            .map(headlineMapper::map)
+            .map(mapper::map)
     }
 }

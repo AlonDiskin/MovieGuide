@@ -12,8 +12,8 @@ import com.diskin.alon.movieguide.news.appservices.usecase.GetHeadlinesUseCase
 import com.diskin.alon.movieguide.news.appservices.util.HeadlinesDtoPagingMapper
 import com.diskin.alon.movieguide.news.domain.ArticleEntity
 import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesFragment
-import com.diskin.alon.movieguide.news.presentation.data.BookmarksModelRequest
 import com.diskin.alon.movieguide.news.presentation.data.Headline
+import com.diskin.alon.movieguide.news.presentation.data.HeadlinesModelRequest
 import com.diskin.alon.movieguide.news.presentation.util.HeadlineMapper
 import com.diskin.alon.movieguide.news.presentation.util.HeadlinesPagingMapper
 import com.diskin.alon.movieguide.news.presentation.viewmodel.HeadlinesViewModel
@@ -36,7 +36,7 @@ abstract class HeadlinesModule {
             headlinesMapper: Mapper<Observable<PagingData<HeadlineDto>>, Observable<PagingData<Headline>>>
         ): Model {
             val map = HashMap<Class<out ModelRequest<*, *>>,Pair<UseCase<*, *>, Mapper<*, *>?>>()
-            map[BookmarksModelRequest::class.java] = Pair(getHeadlinesUseCase,headlinesMapper)
+            map[HeadlinesModelRequest::class.java] = Pair(getHeadlinesUseCase,headlinesMapper)
 
             return ModelDispatcher(map)
         }
@@ -53,11 +53,11 @@ abstract class HeadlinesModule {
     }
 
     @Binds
+    abstract fun bindHeadlinesDtoPagingMapper(mapper: HeadlinesDtoPagingMapper): Mapper<PagingData<ArticleEntity>, PagingData<HeadlineDto>>
+
+    @Binds
     abstract fun bindsHeadlineMapper(mapper: HeadlineMapper): Mapper<HeadlineDto,Headline>
 
     @Binds
     abstract fun bindHeadlinesPagingMapper(mapper: HeadlinesPagingMapper): Mapper<Observable<PagingData<HeadlineDto>>, Observable<PagingData<Headline>>>
-
-    @Binds
-    abstract fun bindHeadlinesDtoPagingMapper(mapper: HeadlinesDtoPagingMapper): Mapper<PagingData<ArticleEntity>, PagingData<HeadlineDto>>
 }

@@ -69,7 +69,7 @@ class MoviePagingSource @Inject constructor(
 
     private fun toLoadResultError(e: Throwable): LoadResult<String, MovieEntity> {
         val networkError = networkErrorHandler.handle(e)
-        val throwable = Throwable(networkError.cause)
+        val throwable = Throwable(networkError.description)
 
         return LoadResult.Error(throwable)
     }

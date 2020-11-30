@@ -1,6 +1,8 @@
 package com.diskin.alon.movieguide.news.presentation.controller
 
+import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -12,7 +14,11 @@ import com.diskin.alon.movieguide.news.presentation.databinding.BookmarkBinding
  * Layout adapter that display bookmarked [Headline]s.
  */
 class BookmarksAdapter(
-    private val bookmarkClickListener: (Headline) -> (Unit)
+    private val bookmarkClickListener: (Headline, View) -> (Unit),
+    private val bookmarkLongClickListener: (Headline, View) -> Boolean,
+    private val optionsClickListener: (Headline, View) -> (Unit),
+    private val selectedBookmarksIds: List<String>,
+    var isMultiSelect: Boolean = false
 ) : ListAdapter<Headline, BookmarksAdapter.BookmarkViewHolder>(
     DIFF_CALLBACK
 ) {
@@ -33,13 +39,20 @@ class BookmarksAdapter(
         private val binding: BookmarkBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(headline: Headline) {
+        fun bind(headline: Headline,isMultiSelect: Boolean,selectedBookmarks: List<String>) {
             binding.bookmark = headline
+            binding.root.setBackgroundColor(
+                if (isMultiSelect && selectedBookmarks.contains(headline.id)) {
+                    Color.LTGRAY
+                } else {
+                    Color.WHITE
+                }
+            )
         }
     }
 
     override fun onBindViewHolder(holder: BookmarkViewHolder, position: Int) {
-        getItem(position)?.let { holder.bind(it) }
+        getItem(position)?.let { holder.bind(it,isMultiSelect,selectedBookmarksIds) }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookmarkViewHolder {
@@ -48,8 +61,16 @@ class BookmarksAdapter(
             parent,
             false
         )
-
         binding.bookmarkClickListener = bookmarkClickListener
+        binding.optionsClickListener = optionsClickListener
+
+
+        binding.root.setOnLongClickListener { view ->
+            binding.bookmark?.let { headline ->
+                bookmarkLongClickListener.invoke(headline,view)
+            }
+            true
+        }
         return BookmarkViewHolder(binding)
     }
 }

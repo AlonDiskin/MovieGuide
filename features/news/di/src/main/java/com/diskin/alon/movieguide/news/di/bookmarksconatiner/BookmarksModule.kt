@@ -9,11 +9,13 @@ import com.diskin.alon.movieguide.common.presentation.ModelRequest
 import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.news.appservices.data.HeadlineDto
 import com.diskin.alon.movieguide.news.appservices.usecase.GetBookmarkedHeadlinesUseCase
-import com.diskin.alon.movieguide.news.appservices.util.HeadlinesMapper
+import com.diskin.alon.movieguide.news.appservices.usecase.UnBookmarkArticlesUseCase
+import com.diskin.alon.movieguide.news.appservices.util.HeadlinesDtoMapper
 import com.diskin.alon.movieguide.news.domain.ArticleEntity
 import com.diskin.alon.movieguide.news.presentation.controller.BookmarksFragment
 import com.diskin.alon.movieguide.news.presentation.data.BookmarksModelRequest
 import com.diskin.alon.movieguide.news.presentation.data.Headline
+import com.diskin.alon.movieguide.news.presentation.data.UnBookmarkingModelRequest
 import com.diskin.alon.movieguide.news.presentation.util.BookmarksModelRequestMapper
 import com.diskin.alon.movieguide.news.presentation.util.HeadlineMapper
 import com.diskin.alon.movieguide.news.presentation.viewmodel.BookmarksViewModel
@@ -31,8 +33,8 @@ abstract class BookmarksModule {
 
         @JvmStatic
         @Provides
-        fun provideHeadlinesDtoMapper(): Mapper<Result<List<ArticleEntity>>, Result<List<HeadlineDto>>> {
-            return HeadlinesMapper()
+        fun provideHeadlinesDtoMapper(): Mapper<List<ArticleEntity>, List<HeadlineDto>> {
+            return HeadlinesDtoMapper()
         }
 
         @JvmStatic
@@ -47,10 +49,12 @@ abstract class BookmarksModule {
         @Provides
         fun provideModelDispatcher(
             getBookmarkedHeadlinesUseCase: GetBookmarkedHeadlinesUseCase,
+            unBookmarkArticlesUseCase: UnBookmarkArticlesUseCase,
             bookmarksMapper: Mapper<Observable<Result<List<HeadlineDto>>>, Observable<Result<List<Headline>>>>
         ): Model {
             val map = HashMap<Class<out ModelRequest<*, *>>,Pair<UseCase<*, *>, Mapper<*, *>?>>()
             map[BookmarksModelRequest::class.java] = Pair(getBookmarkedHeadlinesUseCase,bookmarksMapper)
+            map[UnBookmarkingModelRequest::class.java] = Pair(unBookmarkArticlesUseCase,null)
 
             return ModelDispatcher(map)
         }

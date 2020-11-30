@@ -2,6 +2,7 @@ package com.diskin.alon.movieguide.news.appservices.usecase
 
 import com.diskin.alon.movieguide.common.appservices.Result
 import com.diskin.alon.movieguide.common.appservices.UseCase
+import com.diskin.alon.movieguide.common.appservices.mapResult
 import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.news.appservices.data.BookmarksRequest
 import com.diskin.alon.movieguide.news.appservices.data.HeadlineDto
@@ -15,11 +16,12 @@ import javax.inject.Inject
  */
 class GetBookmarkedHeadlinesUseCase @Inject constructor(
     private val repository: ArticleRepository,
-    private val mapper: Mapper<Result<List<ArticleEntity>>,Result<List<HeadlineDto>>>
+    private val mapper: Mapper<List<ArticleEntity>,List<HeadlineDto>>
 ) : UseCase<BookmarksRequest,Observable<Result<List<HeadlineDto>>>> {
 
     override fun execute(param: BookmarksRequest): Observable<Result<List<HeadlineDto>>> {
-        return repository.getBookmarked(param.sorting)
-            .map { mapper.map(it) }
+        return repository
+            .getBookmarked(param.sorting)
+            .mapResult(mapper::map)
     }
 }

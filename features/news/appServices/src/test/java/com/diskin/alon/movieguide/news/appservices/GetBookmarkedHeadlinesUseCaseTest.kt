@@ -1,6 +1,7 @@
 package com.diskin.alon.movieguide.news.appservices
 
 import com.diskin.alon.movieguide.common.appservices.Result
+import com.diskin.alon.movieguide.common.appservices.toResult
 import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.news.appservices.data.BookmarksRequest
 import com.diskin.alon.movieguide.news.appservices.data.HeadlineDto
@@ -11,6 +12,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import io.reactivex.Observable
+import org.junit.Before
 import org.junit.Test
 
 /**
@@ -18,19 +20,28 @@ import org.junit.Test
  */
 class GetBookmarkedHeadlinesUseCaseTest {
 
+    // Test subject
+    private lateinit var useCase: GetBookmarkedHeadlinesUseCase
+
+    // Collaborators
+    private val repository: ArticleRepository = mockk()
+    private val mapper: Mapper<List<ArticleEntity>, List<HeadlineDto>> = mockk()
+
+    @Before
+    fun setUp() {
+        useCase = GetBookmarkedHeadlinesUseCase(repository,mapper)
+    }
+
     @Test
     fun fetchBookmarkedHeadlinesWhenExecuted() {
         // Test case fixture
-        val repository: ArticleRepository = mockk()
-        val mapper: Mapper<Result<List<ArticleEntity>>, Result<List<HeadlineDto>>> = mockk()
-        val repositoryBookmarked: Result<List<ArticleEntity>> = mockk()
-        val mappedBookmarked: Result<List<HeadlineDto>> = mockk()
+        val repositoryBookmarked: List<ArticleEntity> = mockk()
+        val mappedBookmarked: List<HeadlineDto> = emptyList()
 
-        every { repository.getBookmarked(any()) } returns Observable.just(repositoryBookmarked)
+        every { repository.getBookmarked(any()) } returns Observable.just(repositoryBookmarked).toResult()
         every { mapper.map(any()) } returns mappedBookmarked
 
         // Given an initialized use case
-        val useCase = GetBookmarkedHeadlinesUseCase(repository, mapper)
 
         // When use case is executed
         val request = BookmarksRequest(mockk())
@@ -41,6 +52,6 @@ class GetBookmarkedHeadlinesUseCaseTest {
 
         // And map results to client data model
         verify { mapper.map(repositoryBookmarked) }
-        testObserver.assertValue(mappedBookmarked)
+        testObserver.assertValue(Result.Success(mappedBookmarked))
     }
 }

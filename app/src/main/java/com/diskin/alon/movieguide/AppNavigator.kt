@@ -12,4 +12,6 @@ class AppNavigator @Inject constructor() : HomeNavigator {
     override fun getReviewsNavGraph(): Int = R.navigation.reviews_nav_graph
 
     override fun getSettingsNavGraph(): Int = R.navigation.settings_nav_graph
+
+    override fun getBookmarksNavGraph(): Int =  R.navigation.bookmarks_nav_graph
 }
