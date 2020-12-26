@@ -11,14 +11,15 @@ import com.diskin.alon.movieguide.common.presentation.ErrorViewData
 import com.diskin.alon.movieguide.reviews.presentation.data.MovieReview
 import com.diskin.alon.movieguide.reviews.presentation.data.ReviewModelRequest
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 
 /**
  * Stores and manage UI related data for the movie review UI controller.
  */
 class MovieReviewViewModelImpl(
-    model: Model,
-    savedStateHandle: SavedStateHandle
+    private val model: Model,
+    private val savedStateHandle: SavedStateHandle
 ) : RxViewModel(), MovieReviewViewModel{
 
     companion object {
@@ -26,38 +27,50 @@ class MovieReviewViewModelImpl(
     }
 
     private val idSubject = BehaviorSubject.create<String>()
+    private val movieId = getMovieId()
     private val _modelReview = MutableLiveData<ViewData<MovieReview>>()
     override val movieReview: LiveData<ViewData<MovieReview>> get() = _modelReview
 
     init {
-        // Get id from state handle
-        val movieId = savedStateHandle.get<String>(KEY_MOVIE_ID) ?:
-        throw IllegalArgumentException("must contain movie id arg in stateHandle!")
-
-        // Create rx chain for review model subscription
-        val reviewSubscription = idSubject
-            .switchMap { id ->  model.execute(ReviewModelRequest(id)) }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { result ->
-                    when(result) {
-                        is Result.Success -> _modelReview.value = ViewData.Data(result.data)
-
-                        is Result.Error -> _modelReview.value = ViewData.Error(
-                            if (result.error.retriable) {
-                                ErrorViewData.Retriable(result.error.description) {
-                                    _modelReview.value = ViewData.Updating(_modelReview.value?.data)
-                                    idSubject.onNext(movieId)
-                                }
-                            } else {
-                                ErrorViewData.NotRetriable(result.error.description)
-                            }
-                        )
-                    }
-                }
-
-        addSubscription(reviewSubscription)
-
-        // Initiate review request from model
+        addSubscription(createReviewSubscription())
         idSubject.onNext(movieId)
+    }
+
+    private fun createReviewSubscription(): Disposable {
+        return idSubject
+            .switchMap { id ->  model.execute(ReviewModelRequest(id)) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(this::handleModelReviewResult)
+    }
+
+    private fun getMovieId(): String {
+        return savedStateHandle.get<String>(KEY_MOVIE_ID) ?:
+        throw IllegalArgumentException("must contain movie id arg in stateHandle!")
+    }
+
+    private fun handleModelReviewResult(result: Result<MovieReview>) {
+        when(result) {
+            is Result.Success -> handleSuccessfulReviewResult(result)
+            is Result.Error -> handleFailedReviewResult(result)
+        }
+    }
+
+    private fun handleSuccessfulReviewResult(result: Result.Success<MovieReview>) {
+        _modelReview.value = ViewData.Data(result.data)
+    }
+
+    private fun handleFailedReviewResult(result: Result.Error<MovieReview>) {
+        _modelReview.value = ViewData.Error(
+            if (result.error.retriable) {
+                val retryAction = {
+                    _modelReview.value = ViewData.Updating(_modelReview.value?.data)
+                    idSubject.onNext(movieId)
+                }
+                ErrorViewData.Retriable(result.error.description,retryAction)
+
+            } else {
+                ErrorViewData.NotRetriable(result.error.description)
+            }
+        )
     }
 }

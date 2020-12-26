@@ -51,6 +51,7 @@ class MainActivityTest {
         every { navigator.getNewsNavGraph() } returns getTestNewsGraph()
         every { navigator.getReviewsNavGraph() } returns getTestReviewsGraph()
         every { navigator.getSettingsNavGraph() } returns getTestSettingsGraph()
+        every { navigator.getBookmarksNavGraph() } returns getTestBookmarksGraph()
 
         // Launch activity under test
         scenario = ActivityScenario.launch(MainActivity::class.java)
@@ -104,6 +105,17 @@ class MainActivityTest {
             val controller = it.nav_host_container.findNavController()
 
             assertThat(controller.currentDestination!!.id).isEqualTo(R.id.settings_placeholder)
+        }
+
+        // When user navigates to bookmarks feature
+        onView(withId(R.id.bookmarks))
+            .perform(click())
+
+        // Then bookmarks feature ui should be displayed in activity layout
+        scenario.onActivity {
+            val controller = it.nav_host_container.findNavController()
+
+            assertThat(controller.currentDestination!!.id).isEqualTo(R.id.bookmarks_placeholder)
         }
     }
 
