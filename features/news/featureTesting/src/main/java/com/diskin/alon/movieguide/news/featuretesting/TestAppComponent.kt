@@ -1,8 +1,8 @@
 package com.diskin.alon.movieguide.news.featuretesting
 
 import android.app.Application
-import com.diskin.alon.movieguide.news.di.ArticleActivityInjectionModule
-import com.diskin.alon.movieguide.news.di.MoviesHeadlinesFragmentInjectionModule
+import com.diskin.alon.movieguide.news.di.common.NewsDataModule
+import com.diskin.alon.movieguide.news.di.common.NewsInjectionModule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjector
@@ -13,10 +13,10 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [
     AndroidSupportInjectionModule::class,
-    MoviesHeadlinesFragmentInjectionModule::class,
-    ArticleActivityInjectionModule::class,
-    TestAppModule::class,
-    TestNetworkingModule::class])
+    NewsInjectionModule::class,
+    NewsDataModule::class,
+    TestAppModule::class
+])
 interface TestAppComponent : AndroidInjector<TestApp> {
 
     @Component.Factory
@@ -26,4 +26,6 @@ interface TestAppComponent : AndroidInjector<TestApp> {
     }
 
     fun getMockWebServer(): MockWebServer
+
+    fun getTestDatabase(): TestDatabase
 }

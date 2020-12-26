@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/headlinesFragment"
-        android:name="com.diskin.alon.movieguide.news.presentation.controller.MoviesHeadlinesFragment"
+        android:name="com.diskin.alon.movieguide.news.presentation.controller.HeadlinesFragment"
         android:label="HeadlinesFragment"
-        tools:layout="@layout/fragment_movies_headlines">
+        tools:layout="@layout/fragment_headlines">
         <action
             android:id="@+id/action_headlinesFragment_to_articleActivity"
             app:destination="@id/articleActivity" />

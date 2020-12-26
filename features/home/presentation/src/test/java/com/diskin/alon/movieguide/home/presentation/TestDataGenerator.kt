@@ -10,3 +10,6 @@ fun getTestReviewsGraph(): Int = R.navigation.test_reviews_graph
 
 @NavigationRes
 fun getTestSettingsGraph(): Int = R.navigation.test_settings_graph
+
+@NavigationRes
+fun getTestBookmarksGraph(): Int = R.navigation.test_bookmarks_graph

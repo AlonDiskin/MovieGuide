@@ -8,9 +8,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ShareCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import com.diskin.alon.movieguide.common.appservices.AppError
-import com.diskin.alon.movieguide.common.presentation.LoadState
+import com.diskin.alon.movieguide.common.presentation.ErrorViewData
+import com.diskin.alon.movieguide.common.presentation.UpdateViewData
 import com.diskin.alon.movieguide.news.presentation.R
 import com.diskin.alon.movieguide.news.presentation.databinding.ActivityArticleBinding
 import com.diskin.alon.movieguide.news.presentation.viewmodel.ArticleViewModel
@@ -23,7 +22,7 @@ class ArticleActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModel: ArticleViewModel
-    private var snackbar: Snackbar? = null
+    private var errorSnackbar: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,8 +30,6 @@ class ArticleActivity : AppCompatActivity() {
             this,
             R.layout.activity_article
         )
-
-        //StatusBarUtil.setTransparent(this)
 
         // Inject activity
         AndroidInjection.inject(this)
@@ -44,41 +41,53 @@ class ArticleActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // Observe view model article state
-        viewModel.article.observe(this, Observer { binding.article = it })
+        viewModel.article.observe(this) { article -> binding.article = article }
 
-        // Observe view model article loading state
-        viewModel.loading.observe(this, { state ->
-            when(state) {
-                is LoadState.Loading -> {
-                    progress_bar.visibility = View.VISIBLE
-                    snackbar?.dismiss()
-                }
-
-                is LoadState.Success -> progress_bar.visibility = View.GONE
-
-                is LoadState.Error -> {
-                    progress_bar.visibility = View.GONE
-                    showLoadingError(state.error)
-                }
+        // Observe view model update state
+        viewModel.update.observe(this) { update ->
+            when(update) {
+                is UpdateViewData.Update -> progress_bar?.visibility = View.VISIBLE
+                is UpdateViewData.EndUpdate -> progress_bar?.visibility = View.GONE
             }
-        })
-    }
-
-    private fun showLoadingError(error: AppError) {
-        snackbar = Snackbar.make(
-            nestedScrollView,
-            error.cause,
-            Snackbar.LENGTH_INDEFINITE)
-
-        if (error.retriable) {
-            snackbar?.setAction(getString(R.string.action_retry)) { viewModel.reload() }
         }
 
-        snackbar?.show()
+        // Observe view model error state
+        viewModel.error.observe(this) { error ->
+            when(error) {
+                is ErrorViewData.NoError -> errorSnackbar?.dismiss()
+                is ErrorViewData.NotRetriable -> showNotRetriableError(error)
+                is ErrorViewData.Retriable -> showRetriableError(error)
+            }
+        }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_article, menu)
+        viewModel.article.observe(this) { article ->
+            article?.let {
+                val bookmarkingItem = menu.findItem(R.id.action_bookmarking)
+                bookmarkingItem.isEnabled = true
+
+                when (it.bookmarked) {
+                    true -> bookmarkingItem
+                        .setTitle(getString(R.string.title_action_unbookmark))
+                        .setIcon(R.drawable.ic_bookmarked_24)
+                        .setOnMenuItemClickListener {
+                            viewModel.unBookmark()
+                            true
+                        }
+
+                    false -> bookmarkingItem
+                        .setTitle(getString(R.string.title_action_bookmark))
+                        .setIcon(R.drawable.ic_not_bookmarked_24)
+                        .setOnMenuItemClickListener {
+                            viewModel.bookmark()
+                            true
+                        }
+                }
+            }
+        }
+
         return true
     }
 
@@ -96,6 +105,25 @@ class ArticleActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
+    }
+
+    private fun showNotRetriableError(error: ErrorViewData.NotRetriable) {
+        errorSnackbar = Snackbar.make(
+            nestedScrollView,
+            error.reason,
+            Snackbar.LENGTH_INDEFINITE)
+
+        errorSnackbar?.show()
+    }
+
+    private fun showRetriableError(error: ErrorViewData.Retriable) {
+        errorSnackbar = Snackbar.make(
+            nestedScrollView,
+            error.reason,
+            Snackbar.LENGTH_INDEFINITE)
+            .setAction(getString(R.string.action_retry)) { error.retry() }
+
+        errorSnackbar?.show()
     }
 
     private fun shareArticle() {

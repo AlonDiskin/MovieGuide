@@ -1,0 +1,130 @@
+[{
+  "id": "uM+MqpK9duOyb/imN0cFmOAhKFCAsXozhxb+qTAQU1w=_174e6c31519:81d950:5d3e1c98",
+  "keywords": ["News", "TV", "Jim Carrey", "Joe Biden", "Kamala Harris", "Maya Rudolph", "Saturday Night Live", "SNL"],
+  "originId": "http://collider.com/?p=933286",
+  "fingerprint": "b95835f7",
+  "language": "en",
+  "title": "‘SNL’ Reveals First Look at Jim Carrey and Maya Rudolph as Joe Biden and Kamala Harris",
+  "crawled": 1601599378713,
+  "author": "Tom Reimann",
+  "origin": {
+    "streamId": "feed/http://www.collider.com/rss.asp",
+    "title": "Collider",
+    "htmlUrl": "https://collider.com"
+  },
+  "summary": {
+    "content": "In keeping with their bizarre practice of not having their actual cast members play major recurring roles, Saturday Night Live dropped a first-look teaser of Jim Carrey as Joe Biden and Maya Rudolph as Kamala Harris ahead of the sketch show’s season premiere this Saturday. And they look… fine? Mostly fine, yeah. Don’t get me wrong - it’s delightful to see Carrey returning to sketch comedy (it’s been nearly 30 years since In Living Color), and Rudolph absolutely crushes it in everything she does. But the stunt casting aspect of it can’t be ignored, particularly …",
+    "direction": "ltr"
+  },
+  "enclosure": [{
+    "href": "https://cdn.collider.com/wp-content/uploads/2020/10/snl-jim-carrey-maya-rudolph-slice.jpg",
+    "type": "image/jpg",
+    "length": 500000
+  }, {
+    "href": "https://cdn.collider.com/wp-content/uploads/2020/10/snl-jim-carrey-maya-rudolph-slice.jpg",
+    "width": 600,
+    "height": 200,
+    "type": "image/jpeg"
+  }],
+  "alternate": [{
+    "href": "https://collider.com/snl-jim-carrey-joe-biden-maya-rudolph-kamala-harris-first-look/",
+    "type": "text/html"
+  }],
+  "published": 1601598347000,
+  "visual": {
+    "url": "https://cdn.collider.com/wp-content/uploads/2020/10/snl-jim-carrey-maya-rudolph-social.jpg",
+    "width": 1178,
+    "height": 673,
+    "processor": "feedly-nikon-v3.1",
+    "contentType": "image/jpeg"
+  },
+  "canonicalUrl": "https://collider.com/snl-jim-carrey-joe-biden-maya-rudolph-kamala-harris-first-look/",
+  "unread": true,
+  "engagement": 5
+}, {
+  "id": "uM+MqpK9duOyb/imN0cFmOAhKFCAsXozhxb+qTAQU1w=_174d698e29e:17ba657:951e5be4",
+  "keywords": ["News", "Jurassic World VelociCoaster", "Theme Parks", "Universal Orlando", "Universal Orlando Resort", "Universal's Islands of Adventure"],
+  "originId": "https://collider.com/?p=932187",
+  "fingerprint": "1aa3c7d5",
+  "language": "en",
+  "title": "Universal Orlando Finally Reveals Jurassic World VelociCoaster Details, Intense Teaser Video",
+  "crawled": 1601328177822,
+  "author": "Adam Chitwood",
+  "origin": {
+    "streamId": "feed/http://www.collider.com/rss.asp",
+    "title": "Collider",
+    "htmlUrl": "https://collider.com"
+  },
+  "summary": {
+    "content": "Universal Orlando Resort has been constructing a new Jurassic World-themed roller coaster for many, many months, but has remained mum on what, exactly, it is. Until today. Universal Orlando has confirmed the existence of the Jurassic World VelociCoaster and released some images as well as a teaser trailer for Florida’s fastest and tallest launch coaster, which will officially open in Summer 2021. And it looks incredible. Described as a “new species of coaster,” the VelociCoaster will be the world’s first coaster based on the Jurassic franchise and touts a series of intense maneuvers that will send guests …",
+    "direction": "ltr"
+  },
+  "enclosure": [{
+    "href": "https://cdn.collider.com/wp-content/uploads/2020/09/jurassic-world-velocicoaster-slice.jpg",
+    "type": "image/jpg",
+    "length": 500000
+  }, {
+    "href": "https://cdn.collider.com/wp-content/uploads/2020/09/jurassic-world-velocicoaster-slice.jpg",
+    "width": 600,
+    "height": 200,
+    "type": "image/jpeg"
+  }],
+  "alternate": [{
+    "href": "https://collider.com/jurassic-world-velocicoaster-ride-details-teaser-video-universal-orlando/",
+    "type": "text/html"
+  }],
+  "published": 1601327798000,
+  "visual": {
+    "url": "https://cdn.collider.com/wp-content/uploads/2020/09/jurassic-world-velocicoaster-slice.jpg",
+    "width": 600,
+    "height": 200,
+    "processor": "feedly-nikon-v3.1",
+    "contentType": "image/jpeg"
+  },
+  "canonicalUrl": "https://collider.com/jurassic-world-velocicoaster-ride-details-teaser-video-universal-orlando/",
+  "unread": true,
+  "engagement": 882
+}, {
+  "id": "uM+MqpK9duOyb/imN0cFmOAhKFCAsXozhxb+qTAQU1w=_174e66eaaf4:7efce1:58da7475",
+  "keywords": ["News", "TV", "Alan Cumming", "Apple", "Apple TV", "Barry Sonnenfeld", "Cecily Strong", "Fred Armisen", "Jane Krakowski", "Keegan Michael Key", "Kristin Chenoweth", "Lorne Michaels"],
+  "originId": "http://collider.com/?p=933241",
+  "fingerprint": "fc2e9c63",
+  "language": "en",
+  "title": "Apple TV+ Unveils Impressive Ensemble Cast for Musical Comedy Series From Lorne Michaels",
+  "crawled": 1601593846516,
+  "author": "Tom Reimann",
+  "origin": {
+    "streamId": "feed/http://www.collider.com/rss.asp",
+    "title": "Collider",
+    "htmlUrl": "https://collider.com"
+  },
+  "summary": {
+    "content": "Apple TV+ unveiled an impressive ensemble cast for its upcoming musical comedy series from executive producer Lorne Michaels and creators Cinco Paul and Ken Daurio (the Despicable Me franchise). Cecily Strong will produce and lead the cast of the yet untitled series that will also star Keegan-Michael Key, Alan Cumming, Fred Armisen, Kristin Chenoweth, Aaron Tveit, Dove Cameron, Ariana DeBose, Jane Krakowski, and Ann Harada. [caption id=&quot;attachment_933251&quot; align=&quot;alignright&quot; width=&quot;360&quot;] Image via NBC / Warner Bros. Pictures[/caption] Set to debut globally on Apple TV+ next year, the new comedy series follows a couple on a backpacking trip …",
+    "direction": "ltr"
+  },
+  "enclosure": [{
+    "href": "https://cdn.collider.com/wp-content/uploads/2020/10/cecily-strong-keegan-michael-key-slice.jpg",
+    "type": "image/jpg",
+    "length": 500000
+  }, {
+    "href": "https://cdn.collider.com/wp-content/uploads/2020/10/cecily-strong-keegan-michael-key-slice.jpg",
+    "width": 600,
+    "height": 200,
+    "type": "image/jpeg"
+  }],
+  "alternate": [{
+    "href": "https://collider.com/lorne-michaels-apple-tv-plus-musical-comedy-series-cecily-strong-keegan-michael-key/",
+    "type": "text/html"
+  }],
+  "published": 1601592884000,
+  "visual": {
+    "url": "https://cdn.collider.com/wp-content/uploads/2020/10/cecily-strong-keegan-michael-key-slice.jpg",
+    "width": 600,
+    "height": 200,
+    "processor": "feedly-nikon-v3.1",
+    "contentType": "image/jpeg"
+  },
+  "canonicalUrl": "https://collider.com/lorne-michaels-apple-tv-plus-musical-comedy-series-cecily-strong-keegan-michael-key/",
+  "unread": true,
+  "engagement": 19
+}]

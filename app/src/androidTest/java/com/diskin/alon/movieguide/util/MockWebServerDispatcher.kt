@@ -1,7 +1,7 @@
 package com.diskin.alon.movieguide.util
 
 import com.diskin.alon.movieguide.news.data.remote.*
-import com.diskin.alon.movieguide.news.presentation.viewmodel.MoviesHeadlinesViewModelImpl
+import com.diskin.alon.movieguide.news.presentation.viewmodel.HeadlinesViewModelImpl
 import com.diskin.alon.movieguide.reviews.data.BuildConfig
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
@@ -12,12 +12,12 @@ import org.json.JSONObject
 class MockWebServerDispatcher : Dispatcher() {
 
     companion object {
-        private const val INIT_PAGE_SIZE = MoviesHeadlinesViewModelImpl.PAGE_SIZE * 3
+        private const val INIT_PAGE_SIZE = HeadlinesViewModelImpl.PAGE_SIZE * 3
         private const val MOVIE_NEWS_STREAM_PATH = "/$FEEDLY_FEED_PATH"
         private const val MOVIE_NEWS_ENTRY_PATH = "/$FEEDLY_ENTRY_PATH/"
         private const val STUB_IMAGES_PATH = "assets/image/stub_image"
         private const val STUB_IMAGE_RES = "assets/image/taco.jpeg"
-        const val MOVIE_NEWS_STREAM_RES = "assets/json/feedly_movie_news_stream.json"
+        const val MOVIE_NEWS_STREAM_RES = "assets/json/feedly_movie_news_page.json"
         const val MOVIE_NEWS_ENTRY_RES =  "assets/json/feedly_movie_news_entry.json"
         const val MOVIES_POPULAR_RES = "assets/json/themoviedb_movies_sorted_by_popularity.json"
         const val MOVIE_DETAIL_RES = "assets/json/themoviedb_movie_detail.json"

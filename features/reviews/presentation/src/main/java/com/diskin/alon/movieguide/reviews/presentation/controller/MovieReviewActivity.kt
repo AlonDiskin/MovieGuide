@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ShareCompat
 import androidx.databinding.DataBindingUtil
 import com.diskin.alon.movieguide.common.presentation.ViewData
-import com.diskin.alon.movieguide.common.presentation.ViewDataError
+import com.diskin.alon.movieguide.common.presentation.ErrorViewData
 import com.diskin.alon.movieguide.reviews.presentation.R
 import com.diskin.alon.movieguide.reviews.presentation.data.Trailer
 import com.diskin.alon.movieguide.reviews.presentation.databinding.ActivityMovieReviewBinding
@@ -86,15 +86,28 @@ class MovieReviewActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleReviewStateError(error: ViewDataError) {
+    private fun handleReviewStateError(error: ErrorViewData) {
+        when(error) {
+            is ErrorViewData.Retriable -> showRetriableError(error)
+            is ErrorViewData.NotRetriable -> showNotRetriableError(error)
+        }
+    }
+
+    private fun showNotRetriableError(error: ErrorViewData.NotRetriable) {
         snackbar = Snackbar.make(
             review_content,
             error.reason,
             Snackbar.LENGTH_INDEFINITE)
 
-        if (error is ViewDataError.Retriable) {
-            snackbar?.setAction(getString(R.string.action_retry)) { error.retry() }
-        }
+        snackbar?.show()
+    }
+
+    private fun showRetriableError(error: ErrorViewData.Retriable) {
+        snackbar = Snackbar.make(
+            review_content,
+            error.reason,
+            Snackbar.LENGTH_INDEFINITE)
+            .setAction(getString(R.string.action_retry)) { error.retry() }
 
         snackbar?.show()
     }

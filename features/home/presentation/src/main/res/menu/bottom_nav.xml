@@ -12,6 +12,11 @@
         android:title="@string/nav_reviews" />
 
     <item
+        android:id="@+id/bookmarks"
+        android:icon="@drawable/ic_bookmarks_24"
+        android:title="@string/nav_bookmarks" />
+
+    <item
         android:id="@+id/settings"
         android:icon="@drawable/ic_settings_24"
         android:title="@string/nav_settings" />

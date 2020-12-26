@@ -18,6 +18,9 @@ jobs:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
+          name: Unit test common
+          command: ./gradlew :features:common:presentation:testDebugUnitTest :features:common:data:testDebugUnitTest --no-daemon --max-workers=2 --stacktrace
+      - run:
           name: Unit test home feature
           command: ./gradlew :features:home:presentation:testDebugUnitTest --no-daemon --max-workers=2 --stacktrace
       - run:
@@ -30,6 +33,12 @@ jobs:
           path: app/build/reports
           destination: reports
       - store_test_results:
+          path: features/common/presentation/build/test-results
+      - store_test_results:
+          path: features/common/data/build/test-results
+      - store_test_results:
+          path: features/home/presentation/build/test-results
+      - store_test_results:
           path: features/news/presentation/build/test-results
       - store_test_results:
           path: features/news/data/build/test-results
@@ -41,6 +50,8 @@ jobs:
           path: features/reviews/data/build/test-results
       - store_test_results:
           path: features/reviews/appServices/build/test-results
+      - store_test_results:
+          path: features/reviews/domain/build/test-results
   integration_tests:
     working_directory: ~/code
     docker:

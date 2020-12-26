@@ -12,8 +12,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import com.diskin.alon.movieguide.R
-import com.diskin.alon.movieguide.news.presentation.controller.NewsHeadlinesAdapter.NewsHeadlineViewHolder
-import com.diskin.alon.movieguide.news.presentation.model.Article
+import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesAdapter.HeadlineViewHolder
+import com.diskin.alon.movieguide.news.presentation.data.Article
 import com.diskin.alon.movieguide.util.DeviceUtil
 import com.diskin.alon.movieguide.util.FileReader
 import com.diskin.alon.movieguide.util.MockWebServerDispatcher
@@ -47,7 +47,7 @@ class ArticleSharingSteps : GreenCoffeeSteps() {
     fun userSelectsToReadFirstHeadlineArticle() {
         // Open first headline article
         onView(withId(R.id.headlines))
-            .perform(actionOnItemAtPosition<NewsHeadlineViewHolder>(0,click()))
+            .perform(actionOnItemAtPosition<HeadlineViewHolder>(0,click()))
     }
 
     @And("^Read article content$")

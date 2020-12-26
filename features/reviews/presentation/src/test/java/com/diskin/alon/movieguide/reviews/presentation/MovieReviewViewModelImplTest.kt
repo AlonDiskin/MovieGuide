@@ -7,7 +7,7 @@ import com.diskin.alon.movieguide.common.appservices.Result
 import com.diskin.alon.movieguide.common.presentation.Model
 import com.diskin.alon.movieguide.common.presentation.RxViewModel
 import com.diskin.alon.movieguide.common.presentation.ViewData
-import com.diskin.alon.movieguide.common.presentation.ViewDataError
+import com.diskin.alon.movieguide.common.presentation.ErrorViewData
 import com.diskin.alon.movieguide.reviews.presentation.data.MovieReview
 import com.diskin.alon.movieguide.reviews.presentation.data.ReviewModelRequest
 import com.diskin.alon.movieguide.reviews.presentation.viewmodel.MovieReviewViewModelImpl
@@ -89,7 +89,7 @@ class MovieReviewViewModelImplTest {
     }
 
     @Test
-    fun requestReviewFromModelAndUpdateViewStateWhenCreated() {
+    fun requestReviewFromModelAndUpdateViewDataWhenCreated() {
         // Given an initialized view model
 
         // Then view model should request an observable movie review from model with movie id state
@@ -115,20 +115,19 @@ class MovieReviewViewModelImplTest {
     }
 
     @Test
-    fun updateViewErrorStateWhenModelReviewRequestFail() {
+    fun updateViewErrorDataWhenModelReviewRequestFail() {
         // Given an initialized view model
 
         // Then view model should request an observable movie review from model with movie id state
         verify { model.execute(ReviewModelRequest(movieId)) }
 
         // When model returned observable emit an error result
-        val appError = AppError("message",true)
+        val appError = AppError("message",false)
         modelReview.onNext(Result.Error(appError))
 
         // Then view model should update review view state with error data
         assertThat(viewModel.movieReview.value).isInstanceOf(ViewData.Error::class.java)
         val viewError = viewModel.movieReview.value as ViewData.Error<MovieReview>
-        assertThat(viewError.error.reason).isEqualTo(appError.cause)
-        assertThat(viewError.error).isInstanceOf(ViewDataError.Retriable::class.java)
+        assertThat(viewError.error).isEqualTo(ErrorViewData.NotRetriable(appError.description))
     }
 }

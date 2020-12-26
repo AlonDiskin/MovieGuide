@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         val navGraphIds = listOf(
             navigator.getNewsNavGraph(),
             navigator.getReviewsNavGraph(),
+            navigator.getBookmarksNavGraph(),
             navigator.getSettingsNavGraph()
         )
 

@@ -3,9 +3,8 @@ package com.diskin.alon.movieguide.di
 import android.app.Application
 import com.diskin.alon.movieguide.MovieGuideApp
 import com.diskin.alon.movieguide.home.di.MainActivityInjectionModule
-import com.diskin.alon.movieguide.news.di.ArticleActivityInjectionModule
-import com.diskin.alon.movieguide.news.di.MoviesHeadlinesFragmentInjectionModule
-import com.diskin.alon.movieguide.news.di.NewsNetworkingModule
+import com.diskin.alon.movieguide.news.di.common.NewsDataModule
+import com.diskin.alon.movieguide.news.di.common.NewsInjectionModule
 import com.diskin.alon.movieguide.reviews.di.MovieReviewActivityInjectionModule
 import com.diskin.alon.movieguide.reviews.di.MoviesFragmentInjectionModule
 import dagger.BindsInstance
@@ -22,11 +21,11 @@ import javax.inject.Singleton
     NavigationModule::class,
     NetworkingModule::class,
     AppModule::class,
+    DataModule::class,
     MainActivityInjectionModule::class,
-    MoviesHeadlinesFragmentInjectionModule::class,
-    ArticleActivityInjectionModule::class,
     MoviesFragmentInjectionModule::class,
-    MovieReviewActivityInjectionModule::class
+    MovieReviewActivityInjectionModule::class,
+    NewsInjectionModule::class
 ])
 interface AppComponent : AndroidInjector<MovieGuideApp> {
 

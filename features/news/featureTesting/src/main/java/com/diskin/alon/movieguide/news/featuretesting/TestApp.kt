@@ -29,4 +29,8 @@ class TestApp : DaggerApplication(), TestLifecycleApplication {
     fun getMockWebServer(): MockWebServer {
         return testAppComponent.getMockWebServer()
     }
+
+    fun getTestDatabase(): TestDatabase {
+        return testAppComponent.getTestDatabase()
+    }
 }

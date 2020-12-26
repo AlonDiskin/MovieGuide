@@ -1,13 +1,13 @@
 package com.diskin.alon.common.presentation
 
-import com.diskin.alon.movieguide.common.presentation.ViewDataError
+import com.diskin.alon.movieguide.common.presentation.ErrorViewData
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Test
 
 /**
- * [ViewDataError] unit test class.
+ * [ErrorViewData] unit test class.
  */
 class ViewDataErrorTest {
 
@@ -19,7 +19,7 @@ class ViewDataErrorTest {
         every { retryFunc.invoke() } returns Unit
 
         // Given an initialized retriable view data error
-        val error = ViewDataError.Retriable("message",retryFunc)
+        val error = ErrorViewData.Retriable("message",retryFunc)
 
         // When error is retried by client
         error.retry()

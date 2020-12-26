@@ -276,7 +276,7 @@ class MoviesFragmentTest {
                 when(it) {
                     MovieSorting.RELEASE_DATE -> {
                         onView(allOf(
-                            hasDescendant(withText(R.string.title_action_sort_newest)),
+                            hasDescendant(withText(R.string.title_action_sort_date)),
                             instanceOf(RelativeLayout::class.java)
                         ))
                             .check(matches(
