@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  common_unit_tests:
+  unit_tests:
     working_directory: ~/code
     docker:
       - image: circleci/android:api-28
@@ -18,8 +18,17 @@ jobs:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
-          name: Run common unit tests
+          name: Unit test common
           command: ./gradlew :features:common:presentation:testDebugUnitTest :features:common:data:testDebugUnitTest --no-daemon --max-workers=2 --stacktrace
+      - run:
+          name: Unit test home feature
+          command: ./gradlew :features:home:presentation:testDebugUnitTest --no-daemon --max-workers=2 --stacktrace
+      - run:
+          name: Unit test news feature
+          command: ./gradlew :features:news:presentation:testDebugUnitTest :features:news:appServices:test :features:news:domain:test :features:news:data:testDebugUnitTest --no-daemon --max-workers=2 --stacktrace
+      - run:
+          name: Unit test reviews feature
+          command: ./gradlew :features:reviews:presentation:testDebugUnitTest :features:reviews:appServices:test :features:reviews:domain:test :features:reviews:data:testDebugUnitTest --no-daemon --max-workers=2 --stacktrace
       - store_artifacts:
           path: app/build/reports
           destination: reports
@@ -27,83 +36,14 @@ jobs:
           path: features/common/presentation/build/test-results
       - store_test_results:
           path: features/common/data/build/test-results
-  home_unit_tests:
-    working_directory: ~/code
-    docker:
-      - image: circleci/android:api-28
-    environment:
-      JVM_OPTS: -Xmx3200m
-    steps:
-      - checkout
-      - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-      - run:
-          name: Download Dependencies
-          command: ./gradlew androidDependencies
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-      - run:
-          name: Run home feature unit tests
-          command: ./gradlew :features:common:presentation:testDebugUnitTest --no-daemon --max-workers=2 --stacktrace
-      - store_artifacts:
-          path: app/build/reports
-          destination: reports
       - store_test_results:
           path: features/home/presentation/build/test-results
-  news_unit_tests:
-    working_directory: ~/code
-    docker:
-      - image: circleci/android:api-28
-    environment:
-      JVM_OPTS: -Xmx3200m
-    steps:
-      - checkout
-      - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-      - run:
-          name: Download Dependencies
-          command: ./gradlew androidDependencies
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-      - run:
-          name: Run news feature unit tests
-          command: ./gradlew :features:news:presentation:testDebugUnitTest :features:news:appServices:test :features:news:data:testDebugUnitTest --no-daemon --max-workers=2 --stacktrace
-      - store_artifacts:
-          path: app/build/reports
-          destination: reports
       - store_test_results:
           path: features/news/presentation/build/test-results
       - store_test_results:
           path: features/news/data/build/test-results
       - store_test_results:
           path: features/news/appServices/build/test-results
-  reviews_unit_tests:
-    working_directory: ~/code
-    docker:
-      - image: circleci/android:api-28
-    environment:
-      JVM_OPTS: -Xmx3200m
-    steps:
-      - checkout
-      - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-      - run:
-          name: Download Dependencies
-          command: ./gradlew androidDependencies
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-      - run:
-          name: Run reviews feature unit tests
-          command: ./gradlew :features:reviews:presentation:testDebugUnitTest :features:reviews:appServices:test :features:reviews:domain:test :features:reviews:data:testDebugUnitTest --no-daemon --max-workers=2 --stacktrace
-      - store_artifacts:
-          path: app/build/reports
-          destination: reports
       - store_test_results:
           path: features/reviews/presentation/build/test-results
       - store_test_results:
@@ -112,7 +52,7 @@ jobs:
           path: features/reviews/appServices/build/test-results
       - store_test_results:
           path: features/reviews/domain/build/test-results
-  news_integration_tests:
+  integration_tests:
     working_directory: ~/code
     docker:
       - image: circleci/android:api-28
@@ -130,71 +70,26 @@ jobs:
             - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
-          name: Run news feature integration tests
+          name: Integration test news feature
           command: ./gradlew :features:news:featureTesting:testDebugUnitTest --no-daemon --max-workers=2 --stacktrace
-      - store_artifacts:
-          path: app/build/reports
-          destination: reports
-      - store_test_results:
-          path: features/news/featureTesting/build/test-results
-  reviews_integration_tests:
-    working_directory: ~/code
-    docker:
-      - image: circleci/android:api-28
-    environment:
-      JVM_OPTS: -Xmx3200m
-    steps:
-      - checkout
-      - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
-          name: Download Dependencies
-          command: ./gradlew androidDependencies
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-      - run:
-          name: Run reviews feature integration tests
+          name: Integration test reviews feature
           command: ./gradlew :features:reviews:featureTesting:testDebugUnitTest --no-daemon --max-workers=2 --stacktrace
+      - run:
+          name: Integration test settings feature
+          command: ./gradlew :features:settings:featureTesting:testDebugUnitTest --no-daemon --max-workers=2 --stacktrace
       - store_artifacts:
           path: app/build/reports
           destination: reports
       - store_test_results:
           path: features/reviews/featureTesting/build/test-results
-  settings_integration_tests:
-    working_directory: ~/code
-    docker:
-      - image: circleci/android:api-28
-    environment:
-      JVM_OPTS: -Xmx3200m
-    steps:
-      - checkout
-      - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-      - run:
-          name: Download Dependencies
-          command: ./gradlew androidDependencies
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-      - run:
-          name: Run settings feature integration tests
-          command: ./gradlew :features:settings:featureTesting:testDebugUnitTest --no-daemon --max-workers=2 --stacktrace
-      - store_artifacts:
-          path: app/build/reports
-          destination: reports
+      - store_test_results:
+          path: features/news/featureTesting/build/test-results
       - store_test_results:
           path: features/settings/featureTesting/build/test-results
 workflows:
   version: 2
   build_and_test:
     jobs:
-      - common_unit_tests
-      - home_unit_tests
-      - news_unit_tests
-      - reviews_unit_tests
-      - news_integration_tests
-      - reviews_integration_tests
-      - settings_integration_tests
+      - unit_tests
+      - integration_tests
