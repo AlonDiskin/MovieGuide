@@ -71,7 +71,7 @@ class BookmarksFragment : Fragment(), ActionMode.Callback{
             selectedBookmarksIds,
             multiSelect
         )
-        bookmarks.adapter = adapter
+        bookmarked_articles.adapter = adapter
 
         // Observe bookmarks state from view model
         viewModel.bookmarks.observe(viewLifecycleOwner,{ headlines -> adapter.submitList(headlines) })
@@ -138,7 +138,7 @@ class BookmarksFragment : Fragment(), ActionMode.Callback{
 
     private fun showNotRetriableError(error: ErrorViewData.NotRetriable) {
         errorSnackbar = Snackbar.make(
-            bookmarks,
+            bookmarked_articles,
             error.reason,
             Snackbar.LENGTH_INDEFINITE)
 
@@ -147,7 +147,7 @@ class BookmarksFragment : Fragment(), ActionMode.Callback{
 
     private fun showRetriableError(error: ErrorViewData.Retriable) {
         errorSnackbar = Snackbar.make(
-            bookmarks,
+            bookmarked_articles,
             error.reason,
             Snackbar.LENGTH_INDEFINITE)
             .setAction(getString(R.string.action_retry)) { error.retry() }
@@ -276,7 +276,7 @@ class BookmarksFragment : Fragment(), ActionMode.Callback{
             adapter.isMultiSelect = false
 
             for (i in 0 until adapter.itemCount) {
-                val holder = bookmarks.findViewHolderForAdapterPosition(i)
+                val holder = bookmarked_articles.findViewHolderForAdapterPosition(i)
                 holder?.itemView?.setBackgroundColor(Color.WHITE)
             }
         }

@@ -3,7 +3,6 @@ package com.diskin.alon.movieguide.di
 import android.app.Application
 import com.diskin.alon.movieguide.MovieGuideApp
 import com.diskin.alon.movieguide.home.di.MainActivityInjectionModule
-import com.diskin.alon.movieguide.news.di.common.NewsDataModule
 import com.diskin.alon.movieguide.news.di.common.NewsInjectionModule
 import com.diskin.alon.movieguide.reviews.di.MovieReviewActivityInjectionModule
 import com.diskin.alon.movieguide.reviews.di.MoviesFragmentInjectionModule

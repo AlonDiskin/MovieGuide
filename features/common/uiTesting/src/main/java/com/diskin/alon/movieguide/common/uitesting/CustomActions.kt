@@ -10,9 +10,6 @@ import org.hamcrest.BaseMatcher
 import org.hamcrest.CoreMatchers.isA
 import org.hamcrest.Description
 import org.hamcrest.Matcher
-import kotlin.reflect.KMutableProperty
-import kotlin.reflect.full.memberProperties
-import kotlin.reflect.jvm.isAccessible
 
 fun swipeToRefresh(): ViewAction {
     return object : ViewAction {
@@ -43,19 +40,15 @@ fun swipeToRefresh(): ViewAction {
             swipeRefreshLayout.run {
                 isRefreshing = true
                 // set mNotify to true
-                val notify = SwipeRefreshLayout::class.memberProperties.find {
-                    it.name == "mNotify"
-                }
-                notify?.isAccessible = true
-                if (notify is KMutableProperty<*>) {
-                    notify.setter.call(this, true)
-                }
+                val fieldNotify = SwipeRefreshLayout::class.java.getDeclaredField("mNotify")
+                fieldNotify.isAccessible = true
+                fieldNotify.setBoolean(this,true)
+
                 // mockk mRefreshListener onAnimationEnd
-                val refreshListener = SwipeRefreshLayout::class.memberProperties.find {
-                    it.name == "mRefreshListener"
-                }
-                refreshListener?.isAccessible = true
-                val animatorListener = refreshListener?.get(this) as Animation.AnimationListener
+                val fieldRefreshListener = SwipeRefreshLayout::class.java.getDeclaredField("mRefreshListener")
+                fieldRefreshListener.isAccessible = true
+                val animatorListener = fieldRefreshListener.get(this) as Animation.AnimationListener
+
                 animatorListener.onAnimationEnd(mockk())
             }
         }

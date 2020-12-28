@@ -2,7 +2,7 @@ package com.diskin.alon.movieguide.di
 
 import com.diskin.alon.movieguide.news.data.remote.FeedlyApi
 import com.diskin.alon.movieguide.reviews.data.remote.TheMovieDbApi
-import com.diskin.alon.movieguide.util.MockWebServerRule
+import com.diskin.alon.movieguide.util.NetworkUtil
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -32,7 +32,7 @@ object TestNetworkingModule {
     @Provides
     fun provideFeedlyApi(httpClient: OkHttpClient): FeedlyApi {
         return Retrofit.Builder()
-            .baseUrl(MockWebServerRule.serverUrl)
+            .baseUrl(NetworkUtil.url)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .client(httpClient)
@@ -45,7 +45,7 @@ object TestNetworkingModule {
     @Provides
     fun provideTheMovieDbApi(httpClient: OkHttpClient): TheMovieDbApi {
         return Retrofit.Builder()
-            .baseUrl(MockWebServerRule.serverUrl)
+            .baseUrl(NetworkUtil.url)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .client(httpClient)

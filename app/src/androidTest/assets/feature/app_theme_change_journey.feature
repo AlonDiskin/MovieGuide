@@ -1,7 +1,7 @@
 Feature: User change app theme
 
-  user journey that exercise his usage of
-  app functionality to select app visual theme
+  User journey that exercise his usage of
+  app functionality to set app visual theme
 
   Scenario: User change app theme
     Given User launched app from device home

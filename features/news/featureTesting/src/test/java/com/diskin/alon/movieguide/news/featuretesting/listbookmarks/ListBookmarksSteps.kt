@@ -101,13 +101,13 @@ class ListBookmarksSteps(
     private fun verifyBookmarksShow(bookmarks: List<UiBookmark>) {
         bookmarksFragmentScenario.onFragment { fragment ->
             val adapter =
-                fragment.view!!.findViewById<RecyclerView>(R.id.bookmarks).adapter!!
+                fragment.view!!.findViewById<RecyclerView>(R.id.bookmarked_articles).adapter!!
 
             assertThat(adapter.itemCount).isEqualTo(bookmarks.size)
         }
 
         bookmarks.forEachIndexed { index, uiBookmark ->
-            onView(withId(id.bookmarks))
+            onView(withId(id.bookmarked_articles))
                 .perform(
                     scrollToPosition<BookmarksAdapter.BookmarkViewHolder>(
                         index
@@ -117,7 +117,7 @@ class ListBookmarksSteps(
             Shadows.shadowOf(Looper.getMainLooper()).idle()
 
             onView(
-                withRecyclerView(id.bookmarks)
+                withRecyclerView(id.bookmarked_articles)
                     .atPosition(index)
             )
                 .check(
@@ -206,9 +206,7 @@ class ListBookmarksSteps(
                     }
                 }
 
-                else -> {
-                    MockResponse().setResponseCode(404)
-                }
+                else -> MockResponse().setResponseCode(404)
             }
         }
 

@@ -2,6 +2,7 @@ package com.diskin.alon.movieguide.di
 
 import android.app.Application
 import com.diskin.alon.movieguide.home.di.MainActivityInjectionModule
+import com.diskin.alon.movieguide.news.di.common.NewsInjectionModule
 import com.diskin.alon.movieguide.reviews.di.MovieReviewActivityInjectionModule
 import com.diskin.alon.movieguide.reviews.di.MoviesFragmentInjectionModule
 import com.diskin.alon.movieguide.runner.TestApp
@@ -18,10 +19,10 @@ import javax.inject.Singleton
     AndroidSupportInjectionModule::class,
     NavigationModule::class,
     AppModule::class,
+    DataModule::class,
     TestNetworkingModule::class,
     MainActivityInjectionModule::class,
-    MoviesHeadlinesFragmentInjectionModule::class,
-    ArticleActivityInjectionModule::class,
+    NewsInjectionModule::class,
     MoviesFragmentInjectionModule::class,
     MovieReviewActivityInjectionModule::class
 ])

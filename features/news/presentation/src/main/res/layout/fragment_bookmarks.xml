@@ -7,7 +7,7 @@
     android:id="@+id/bookmarks_root">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/bookmarks"
+        android:id="@+id/bookmarked_articles"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbarSize="4dp"

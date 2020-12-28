@@ -1,17 +1,16 @@
 package com.diskin.alon.movieguide.journeysteps
 
-import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.diskin.alon.movieguide.R
 import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesAdapter.HeadlineViewHolder
 import com.diskin.alon.movieguide.util.DeviceUtil
 import com.diskin.alon.movieguide.util.FileUtil
-import com.google.common.truth.Truth.assertThat
+import com.diskin.alon.movieguide.util.isRecyclerViewItemsCount
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.And
 import com.mauriciotogneri.greencoffee.annotations.Given
@@ -21,13 +20,14 @@ import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
+import org.joda.time.LocalDateTime
 import org.json.JSONArray
 import java.net.URLEncoder
 
 /**
- * Step definitions for 'User share article' scenario.
+ * Step definitions for 'User bookmarks article' scenario.
  */
-class ArticleSharingSteps(server: MockWebServer) : GreenCoffeeSteps() {
+class ArticleBookmarkingSteps(server: MockWebServer): GreenCoffeeSteps() {
 
     private val dispatcher = TestDispatcher()
 
@@ -37,60 +37,67 @@ class ArticleSharingSteps(server: MockWebServer) : GreenCoffeeSteps() {
     }
 
     @Given("^User launched app from device home$")
-    fun userLaunchedAppFromDeviceHome() {
+    fun user_launched_app_from_device_home() {
         DeviceUtil.openDeviceHome()
         DeviceUtil.launchApp()
     }
 
     @And("^Open news screen$")
-    fun openedNewsScreen() {
-        // Open news screen
+    fun open_news_screen() {
         onView(withId(R.id.news))
             .perform(click())
     }
 
-    @When("^User selects to read first listed article$")
-    fun userSelectsToReadFirstListedArticle() {
-        // Open first article
+    @When("^User bookmarks first listed article$")
+    fun user_bookmarks_first_listed_article() {
         onView(withId(R.id.headlines))
-            .perform(actionOnItemAtPosition<HeadlineViewHolder>(0,click()))
-    }
-
-    @When("^User share article$")
-    fun userShareArticle() {
-        Intents.init()
-
-        // Select to share article
-        onView(withId(R.id.action_share))
+            .perform(
+                actionOnItemAtPosition<HeadlineViewHolder>(
+                    0,
+                    click()
+                )
+            )
+        onView(withId(R.id.action_bookmarking))
             .perform(click())
     }
 
-    @Then("^App should share article url$")
-    fun appShouldShareArticleUrl() {
-        // Verify app share article url via android sharing ui sheet
-        val intent = Intents.getIntents().first().extras?.get(Intent.EXTRA_INTENT) as Intent
-
-        Intents.intended(IntentMatchers.hasAction(Intent.ACTION_CHOOSER))
-        Intents.intended(IntentMatchers.hasExtraWithKey(Intent.EXTRA_INTENT))
-        assertThat(intent.type).isEqualTo("text/plain")
-        assertThat(intent.getStringExtra(Intent.EXTRA_TEXT)).isEqualTo(expectedArticleUrl())
-
-        Intents.release()
-        DeviceUtil.pressBack()
+    @And("^Open bookmarks screen$")
+    fun open_bookmarks_screen() {
+        // Use Espresso 'press back' and not DeviceUtil.since uiautomator is not synced with test thread
+        pressBack()
+        onView(withId(R.id.bookmarks))
+            .perform(click())
     }
 
-    private fun expectedArticleUrl(): String {
-        val json = FileUtil.readStringFromFile(dispatcher.sharedArticleResource)
-        val jsonArray = JSONArray(json)
-        val jsonEntryObject = jsonArray.getJSONObject(0)!!
+    @Then("^Bookmarked article should be listed$")
+    fun bookmarked_article_should_be_listed() {
+        val bookmark = expectedUiBookmark()
 
-        return jsonEntryObject.getString("originId")
+        onView(withId(R.id.bookmarked_articles))
+            .check(matches(isRecyclerViewItemsCount(1)))
+        onView(withId(R.id.title))
+            .check(matches(withText(bookmark.title)))
+        onView(withId(R.id.published))
+            .check(matches(withText(bookmark.date)))
+
+    }
+
+    private fun expectedUiBookmark(): UiBookmark {
+        val json = FileUtil.readStringFromFile(dispatcher.bookmarkedArticleResource)
+        val jsonArray = JSONArray(json)
+        val articleObject = jsonArray.getJSONObject(0)
+
+        return UiBookmark(
+            articleObject.getString("title"),
+            LocalDateTime(articleObject.getLong("published")).toString("dd MMM HH:mm")
+        )
     }
 
     private class TestDispatcher: Dispatcher() {
         val articlesResource = "assets/json/feedly_movie_news_stream.json"
-        val sharedArticleResource = "assets/json/feedly_movie_news_entry.json"
+        val bookmarkedArticleResource = "assets/json/feedly_movie_news_entry.json"
         private val feedPath = "/streams/contents"
+        private val dynamicEntriesPath = "/entries/.mget"
         private val entryPath = "/entries/".plus(
             URLEncoder.encode(
                 "uM+MqpK9duOyb/imN0cFmOAhKFCAsXozhxb+qTAQU1w=_174e6c31519:81d950:5d3e1c98",
@@ -105,11 +112,17 @@ class ArticleSharingSteps(server: MockWebServer) : GreenCoffeeSteps() {
                     .setResponseCode(200)
 
                 entryPath -> MockResponse()
-                    .setBody(FileUtil.readStringFromFile(sharedArticleResource))
+                    .setBody(FileUtil.readStringFromFile(bookmarkedArticleResource))
+                    .setResponseCode(200)
+
+                dynamicEntriesPath -> MockResponse()
+                    .setBody(FileUtil.readStringFromFile(bookmarkedArticleResource))
                     .setResponseCode(200)
 
                 else -> MockResponse().setResponseCode(404)
             }
         }
     }
+
+    private data class UiBookmark(val title: String,val date: String)
 }

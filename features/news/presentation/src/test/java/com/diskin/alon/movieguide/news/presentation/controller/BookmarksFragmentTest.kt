@@ -116,7 +116,7 @@ class BookmarksFragmentTest {
 
         // Then fragment should show bookmarks in layout
         bookmarkedHeadlines.forEachIndexed { index, newsHeadline ->
-            onView(withId(R.id.bookmarks))
+            onView(withId(R.id.bookmarked_articles))
                 .perform(
                     scrollToPosition<BookmarkViewHolder>(
                         index
@@ -125,7 +125,7 @@ class BookmarksFragmentTest {
 
             Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-            onView(withRecyclerView(R.id.bookmarks).atPosition(index))
+            onView(withRecyclerView(R.id.bookmarked_articles).atPosition(index))
                 .check(
                     matches(
                         hasDescendant(
@@ -160,7 +160,7 @@ class BookmarksFragmentTest {
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // When user selects the first listed bookmarks
-        onView(withId(R.id.bookmarks))
+        onView(withId(R.id.bookmarked_articles))
             .perform(
                 actionOnItemAtPosition<BookmarkViewHolder>(
                     0,
@@ -358,19 +358,19 @@ class BookmarksFragmentTest {
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // When user selects to remove first and last shown bookmarks
-        onView(withId(R.id.bookmarks))
+        onView(withId(R.id.bookmarked_articles))
             .perform(scrollToPosition<BookmarkViewHolder>(0))
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-        onView(withRecyclerView(R.id.bookmarks).atPosition(0))
+        onView(withRecyclerView(R.id.bookmarked_articles).atPosition(0))
             .perform(longClick())
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-        onView(withId(R.id.bookmarks))
+        onView(withId(R.id.bookmarked_articles))
             .perform(scrollToPosition<BookmarkViewHolder>(bookmarkedHeadlines.size - 1))
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-        onView(withRecyclerView(R.id.bookmarks).atPosition(bookmarkedHeadlines.size - 1))
+        onView(withRecyclerView(R.id.bookmarked_articles).atPosition(bookmarkedHeadlines.size - 1))
             .perform(click())
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 

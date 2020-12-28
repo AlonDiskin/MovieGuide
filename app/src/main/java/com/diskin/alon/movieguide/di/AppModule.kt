@@ -1,18 +1,7 @@
 package com.diskin.alon.movieguide.di
 
-import android.app.Application
-import android.content.res.Resources
+import com.diskin.alon.movieguide.news.di.common.NewsAppModule
 import dagger.Module
-import dagger.Provides
-import javax.inject.Singleton
 
-@Module
-object AppModule {
-
-    @JvmStatic
-    @Singleton
-    @Provides
-    fun provideResources(app: Application): Resources {
-        return app.resources
-    }
-}
+@Module(includes = [NewsAppModule::class])
+object AppModule

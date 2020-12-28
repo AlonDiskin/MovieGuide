@@ -2,6 +2,7 @@ package com.diskin.alon.movieguide.journeysteps
 
 import androidx.test.filters.LargeTest
 import com.diskin.alon.movieguide.util.MockWebServerRule
+import com.diskin.alon.movieguide.util.NetworkUtil
 import com.mauriciotogneri.greencoffee.GreenCoffeeConfig
 import com.mauriciotogneri.greencoffee.GreenCoffeeTest
 import com.mauriciotogneri.greencoffee.ScenarioConfig
@@ -39,6 +40,7 @@ class AppThemeChangeStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scen
         RxJavaPlugins.setInitIoSchedulerHandler(
             Rx2Idler.create("RxJava 2.x IO Scheduler"))
 
+        NetworkUtil.server.shutdown()
         start(AppThemeChangeSteps())
     }
 }
