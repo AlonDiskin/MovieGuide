@@ -12,7 +12,7 @@ class MockWebServerRule : TestRule {
                     NetworkUtil.initServer()
                     base.evaluate()
                 } finally {
-                    NetworkUtil.server.shutdown()
+                    //NetworkUtil.server.shutdown()
                 }
             }
         }
