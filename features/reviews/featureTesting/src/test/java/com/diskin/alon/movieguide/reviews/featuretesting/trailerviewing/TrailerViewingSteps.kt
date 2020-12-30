@@ -41,7 +41,6 @@ class TrailerViewingSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
     init {
         // Prepare test server
-        server.start()
         server.setDispatcher(dispatcher)
     }
 

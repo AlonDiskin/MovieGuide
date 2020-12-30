@@ -1,8 +1,8 @@
 package com.diskin.alon.movieguide.reviews.featuretesting
 
 import android.app.Application
-import com.diskin.alon.movieguide.reviews.di.MovieReviewActivityInjectionModule
-import com.diskin.alon.movieguide.reviews.di.MoviesFragmentInjectionModule
+import com.diskin.alon.movieguide.reviews.di.common.ReviewsDataModule
+import com.diskin.alon.movieguide.reviews.di.common.ReviewsInjectionModule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
@@ -15,9 +15,9 @@ import javax.inject.Singleton
 @Component(modules = [
     AndroidSupportInjectionModule::class,
     AndroidInjectionModule::class,
-    TestNetworkingModule::class,
-    MoviesFragmentInjectionModule::class,
-    MovieReviewActivityInjectionModule::class
+    TestAppModule::class,
+    ReviewsInjectionModule::class,
+    ReviewsDataModule::class
 ])
 interface TestAppComponent : AndroidInjector<TestApp> {
 
@@ -28,4 +28,6 @@ interface TestAppComponent : AndroidInjector<TestApp> {
     }
 
     fun getMockWebServer(): MockWebServer
+
+    fun getTestDatabase(): TestDatabase
 }

@@ -15,7 +15,7 @@ class MoviePagingSource @Inject constructor(
     private val api: TheMovieDbApi,
     private val networkErrorHandler: NetworkErrorHandler,
     private val sorting: MovieSorting,
-    private val mapper: Mapper<List<MovieResponse>, List<MovieEntity>>
+    private val mapper: Mapper<MovieResponse, MovieEntity>
 ) : RxPagingSource<String, MovieEntity>() {
 
     override fun loadSingle(params: LoadParams<String>): Single<LoadResult<String, MovieEntity>> {
@@ -59,7 +59,7 @@ class MoviePagingSource @Inject constructor(
 
         // Map api response
         return LoadResult.Page(
-            mapper.map(response.results),
+            response.results.map { mapper.map(it) },
             null,  // Only paging forward.
             nextKey,
             LoadResult.Page.COUNT_UNDEFINED,

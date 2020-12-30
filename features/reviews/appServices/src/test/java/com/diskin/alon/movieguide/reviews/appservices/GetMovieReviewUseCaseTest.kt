@@ -1,12 +1,11 @@
 package com.diskin.alon.movieguide.reviews.appservices
 
 import com.diskin.alon.movieguide.common.appservices.Result
-import com.diskin.alon.movieguide.common.util.Mapper
-import com.diskin.alon.movieguide.reviews.appservices.interfaces.MovieReviewRepository
-import com.diskin.alon.movieguide.reviews.appservices.data.MovieReviewDto
+import com.diskin.alon.movieguide.common.appservices.toResult
 import com.diskin.alon.movieguide.reviews.appservices.data.MovieReviewRequest
+import com.diskin.alon.movieguide.reviews.appservices.interfaces.MovieRepository
+import com.diskin.alon.movieguide.reviews.appservices.interfaces.MovieReviewRepository
 import com.diskin.alon.movieguide.reviews.appservices.usecase.GetMovieReviewUseCase
-import com.diskin.alon.movieguide.reviews.domain.entities.MovieReviewEntity
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -23,34 +22,38 @@ class GetMovieReviewUseCaseTest {
     private lateinit var useCase: GetMovieReviewUseCase
 
     // Collaborators
-    private val repository: MovieReviewRepository = mockk()
-    private val mapper: Mapper<Result<MovieReviewEntity>, Result<MovieReviewDto>> = mockk()
+    private val reviewRepo: MovieReviewRepository = mockk()
+    private val movieRepo: MovieRepository = mockk()
 
     @Before
     fun setUp() {
         // Init test subject
-        useCase = GetMovieReviewUseCase(repository,mapper)
+        useCase = GetMovieReviewUseCase(reviewRepo,movieRepo)
     }
 
     @Test
     fun fetchReviewWhenExecuted() {
         // Test case fixture
-        val repoReview = mockk<Result<MovieReviewEntity>>()
-        val mapperReview = mockk<Result<MovieReviewDto>>()
+        val repoReview = createMovieReviewEntity()
+        val repoFavorite = true
 
-        every { repository.getReview(any()) } returns Observable.just(repoReview)
-        every { mapper.map(any()) } returns mapperReview
-        // Given an initialized use case
+        every { reviewRepo.getReview(any()) } returns Observable.just(repoReview).toResult()
+        every { movieRepo.isFavorite(any()) } returns Observable.just(repoFavorite).toResult()
 
-        // When use case is executed
+        // Given an initialized useCase
+
+        // When use case executed with valid request param
         val request = MovieReviewRequest("id")
         val testObserver = useCase.execute(request).test()
 
-        // Then use case should fetch review observable from repository
-        verify { repository.getReview(request.id) }
+        // Then use case should get review from repository with request id param
+        verify { reviewRepo.getReview(request.id) }
 
-        // And return mapped result model
-        verify { mapper.map(repoReview) }
-        testObserver.assertValue(mapperReview)
+        // And check in movie repository if reviewed movie is a user favorite
+        verify { movieRepo.isFavorite(request.id) }
+
+        // And transform results into review dto
+        val expectedDto = createMovieReviewDto(repoReview,repoFavorite)
+        testObserver.assertValue(Result.Success(expectedDto))
     }
 }

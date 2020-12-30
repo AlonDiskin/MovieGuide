@@ -41,7 +41,6 @@ class MoviesListedSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
     init {
         // Prepare mock web server for test scenario
-        server.start()
         server.setDispatcher(dispatcher)
 
         // Mock out image loader

@@ -6,7 +6,7 @@
 
     <data>
         <variable
-            name="review"
+            name="movieReview"
             type="com.diskin.alon.movieguide.reviews.presentation.data.MovieReview" />
     </data>
 
@@ -43,7 +43,7 @@
                         android:scaleType="centerCrop"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        app:loadImage="@{review.backDropImageUrl}"
+                        app:loadImage="@{movieReview.backDropImageUrl}"
                         app:layout_constraintDimensionRatio="4:3"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -94,7 +94,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:layout_marginBottom="4dp"
-                    android:text="@{review.title}"
+                    android:text="@{movieReview.title}"
                     android:fontFamily="sans-serif-black"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     tools:text="@string/stub_movie_title" />
@@ -105,7 +105,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:fontFamily="sans-serif-medium"
-                    android:text="@{review.rating}"
+                    android:text="@{movieReview.rating}"
                     tools:text="@string/stub_movie_rating"/>
 
                 <TextView
@@ -114,7 +114,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:fontFamily="sans-serif-medium"
-                    android:text="@{review.genres}"
+                    android:text="@{movieReview.genres}"
                     tools:text="@string/stub_movie_genre" />
 
                 <TextView
@@ -123,7 +123,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:fontFamily="sans-serif-medium"
-                    android:text="@{review.releaseDate}"
+                    android:text="@{movieReview.releaseDate}"
                     android:layout_marginEnd="10dp"
                     tools:text="@string/stub_movie_release" />
 
@@ -133,7 +133,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:fontFamily="sans-serif-medium"
-                    android:text="@{review.summary}"
+                    android:text="@{movieReview.summary}"
                     android:textStyle="bold"
                     android:layout_marginTop="16dp"
                     tools:text="@string/stub_movie_summary" />
@@ -166,12 +166,12 @@
                     android:text="@string/label_review" />
 
                 <TextView
-                    android:id="@+id/review"
+                    android:id="@+id/review_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:fontFamily="sans-serif-medium"
-                    android:text="@{review.review}"
+                    android:text="@{movieReview.review}"
                     tools:text="@string/stub_movie_review"/>
 
             </LinearLayout>

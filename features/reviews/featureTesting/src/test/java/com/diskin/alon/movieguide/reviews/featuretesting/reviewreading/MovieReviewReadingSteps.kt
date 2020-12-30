@@ -64,7 +64,6 @@ class MovieReviewReadingSteps(server: MockWebServer) : GreenCoffeeSteps() {
         }
 
         // Prepare test server
-        server.start()
         server.setDispatcher(dispatcher)
 
         // Mock out image loader
@@ -114,7 +113,7 @@ class MovieReviewReadingSteps(server: MockWebServer) : GreenCoffeeSteps() {
         onView(withId(R.id.summary))
             .check(matches(withText(review.summary)))
 
-        onView(withId(R.id.review))
+        onView(withId(R.id.review_text))
             .check(matches(withText(review.review)))
 
         verify { ImageLoader.loadIntoImageView(any(),review.backDropImageUrl) }
@@ -128,12 +127,11 @@ class MovieReviewReadingSteps(server: MockWebServer) : GreenCoffeeSteps() {
         private val moviesResourcePath = "json/themoviedb_movies_sorted_by_popularity.json"
         val movieDetailResourcePath = "json/themoviedb_movie_detail.json"
         val movieTrailersResourcePath = "json/themoviedb_movie_trailers.json"
+        private val moviesPath = "/3/discover/movie"
+        private val movieDetailPath = "/3/movie/724989"
+        private val movieTrailersPath = "/3/movie/724989/videos"
 
         override fun dispatch(request: RecordedRequest): MockResponse {
-            val moviesPath = "/3/discover/movie"
-            val movieDetailPath = "/3/movie/724989"
-            val movieTrailersPath = "/3/movie/724989/videos"
-
             return when(request.requestUrl.uri().path) {
                 moviesPath -> {
                     return if (

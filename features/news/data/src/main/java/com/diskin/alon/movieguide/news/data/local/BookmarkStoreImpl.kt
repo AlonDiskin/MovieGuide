@@ -25,33 +25,25 @@ class BookmarkStoreImpl @Inject constructor(
         }
 
         return bookmarks
-            .onErrorResumeNext(
-                Function { Observable.error(errorHandler.handle(it)) }
-            )
-            .toResult()
+            .toResult(errorHandler::handle)
     }
 
     override fun contains(id: String): Observable<Result<Boolean>> {
         return dao.getAll()
             .map { bookmarks -> bookmarks.any { it.articleId == id } }
-            .onErrorResumeNext(
-                Function { Observable.error(errorHandler.handle(it)) }
-            )
-            .toResult()
+            .toResult(errorHandler::handle)
     }
 
     override fun add(id: String): Single<Result<Unit>> {
         return dao.insert(Bookmark(id))
             .subscribeOn(Schedulers.io())
             .toSingleDefault(Unit)
-            .onErrorResumeNext { Single.error(errorHandler.handle(it)) }
-            .toSingleResult()
+            .toSingleResult(errorHandler::handle)
     }
 
     override fun remove(ids: List<String>): Single<Result<Unit>> {
         return Single.fromCallable { dao.deleteAllByArticleId(ids) }
             .subscribeOn(Schedulers.io())
-            .onErrorResumeNext { Single.error(errorHandler.handle(it)) }
-            .toSingleResult()
+            .toSingleResult(errorHandler::handle)
     }
 }

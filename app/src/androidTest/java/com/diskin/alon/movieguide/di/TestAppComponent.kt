@@ -3,8 +3,7 @@ package com.diskin.alon.movieguide.di
 import android.app.Application
 import com.diskin.alon.movieguide.home.di.MainActivityInjectionModule
 import com.diskin.alon.movieguide.news.di.common.NewsInjectionModule
-import com.diskin.alon.movieguide.reviews.di.MovieReviewActivityInjectionModule
-import com.diskin.alon.movieguide.reviews.di.MoviesFragmentInjectionModule
+import com.diskin.alon.movieguide.reviews.di.common.ReviewsInjectionModule
 import com.diskin.alon.movieguide.runner.TestApp
 import dagger.BindsInstance
 import dagger.Component
@@ -23,8 +22,7 @@ import javax.inject.Singleton
     TestNetworkingModule::class,
     MainActivityInjectionModule::class,
     NewsInjectionModule::class,
-    MoviesFragmentInjectionModule::class,
-    MovieReviewActivityInjectionModule::class
+    ReviewsInjectionModule::class
 ])
 interface TestAppComponent : AndroidInjector<TestApp> {
 

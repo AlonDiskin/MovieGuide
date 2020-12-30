@@ -22,14 +22,14 @@ fun <T : Any, R : Any> Observable<Result<T>>.mapResult(mapper: Function<T,R>): O
     }
 }
 
-fun <T : Any> Observable<T>.toResult(): Observable<Result<T>> {
+fun <T : Any> Observable<T>.toResult(errorHandler: ((Throwable) -> (AppError))? = null): Observable<Result<T>> {
     return this.map { toSuccessResult(it) }
-        .onErrorReturn { toResultError(it) }
+        .onErrorReturn { toResultError(it,errorHandler) }
 }
 
-fun <T : Any> Single<T>.toSingleResult(): Single<Result<T>> {
+fun <T : Any> Single<T>.toSingleResult(errorHandler: ((Throwable) -> (AppError))? = null): Single<Result<T>> {
     return this.map { toSuccessResult(it) }
-        .onErrorReturn { toResultError(it) }
+        .onErrorReturn { toResultError(it,errorHandler) }
 }
 
 fun <T : Any> Observable<Result<T>>.toData(): Observable<T> {
@@ -41,13 +41,25 @@ fun <T : Any> Observable<Result<T>>.toData(): Observable<T> {
     }
 }
 
+fun <T : Any> Single<Result<T>>.toSingleData(): Single<T> {
+    return this.flatMap {
+        when(it ) {
+            is Result.Success -> Single.just(it.data)
+            is Result.Error -> Single.error(it.error)
+        }
+    }
+}
+
 private fun <T : Any> toSuccessResult(data: T): Result<T> {
     return Result.Success(data)
 }
 
-private fun <T : Any> toResultError(throwable: Throwable): Result<T> {
+private fun <T : Any> toResultError(throwable: Throwable,errorHandler: ((Throwable) -> (AppError))? = null): Result<T> {
     return when(throwable) {
         is AppError -> Result.Error(throwable)
-        else -> Result.Error(AppError("Unknown error",false))
+        else -> Result.Error(
+            errorHandler?.invoke(throwable) ?:
+            AppError("Unknown error",false)
+        )
     }
 }

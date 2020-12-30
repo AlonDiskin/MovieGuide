@@ -18,9 +18,9 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.diskin.alon.movieguide.common.presentation.ImageLoader
-import com.diskin.alon.movieguide.common.presentation.ViewData
 import com.diskin.alon.movieguide.common.presentation.ErrorViewData
+import com.diskin.alon.movieguide.common.presentation.ImageLoader
+import com.diskin.alon.movieguide.common.presentation.UpdateViewData
 import com.diskin.alon.movieguide.reviews.presentation.controller.MovieReviewActivity
 import com.diskin.alon.movieguide.reviews.presentation.controller.TrailersAdapter.MovieTrailerViewHolder
 import com.diskin.alon.movieguide.reviews.presentation.data.MovieReview
@@ -54,7 +54,9 @@ class MovieReviewActivityTest {
     private val viewModel: MovieReviewViewModel = mockk()
 
     // Stub data
-    private val movieReview = MutableLiveData<ViewData<MovieReview>>()
+    private val movieReview = MutableLiveData<MovieReview>()
+    private val reviewUpdate = MutableLiveData<UpdateViewData>()
+    private val reviewError = MutableLiveData<ErrorViewData>()
 
     @Before
     fun setUp() {
@@ -67,6 +69,8 @@ class MovieReviewActivityTest {
 
         // Stub collaborators
         every { viewModel.movieReview } returns movieReview
+        every { viewModel.reviewUpdate } returns reviewUpdate
+        every { viewModel.reviewError } returns reviewError
 
         // Launch activity under test
         scenario = ActivityScenario.launch(MovieReviewActivity::class.java)
@@ -80,8 +84,8 @@ class MovieReviewActivityTest {
         // Given a resumed activity
 
         // When view model update review state
-        val review = createTestReview()
-        movieReview.value = ViewData.Data(review)
+        val review = createReview()
+        movieReview.value = review
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then activity should display review data in layout
@@ -100,7 +104,7 @@ class MovieReviewActivityTest {
         onView(withId(R.id.summary))
             .check(matches(withText(review.summary)))
 
-        onView(withId(R.id.review))
+        onView(withId(R.id.review_text))
             .check(matches(withText(review.review)))
 
         verify { ImageLoader.loadIntoImageView(any(),review.backDropImageUrl) }
@@ -108,6 +112,14 @@ class MovieReviewActivityTest {
         review.trailers.forEach { trailer ->
             verify { ImageLoader.loadIntoImageView(any(),trailer.thumbnailUrl) }
         }
+
+        onView(withId(R.id.action_favoriting))
+            .check(matches(withContentDescription(
+                if (review.favorite)
+                    R.string.title_action_unfavorite_movie
+                else
+                    R.string.title_action_favorite_movie
+            )))
     }
 
     @Test
@@ -144,7 +156,7 @@ class MovieReviewActivityTest {
         // Given a resumed activity
 
         // When view model updating review data
-        movieReview.value = ViewData.Updating()
+        reviewUpdate.value = UpdateViewData.Update
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then activity should show progress bar
@@ -157,15 +169,12 @@ class MovieReviewActivityTest {
         // Given a resumed activity
 
         // When view model review data available
-        val review = createTestReview()
-        movieReview.value = ViewData.Data(review)
+        reviewUpdate.value = UpdateViewData.EndUpdate
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then activity should hide progress bar
         onView(withId(R.id.progress_bar))
             .check(matches(withEffectiveVisibility(Visibility.GONE)))
-
-        // TODO verify for error state
     }
 
     @Test
@@ -184,7 +193,7 @@ class MovieReviewActivityTest {
 
         // When review ui state related error happen
         val error = ErrorViewData.NotRetriable("message")
-        movieReview.value = ViewData.Error(error)
+        reviewError.value = error
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then activity should show snackbar with error message
@@ -207,7 +216,7 @@ class MovieReviewActivityTest {
 
         // When review ui state related retriable error happen
         val error = ErrorViewData.Retriable("message",retryAction)
-        movieReview.value = ViewData.Error(error)
+        reviewError.value = error
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then activity should show retry option
@@ -233,11 +242,7 @@ class MovieReviewActivityTest {
         // Given a resumed activity
 
         // When review ui state related retriable error happen
-        movieReview.value = ViewData.Error(ErrorViewData.NotRetriable(""))
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
-
-        // And review is updated
-        movieReview.value = ViewData.Updating()
+        reviewError.value = ErrorViewData.NoError
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then activity should hide error snackbar
@@ -251,8 +256,8 @@ class MovieReviewActivityTest {
         Intents.init()
 
         // Given a resumed activity with displayed review
-        val review = createTestReview()
-        movieReview.value = ViewData.Data(review)
+        val review = createReview()
+        movieReview.value = review
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // When user clicks on the share menu option
@@ -295,8 +300,8 @@ class MovieReviewActivityTest {
         Intents.init()
 
         // Given a resumed activity with displayed review
-        val review = createTestReview()
-        movieReview.value = ViewData.Data(review)
+        val review = createReview()
+        movieReview.value = review
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         scenario.onActivity { it.appBar.setExpanded(false,false) }
@@ -316,5 +321,65 @@ class MovieReviewActivityTest {
         assertThat(intent.data).isEqualTo(Uri.parse(review.trailers.first().url))
 
         Intents.release()
+    }
+
+    @Test
+    fun favoriteMovieWhenUserSelectToUnFavoriteReviewedMovie() {
+        // Test case fixture
+        every { viewModel.favoriteReviewedMovie() } returns Unit
+
+        // Given a resumed activity with displayed review of un favorited movie
+        movieReview.value = createReview()
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // When user select to favorite movie
+        onView(withId(R.id.action_favoriting))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then activity should ask view model to favorite movie
+        verify { viewModel.favoriteReviewedMovie() }
+    }
+
+    @Test
+    fun uFavoriteMovieWhenUserSelectForFavoriteReviewedMovie() {
+        // Test case fixture
+        every { viewModel.unFavoriteReviewedMovie() } returns Unit
+
+        // Given a resumed activity with displayed review  of favorite movie
+        movieReview.value = createFavoritedMovieReview()
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // When user select to un favorite reviewed movie
+        onView(withId(R.id.action_favoriting))
+            .perform(click())
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then activity should ask view model to un favorite movie
+        verify { viewModel.unFavoriteReviewedMovie() }
+    }
+
+    @Test
+    fun disableMovieFavoritingActionWhenReviewNotUpdated() {
+        // Given a resumed activity without a shown review
+
+        // Then favoriting menu item should be disabled
+        scenario.onActivity {
+            val item = it.toolbar.menu.findItem(R.id.action_favoriting)
+            assertThat(item.isEnabled).isFalse()
+        }
+    }
+
+    @Test
+    fun enableMovieFavoritingActionWhenReviewNotUpdated() {
+        // Given a resumed activity with displayed review
+        movieReview.value = createReview()
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then favoriting menu item should be enabled
+        scenario.onActivity {
+            val item = it.toolbar.menu.findItem(R.id.action_favoriting)
+            assertThat(item.isEnabled).isTrue()
+        }
     }
 }

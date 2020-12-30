@@ -8,17 +8,17 @@ import com.diskin.alon.movieguide.reviews.domain.value.Trailer
  * Movie review entity class.
  */
 class MovieReviewEntity(
-    override val id: String,
-    val title: String,
-    val rating: Double,
-    val releaseDate: Long,
-    val backDropImageUrl: String,
-    val genres: List<MovieGenre>,
-    val summary: String,
-    val review: String,
-    val webUrl: String,
-    val trailersUrl: List<Trailer> = emptyList(),
-) : Entity<String> {
+    id: String,
+    var title: String,
+    var rating: Double,
+    var releaseDate: Long,
+    var backDropImageUrl: String,
+    var genres: List<MovieGenre>,
+    var summary: String,
+    var review: String,
+    var webUrl: String,
+    var trailersUrl: List<Trailer> = emptyList(),
+) : Entity<String>(id) {
 
     init {
         require(rating in 0.0..10.0)

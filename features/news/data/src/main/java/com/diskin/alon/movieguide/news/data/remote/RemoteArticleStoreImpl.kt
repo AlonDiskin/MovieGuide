@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.rxjava2.observable
 import com.diskin.alon.movieguide.common.appservices.Result
 import com.diskin.alon.movieguide.common.appservices.toResult
+import com.diskin.alon.movieguide.common.appservices.toSingleResult
 import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.news.data.remote.data.FeedlyArticleId
 import com.diskin.alon.movieguide.news.data.remote.data.FeedlyEntryResponse
@@ -29,9 +30,8 @@ class RemoteArticleStoreImpl @Inject constructor(
         return api.getEntry(URLEncoder.encode(articleId, "UTF-8"))
             .subscribeOn(Schedulers.io())
             .map { apiArticleMapper.map(it.first()) }
-            .onErrorResumeNext { Single.error(errorHandler.handle(it)) }
+            .toSingleResult(errorHandler::handle)
             .toObservable()
-            .toResult()
     }
 
     override fun getPaging(config: PagingConfig): Observable<PagingData<ArticleEntity>> {
@@ -43,8 +43,7 @@ class RemoteArticleStoreImpl @Inject constructor(
         return api.getEntries(id.toList().map { FeedlyArticleId(it) })
             .subscribeOn(Schedulers.io())
             .map { response -> response.map { apiArticleMapper.map(it) } }
-            .onErrorResumeNext { Single.error(errorHandler.handle(it)) }
+            .toSingleResult(errorHandler::handle)
             .toObservable()
-            .toResult()
     }
 }
