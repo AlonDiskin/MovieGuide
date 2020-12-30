@@ -71,12 +71,12 @@ class DeleteBookmarksSteps(
         val count = this.database.bookmarkDao().getAll().blockingFirst().size
 
         for (i in 0 until count) {
-            onView(withId(id.bookmarks))
+            onView(withId(id.bookmarked_articles))
                 .perform(
                     scrollToPosition<BookmarksAdapter.BookmarkViewHolder>(i)
                 )
 
-            onView(withRecyclerView(id.bookmarks).atPosition(i))
+            onView(withRecyclerView(id.bookmarked_articles).atPosition(i))
                 .perform(if (i == 0) longClick() else click())
         }
 
@@ -92,7 +92,7 @@ class DeleteBookmarksSteps(
     @Then("^Bookmarks screen should be updated to show no items$")
     fun bookmarks_screen_should_be_updated_to_show_no_items() {
         scenario.onFragment { fragment ->
-            val recycler = fragment.view!!.findViewById<RecyclerView>(R.id.bookmarks)
+            val recycler = fragment.view!!.findViewById<RecyclerView>(R.id.bookmarked_articles)
             assertThat(recycler.adapter!!.itemCount).isEqualTo(0)
         }
     }

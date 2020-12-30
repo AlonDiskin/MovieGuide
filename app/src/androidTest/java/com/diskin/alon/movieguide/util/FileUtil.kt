@@ -5,7 +5,7 @@ import okio.Okio
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
-object FileReader {
+object FileUtil {
     fun readStringFromFile(resourceName: String): String {
         val stream = javaClass.classLoader!!.getResourceAsStream(resourceName)
         val reader = BufferedReader(InputStreamReader(stream))

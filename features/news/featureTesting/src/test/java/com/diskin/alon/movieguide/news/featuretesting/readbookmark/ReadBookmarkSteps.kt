@@ -102,7 +102,7 @@ class ReadBookmarkSteps(
 
     @When("^User select to read the bookmarked article$")
     fun user_select_to_read_bookmarked_article() {
-        onView(withId(R.id.bookmarks))
+        onView(withId(R.id.bookmarked_articles))
             .perform(
                 actionOnItemAtPosition<BookmarksAdapter.BookmarkViewHolder>(
                     0,
