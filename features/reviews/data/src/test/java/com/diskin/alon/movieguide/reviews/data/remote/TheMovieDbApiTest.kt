@@ -14,6 +14,7 @@ import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
 import org.junit.After
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Test
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -24,6 +25,16 @@ import java.io.File
  * [TheMovieDbApi] integration test class.
  */
 class TheMovieDbApiTest {
+
+    companion object {
+
+        @JvmStatic
+        @BeforeClass
+        fun setupClass() {
+            // Fix MockWebServer 'No password supplied for PKCS#12 KeyStore' bug on CI machine
+            System.setProperty("javax.net.ssl.trustStore", "NONE")
+        }
+    }
 
     private lateinit var api: TheMovieDbApi
     private val server = MockWebServer()
