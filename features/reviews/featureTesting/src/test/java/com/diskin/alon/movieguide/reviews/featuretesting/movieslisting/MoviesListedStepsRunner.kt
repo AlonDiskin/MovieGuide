@@ -60,7 +60,7 @@ class MoviesListedStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenar
     @Test
     fun test() {
         val testApp = ApplicationProvider.getApplicationContext<Context>() as TestApp
-        start(MoviesListedSteps(testApp.getMockWebServer()))
+        start(MoviesListedSteps(testApp.getMockWebServer(),testApp.getTestDatabase()))
     }
 
     override fun afterScenarioEnds(scenario: Scenario?, locale: Locale?) {

@@ -1,5 +1,6 @@
 package com.diskin.alon.movieguide.reviews.data.local
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -18,4 +19,7 @@ interface FavoriteMovieDao {
 
     @Query("SELECT EXISTS(SELECT * FROM favorites WHERE id = :id)")
     fun contains(id : String) : Observable<Boolean>
+
+    @Query("SELECT * FROM favorites")
+    fun getAll(): PagingSource<Int, FavoriteMovie>
 }

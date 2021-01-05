@@ -27,7 +27,10 @@ class MovieRepositoryImpl @Inject constructor(
         config: PagingConfig,
         sorting: MovieSorting
     ): Observable<PagingData<MovieEntity>> {
-        return movieStore.getAllBySorting(config, sorting)
+        return when(sorting) {
+            MovieSorting.FAVORITE -> favoriteStore.getAll(config)
+            else -> movieStore.getAllBySorting(config, sorting)
+        }
     }
 
     override fun addToFavorites(movieId: String): Single<Result<Unit>> {

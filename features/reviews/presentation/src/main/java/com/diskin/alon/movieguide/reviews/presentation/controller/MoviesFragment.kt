@@ -50,6 +50,8 @@ class MoviesFragment : Fragment() {
                     MovieSorting.RATING -> menu.findItem(R.id.action_sort_rating).isChecked = true
 
                     MovieSorting.RELEASE_DATE -> menu.findItem(R.id.action_sort_date).isChecked = true
+
+                    MovieSorting.FAVORITE -> menu.findItem(R.id.action_sort_favorite).isChecked = true
                 }
             }
         })
@@ -113,9 +115,18 @@ class MoviesFragment : Fragment() {
 
                 true
             }
+
             R.id.action_sort_date -> {
                 if (!item.isChecked) {
                     viewModel.sortMovies(MovieSorting.RELEASE_DATE)
+                }
+
+                true
+            }
+
+            R.id.action_sort_favorite -> {
+                if (!item.isChecked) {
+                    viewModel.sortMovies(MovieSorting.FAVORITE)
                 }
 
                 true

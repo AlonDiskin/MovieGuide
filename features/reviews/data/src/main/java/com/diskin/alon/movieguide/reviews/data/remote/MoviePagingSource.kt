@@ -2,10 +2,10 @@ package com.diskin.alon.movieguide.reviews.data.remote
 
 import androidx.paging.rxjava2.RxPagingSource
 import com.diskin.alon.movieguide.common.util.Mapper
-import com.diskin.alon.movieguide.reviews.appservices.data.MovieSorting
 import com.diskin.alon.movieguide.reviews.data.remote.data.MoviesResponse
-import com.diskin.alon.movieguide.reviews.domain.entities.MovieEntity
 import com.diskin.alon.movieguide.reviews.data.remote.data.MoviesResponse.MovieResponse
+import com.diskin.alon.movieguide.reviews.data.remote.data.RemoteMovieSorting
+import com.diskin.alon.movieguide.reviews.domain.entities.MovieEntity
 import com.diskin.alonmovieguide.common.data.NetworkErrorHandler
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -14,7 +14,7 @@ import javax.inject.Inject
 class MoviePagingSource @Inject constructor(
     private val api: TheMovieDbApi,
     private val networkErrorHandler: NetworkErrorHandler,
-    private val sorting: MovieSorting,
+    private val sorting: RemoteMovieSorting,
     private val mapper: Mapper<MovieResponse, MovieEntity>
 ) : RxPagingSource<String, MovieEntity>() {
 
@@ -32,9 +32,9 @@ class MoviePagingSource @Inject constructor(
 
     private fun loadRefresh(): Single<MoviesResponse> {
         return when(sorting) {
-            MovieSorting.RELEASE_DATE -> api.getByReleaseDate(1)
-            MovieSorting.POPULARITY -> api.getByPopularity(1)
-            MovieSorting.RATING -> api.getByRating(1)
+            RemoteMovieSorting.RELEASE_DATE -> api.getByReleaseDate(1)
+            RemoteMovieSorting.POPULARITY -> api.getByPopularity(1)
+            RemoteMovieSorting.RATING -> api.getByRating(1)
         }
     }
 
@@ -43,9 +43,9 @@ class MoviePagingSource @Inject constructor(
         val page = params.key!!.toInt()
 
         return when(sorting) {
-            MovieSorting.RELEASE_DATE -> api.getByReleaseDate(page)
-            MovieSorting.POPULARITY -> api.getByPopularity(page)
-            MovieSorting.RATING -> api.getByRating(page)
+            RemoteMovieSorting.RELEASE_DATE -> api.getByReleaseDate(page)
+            RemoteMovieSorting.POPULARITY -> api.getByPopularity(page)
+            RemoteMovieSorting.RATING -> api.getByRating(page)
         }
     }
 

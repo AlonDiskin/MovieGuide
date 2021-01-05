@@ -25,4 +25,5 @@
     <string name="message_trailer_view_not_supported">No available app on device to view trailer!</string>
     <string name="title_action_unfavorite_movie">Unfavorite</string>
     <string name="title_action_favorite_movie">Favorite</string>
+    <string name="title_action_sort_favorite">Favorite</string>
 </resources>

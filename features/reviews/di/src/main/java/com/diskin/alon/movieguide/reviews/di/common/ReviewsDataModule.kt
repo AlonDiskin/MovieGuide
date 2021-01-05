@@ -55,4 +55,7 @@ abstract class ReviewsDataModule {
 
     @Binds
     abstract fun bindMovieReviewMapper(mapper: MovieReviewMapper): Mapper2<MovieDetailResponse, TrailersResponse, MovieReviewEntity>
+
+    @Binds
+    abstract fun bindEntityMovieMapper(mapper: MovieEntityMapper): Mapper<FavoriteMovie,MovieEntity>
 }

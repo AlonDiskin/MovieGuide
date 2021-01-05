@@ -4,8 +4,6 @@ import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.reviews.data.remote.data.MoviesResponse
 import com.diskin.alon.movieguide.reviews.domain.entities.MovieEntity
 import org.joda.time.LocalDate
-import javax.inject.Inject
-import javax.inject.Singleton
 
 class MovieMapper : Mapper<MoviesResponse.MovieResponse, MovieEntity> {
 

@@ -2,9 +2,9 @@ package com.diskin.alon.movieguide.reviews.data.remote
 
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.diskin.alon.movieguide.common.appservices.Result
 import com.diskin.alon.movieguide.reviews.appservices.data.MovieSorting
 import com.diskin.alon.movieguide.reviews.domain.entities.MovieEntity
-import com.diskin.alon.movieguide.common.appservices.Result
 import io.reactivex.Observable
 import io.reactivex.Single
 

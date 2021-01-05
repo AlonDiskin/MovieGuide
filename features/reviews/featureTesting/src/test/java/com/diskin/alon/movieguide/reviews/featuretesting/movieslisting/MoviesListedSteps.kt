@@ -13,7 +13,9 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
 import com.diskin.alon.movieguide.common.presentation.ImageLoader
 import com.diskin.alon.movieguide.common.uitesting.RecyclerViewMatcher.withRecyclerView
+import com.diskin.alon.movieguide.reviews.data.local.FavoriteMovie
 import com.diskin.alon.movieguide.reviews.data.remote.*
+import com.diskin.alon.movieguide.reviews.featuretesting.TestDatabase
 import com.diskin.alon.movieguide.reviews.presentation.R
 import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesAdapter
 import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesFragment
@@ -30,14 +32,41 @@ import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
 import org.hamcrest.CoreMatchers.allOf
 import org.robolectric.Shadows
+import java.util.*
 
 /**
  * Step definitions for 'Reviewed movies listed by sorting' scenario.
  */
-class MoviesListedSteps(server: MockWebServer) : GreenCoffeeSteps() {
+class MoviesListedSteps(server: MockWebServer, db: TestDatabase) : GreenCoffeeSteps() {
 
     private lateinit var scenario: FragmentScenario<MoviesFragment>
     private val dispatcher = TestDispatcher()
+    private val favoriteMovies = listOf(
+        FavoriteMovie(
+            "id1",
+            "title1",
+            120.0,
+            6.9,
+            Calendar.getInstance().timeInMillis,
+            "url1"
+        ),
+        FavoriteMovie(
+            "id2",
+            "title2",
+            140.0,
+            8.9,
+            Calendar.getInstance().timeInMillis,
+            "url2"
+        ),
+        FavoriteMovie(
+            "id3",
+            "title3",
+            240.0,
+            4.9,
+            Calendar.getInstance().timeInMillis,
+            "url3"
+        )
+    )
 
     init {
         // Prepare mock web server for test scenario
@@ -45,6 +74,9 @@ class MoviesListedSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
         // Mock out image loader
         mockkObject(ImageLoader)
+
+        // Prepare test db
+        db.testFavoriteMovieDao().insert(*favoriteMovies.toTypedArray())
     }
 
     @Given("^User opened movie reviews screen$")
@@ -85,6 +117,15 @@ class MoviesListedSteps(server: MockWebServer) : GreenCoffeeSteps() {
                 null
             )
 
+            "favorite" -> ActionMenuItem(
+                context,
+                0,
+                R.id.action_sort_favorite,
+                0,
+                0,
+                null
+            )
+
             else -> throw IllegalArgumentException("unknown scenario argument:${sorting}")
         }
 
@@ -93,6 +134,9 @@ class MoviesListedSteps(server: MockWebServer) : GreenCoffeeSteps() {
         }
 
         Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // TODO find a way to sync test thread(main) with AsyncDiffer from ListAdapter
+        Thread.sleep(2000)
     }
 
     @Then("Reviewed movies should be listed and sorted by \"([^\"]*)\" in desc order")
@@ -111,6 +155,18 @@ class MoviesListedSteps(server: MockWebServer) : GreenCoffeeSteps() {
                 val expectedUiMovies = expectedUiMovies(
                     dispatcher.moviesByDateResourcePath
                 )
+
+                checkExpectedUiMoviesDataShown(expectedUiMovies)
+            }
+
+            "favorite" -> {
+                val expectedUiMovies = favoriteMovies.map {
+                    UiMovieData(
+                        it.title,
+                        it.rating.toString(),
+                        it.posterUrl
+                    )
+                }
 
                 checkExpectedUiMoviesDataShown(expectedUiMovies)
             }

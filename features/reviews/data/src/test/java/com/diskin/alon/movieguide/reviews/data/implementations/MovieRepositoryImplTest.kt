@@ -5,7 +5,6 @@ import androidx.paging.PagingData
 import com.diskin.alon.movieguide.common.appservices.Result
 import com.diskin.alon.movieguide.common.appservices.toSingleResult
 import com.diskin.alon.movieguide.reviews.appservices.data.MovieSorting
-import com.diskin.alon.movieguide.reviews.data.implementations.MovieRepositoryImpl
 import com.diskin.alon.movieguide.reviews.data.local.FavoriteMoviesStore
 import com.diskin.alon.movieguide.reviews.data.remote.MovieStore
 import com.diskin.alon.movieguide.reviews.domain.entities.MovieEntity
@@ -15,12 +14,16 @@ import io.mockk.mockk
 import io.mockk.verify
 import io.reactivex.Observable
 import io.reactivex.Single
+import junitparams.JUnitParamsRunner
+import junitparams.Parameters
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 
 /**
  * [MovieRepositoryImpl] unit test class.
  */
+@RunWith(JUnitParamsRunner::class)
 class MovieRepositoryImplTest {
 
     // Test subject
@@ -36,23 +39,44 @@ class MovieRepositoryImplTest {
     }
 
     @Test
-    fun getMoviesPagingFromRemoteSourceWhenQueried() {
+    @Parameters(method = "sortingParams")
+    fun getMoviesPagingFromRemoteSourceWhenQueriedNotForFavorite(sorting: MovieSorting) {
         // Test case fixture
         val storeResult: Observable<PagingData<MovieEntity>> = mockk()
         every { movieStore.getAllBySorting(any(),any()) } returns storeResult
 
         // Given an initialized repository
 
-        // When repository is queried for movies paging
-        val sorting = mockk<MovieSorting>()
+        // When repository is queried for movies paging other then favorites
+        assertThat(sorting).isNotEqualTo(MovieSorting.FAVORITE)
         val config = mockk<PagingConfig>()
-        val actualResult = repository.getAllBySorting(config,sorting)
+        val repoResult = repository.getAllBySorting(config,sorting)
 
-        // Then repository should ask remote movie source for sorted paging
+        // Then repository should ask movie store for movies paging
         verify { movieStore.getAllBySorting(config, sorting) }
 
-        // And return remote source result
-        assertThat(actualResult).isEqualTo(storeResult)
+        // And return store result
+        assertThat(repoResult).isEqualTo(storeResult)
+    }
+
+    @Test
+    fun getMoviesPagingFromLocalSourceWhenQueriedForFavorite() {
+        // Test case fixture
+        val storeResult: Observable<PagingData<MovieEntity>> = mockk()
+        every { favoriteStore.getAll(any()) } returns storeResult
+
+        // Given an initialized repository
+
+        // When repository is queried for favorite movies paging
+        val sorting = MovieSorting.FAVORITE
+        val config = mockk<PagingConfig>()
+        val repoResult = repository.getAllBySorting(config, sorting)
+
+        // Then repository should retrieve paging from favorite movies store
+        verify { favoriteStore.getAll(config) }
+
+        // And return favorite store paging
+        assertThat(repoResult).isEqualTo(storeResult)
     }
 
     @Test
@@ -98,4 +122,7 @@ class MovieRepositoryImplTest {
         // And return source result
         assertThat(actualResult).isEqualTo(storeResult)
     }
+
+    private fun sortingParams() =
+        arrayOf(MovieSorting.POPULARITY,MovieSorting.RATING,MovieSorting.RATING)
 }

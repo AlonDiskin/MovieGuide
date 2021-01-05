@@ -10,6 +10,7 @@ import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.reviews.appservices.data.MovieSorting
 import com.diskin.alon.movieguide.reviews.data.BuildConfig
 import com.diskin.alon.movieguide.reviews.data.remote.data.MoviesResponse
+import com.diskin.alon.movieguide.reviews.data.remote.data.RemoteMovieSorting
 import com.diskin.alon.movieguide.reviews.domain.entities.MovieEntity
 import com.diskin.alonmovieguide.common.data.NetworkErrorHandler
 import io.reactivex.Observable
@@ -22,7 +23,7 @@ import javax.inject.Singleton
 class MovieStoreImpl @Inject constructor(
     private val api: TheMovieDbApi,
     private val networkErrorHandler: NetworkErrorHandler,
-    private val mapper: Mapper<MoviesResponse.MovieResponse, MovieEntity>,
+    private val mapper: Mapper<MoviesResponse.MovieResponse, MovieEntity>
 ) : MovieStore {
 
     override fun getAllBySorting(
@@ -33,7 +34,7 @@ class MovieStoreImpl @Inject constructor(
         { MoviePagingSource(
             api,
             networkErrorHandler,
-            sorting,
+            toRemoteSorting(sorting),
             mapper
         ) }
             .observable
@@ -44,5 +45,14 @@ class MovieStoreImpl @Inject constructor(
             .subscribeOn(Schedulers.io())
             .map(mapper::map)
             .toSingleResult(networkErrorHandler::handle)
+    }
+
+    private fun toRemoteSorting(sorting: MovieSorting): RemoteMovieSorting {
+        return when(sorting) {
+            MovieSorting.RELEASE_DATE -> RemoteMovieSorting.RELEASE_DATE
+            MovieSorting.POPULARITY -> RemoteMovieSorting.POPULARITY
+            MovieSorting.RATING -> RemoteMovieSorting.RATING
+            else -> throw IllegalArgumentException("Unsupported remote sorting type:$sorting")
+        }
     }
 }

@@ -1,6 +1,8 @@
 package com.diskin.alon.movieguide.reviews.data.local
 
 import android.content.Context
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -77,5 +79,11 @@ class FavoriteMovieDaoTest {
 
         // Then
         assertThat(actual).isTrue()
+    }
+
+    @Test
+    fun createPaging() {
+        // Verify dao creates paging source to be used with a pager
+        Pager(PagingConfig(pageSize = 50)){ dao.getAll() }
     }
 }

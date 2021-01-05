@@ -7,7 +7,6 @@ import com.diskin.alon.movieguide.news.appservices.data.BookmarkSorting
 import com.diskin.alon.movieguide.news.data.local.data.Bookmark
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.functions.Function
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Singleton

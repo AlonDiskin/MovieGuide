@@ -35,11 +35,12 @@ class FavoriteMoviesStoreImplTest {
     // Collaborators
     private val dao: FavoriteMovieDao = mockk()
     private val errorHandler: StorageErrorHandler = mockk()
-    private val mapper: Mapper<MovieEntity, FavoriteMovie> = mockk()
+    private val favoriteMovieMapper: Mapper<MovieEntity,FavoriteMovie> = mockk()
+    private val entityMovieMapper: Mapper<FavoriteMovie,MovieEntity> = mockk()
 
     @Before
     fun setUp() {
-        store = FavoriteMoviesStoreImpl(dao, errorHandler, mapper)
+        store = FavoriteMoviesStoreImpl(dao, errorHandler, favoriteMovieMapper, entityMovieMapper)
     }
 
     @Test
@@ -47,7 +48,7 @@ class FavoriteMoviesStoreImplTest {
         // Test case  fixture
         val favoriteMovie: FavoriteMovie = mockk()
 
-        every { mapper.map(any()) } returns favoriteMovie
+        every { favoriteMovieMapper.map(any()) } returns favoriteMovie
         every { dao.insert(any()) } returns Completable.complete()
 
         // Given an initialized store
@@ -57,7 +58,7 @@ class FavoriteMoviesStoreImplTest {
         val testObserver = store.add(movie).test()
 
         // Then store should add movie to favorites dao
-        verify { mapper.map(movie) }
+        verify { favoriteMovieMapper.map(movie) }
         verify { dao.insert(favoriteMovie) }
 
         // And propagate successful result
@@ -71,7 +72,7 @@ class FavoriteMoviesStoreImplTest {
         val error: Throwable = mockk()
         val appError: AppError = mockk()
 
-        every { mapper.map(any()) } returns favoriteMovie
+        every { favoriteMovieMapper.map(any()) } returns favoriteMovie
         every { dao.insert(any()) } returns Completable.error(error)
         every { errorHandler.handle(any()) } returns appError
 
@@ -82,7 +83,7 @@ class FavoriteMoviesStoreImplTest {
         val testObserver = store.add(movie).test()
 
         // Then store should add movie to favorites dao
-        verify { mapper.map(movie) }
+        verify { favoriteMovieMapper.map(movie) }
         verify { dao.insert(favoriteMovie) }
 
         // When adding fail

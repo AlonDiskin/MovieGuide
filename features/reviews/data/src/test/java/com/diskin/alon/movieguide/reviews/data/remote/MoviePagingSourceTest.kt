@@ -4,10 +4,10 @@ import androidx.paging.PagingSource.LoadParams
 import androidx.paging.PagingSource.LoadResult
 import com.diskin.alon.movieguide.common.appservices.AppError
 import com.diskin.alon.movieguide.common.util.Mapper
-import com.diskin.alon.movieguide.reviews.appservices.data.MovieSorting
 import com.diskin.alon.movieguide.reviews.data.createMovieApiResponse
 import com.diskin.alon.movieguide.reviews.data.remote.data.MoviesResponse
 import com.diskin.alon.movieguide.reviews.data.remote.data.MoviesResponse.MovieResponse
+import com.diskin.alon.movieguide.reviews.data.remote.data.RemoteMovieSorting
 import com.diskin.alon.movieguide.reviews.domain.entities.MovieEntity
 import com.diskin.alonmovieguide.common.data.NetworkErrorHandler
 import io.mockk.every
@@ -61,7 +61,7 @@ class MoviePagingSourceTest {
 
     @Test
     @Parameters(method = "sortParams")
-    fun loadMoviesFromApiWhenLoadingToRefresh(sorting: MovieSorting) {
+    fun loadMoviesFromApiWhenLoadingToRefresh(sorting: RemoteMovieSorting) {
         // Given an initialized paging source
         pagingSource = MoviePagingSource(api,networkErrorHandler,sorting,mapper)
 
@@ -71,9 +71,9 @@ class MoviePagingSourceTest {
 
         // Then paging source should ask api to load movies based on sorting param
         when(sorting) {
-            MovieSorting.RATING -> verify { api.getByRating(1) }
-            MovieSorting.RELEASE_DATE -> verify { api.getByReleaseDate(1) }
-            MovieSorting.POPULARITY -> verify { api.getByPopularity(1) }
+            RemoteMovieSorting.RATING -> verify { api.getByRating(1) }
+            RemoteMovieSorting.RELEASE_DATE -> verify { api.getByReleaseDate(1) }
+            RemoteMovieSorting.POPULARITY -> verify { api.getByPopularity(1) }
         }
 
         // When api loads movies
@@ -94,7 +94,7 @@ class MoviePagingSourceTest {
 
     @Test
     @Parameters(method = "sortParams")
-    fun loadMoviesPageFromApiWhenLoadingToAppend(sorting: MovieSorting) {
+    fun loadMoviesPageFromApiWhenLoadingToAppend(sorting: RemoteMovieSorting) {
         // Given an initialized paging source
         pagingSource = MoviePagingSource(api,networkErrorHandler,sorting,mapper)
 
@@ -104,9 +104,9 @@ class MoviePagingSourceTest {
 
         // Then paging source should ask api to load movies based on sorting param and given key
         when(sorting) {
-            MovieSorting.RATING -> verify { api.getByRating(loadParams.key.toInt()) }
-            MovieSorting.RELEASE_DATE -> verify { api.getByReleaseDate(loadParams.key.toInt()) }
-            MovieSorting.POPULARITY -> verify { api.getByPopularity(loadParams.key.toInt()) }
+            RemoteMovieSorting.RATING -> verify { api.getByRating(loadParams.key.toInt()) }
+            RemoteMovieSorting.RELEASE_DATE -> verify { api.getByReleaseDate(loadParams.key.toInt()) }
+            RemoteMovieSorting.POPULARITY -> verify { api.getByPopularity(loadParams.key.toInt()) }
         }
 
         // When api loads movies
@@ -128,7 +128,7 @@ class MoviePagingSourceTest {
     @Test
     @Parameters(method = "pageResultNextKeyParams")
     fun calcPagingResultKeyAccordingToApiResponseWhenApiLoadMovies(
-        sorting: MovieSorting,
+        sorting: RemoteMovieSorting,
         params: LoadParams<String>,
         apiResponse: MoviesResponse,
         key: String?
@@ -153,7 +153,7 @@ class MoviePagingSourceTest {
     @Parameters(method = "apiFailParams")
     fun handleApiErrorWhenApiFailToLoadMovies(
         params: LoadParams<String>,
-        sorting: MovieSorting
+        sorting: RemoteMovieSorting
     ) {
         // Test case fixture
         val appError = AppError("error description",true)
@@ -182,32 +182,32 @@ class MoviePagingSourceTest {
     }
 
     private fun sortParams() = arrayOf(
-        MovieSorting.RELEASE_DATE,
-        MovieSorting.POPULARITY,
-        MovieSorting.RELEASE_DATE
+        RemoteMovieSorting.RELEASE_DATE,
+        RemoteMovieSorting.POPULARITY,
+        RemoteMovieSorting.RELEASE_DATE
     )
 
     private fun pageResultNextKeyParams() = arrayOf(
         arrayOf(
-            MovieSorting.RATING,
+            RemoteMovieSorting.RATING,
             LoadParams.Refresh<String>(null,20,false),
             MoviesResponse(300, emptyList(),500),
             "301"
         ),
         arrayOf(
-            MovieSorting.RELEASE_DATE,
+            RemoteMovieSorting.RELEASE_DATE,
             LoadParams.Refresh<String>(null,20,false),
             MoviesResponse(500, emptyList(),500),
             null
         ),
         arrayOf(
-            MovieSorting.RATING,
+            RemoteMovieSorting.RATING,
             LoadParams.Append("10",20,false),
             MoviesResponse(30, emptyList(),500),
             "31"
         ),
         arrayOf(
-            MovieSorting.RATING,
+            RemoteMovieSorting.RATING,
             LoadParams.Append("10",20,false),
             MoviesResponse(100, emptyList(),100),
             null
@@ -217,15 +217,15 @@ class MoviePagingSourceTest {
     private fun apiFailParams() = arrayOf(
         arrayOf(
             LoadParams.Refresh<String>(null,20,false),
-            MovieSorting.RATING
+            RemoteMovieSorting.RATING
         ),
         arrayOf(
             LoadParams.Refresh<String>(null,20,false),
-            MovieSorting.RELEASE_DATE
+            RemoteMovieSorting.RELEASE_DATE
         ),
         arrayOf(
             LoadParams.Append("10",20,false),
-            MovieSorting.RATING
+            RemoteMovieSorting.RATING
         )
     )
 }

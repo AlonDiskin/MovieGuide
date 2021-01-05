@@ -9,4 +9,6 @@ import com.diskin.alon.movieguide.reviews.data.local.FavoriteMovieDao
 abstract class TestDatabase : RoomDatabase(){
 
     abstract fun favoritesDao(): FavoriteMovieDao
+
+    abstract fun testFavoriteMovieDao(): TestFavoriteMovieDao
 }
