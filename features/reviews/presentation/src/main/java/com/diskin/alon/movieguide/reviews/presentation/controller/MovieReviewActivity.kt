@@ -10,8 +10,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ShareCompat
 import androidx.databinding.DataBindingUtil
-import com.diskin.alon.movieguide.common.presentation.ViewData
 import com.diskin.alon.movieguide.common.presentation.ErrorViewData
+import com.diskin.alon.movieguide.common.presentation.UpdateViewData
 import com.diskin.alon.movieguide.reviews.presentation.R
 import com.diskin.alon.movieguide.reviews.presentation.data.Trailer
 import com.diskin.alon.movieguide.reviews.presentation.databinding.ActivityMovieReviewBinding
@@ -28,7 +28,7 @@ class MovieReviewActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModel: MovieReviewViewModel
-    private var snackbar: Snackbar? = null
+    private var errorSnackbar: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,20 +49,27 @@ class MovieReviewActivity : AppCompatActivity() {
         binding.trailers.adapter = adapter
 
         // Observe view model review state
-        viewModel.movieReview.observe(this,{ viewData ->
-            // Update review data if available
-            adapter.submitList(viewData.data?.trailers)
-            binding.setReview(viewData.data)
+        viewModel.movieReview.observe(this) {
+            binding.movieReview = it
+            adapter.submitList(it?.trailers)
+        }
 
-            // Hide any prev error/loading notification
-            snackbar?.dismiss()
-            progress_bar?.visibility = View.GONE
-
-            when(viewData) {
-                is ViewData.Updating -> progress_bar?.visibility = View.VISIBLE
-                is ViewData.Error -> handleReviewStateError(viewData.error)
+        // Observe view model review update state
+        viewModel.reviewUpdate.observe(this) { update ->
+            when(update) {
+                is UpdateViewData.Update -> progress_bar?.visibility = View.VISIBLE
+                is UpdateViewData.EndUpdate -> progress_bar?.visibility = View.GONE
             }
-        })
+        }
+
+        // Observe view model review error state
+        viewModel.reviewError.observe(this) { error ->
+            when(error) {
+                is ErrorViewData.NoError -> errorSnackbar?.dismiss()
+                is ErrorViewData.NotRetriable -> showNotRetriableError(error)
+                is ErrorViewData.Retriable -> showRetriableError(error)
+            }
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -70,8 +77,32 @@ class MovieReviewActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_movie_review, menu)
+        viewModel.movieReview.observe(this, { review ->
+            review?.let {
+                val favoritingItem = menu.findItem(R.id.action_favoriting)
+                favoritingItem.isEnabled = true
+
+                when (it.favorite) {
+                    true -> favoritingItem
+                        .setTitle(getString(R.string.title_action_unfavorite_movie))
+                        .setIcon(R.drawable.ic_favorite)
+                        .setOnMenuItemClickListener {
+                            viewModel.unFavoriteReviewedMovie()
+                            true
+                        }
+
+                    false -> favoritingItem
+                        .setTitle(getString(R.string.title_action_favorite_movie))
+                        .setIcon(R.drawable.ic_not_favorite)
+                        .setOnMenuItemClickListener {
+                            viewModel.favoriteReviewedMovie()
+                            true
+                        }
+                }
+            }
+        })
         return true
     }
 
@@ -94,26 +125,26 @@ class MovieReviewActivity : AppCompatActivity() {
     }
 
     private fun showNotRetriableError(error: ErrorViewData.NotRetriable) {
-        snackbar = Snackbar.make(
+        errorSnackbar = Snackbar.make(
             review_content,
             error.reason,
             Snackbar.LENGTH_INDEFINITE)
 
-        snackbar?.show()
+        errorSnackbar?.show()
     }
 
     private fun showRetriableError(error: ErrorViewData.Retriable) {
-        snackbar = Snackbar.make(
+        errorSnackbar = Snackbar.make(
             review_content,
             error.reason,
             Snackbar.LENGTH_INDEFINITE)
             .setAction(getString(R.string.action_retry)) { error.retry() }
 
-        snackbar?.show()
+        errorSnackbar?.show()
     }
 
     private fun shareReview() {
-        viewModel.movieReview.value?.data?.let { review ->
+        viewModel.movieReview.value?.let { review ->
             ShareCompat.IntentBuilder
                 .from(this)
                 .setType(getString(R.string.mime_type_text))

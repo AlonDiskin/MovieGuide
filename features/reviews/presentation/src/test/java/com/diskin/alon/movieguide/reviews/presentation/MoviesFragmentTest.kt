@@ -266,7 +266,8 @@ class MoviesFragmentTest {
         listOf(
             MovieSorting.POPULARITY,
             MovieSorting.RATING,
-            MovieSorting.RELEASE_DATE
+            MovieSorting.RELEASE_DATE,
+            MovieSorting.FAVORITE
         )
             .forEach {
                 // And view model update movies sorting state
@@ -297,6 +298,16 @@ class MoviesFragmentTest {
                     MovieSorting.POPULARITY -> {
                         onView(allOf(
                             hasDescendant(withText(R.string.title_action_sort_popular)),
+                            instanceOf(RelativeLayout::class.java)
+                        ))
+                            .check(matches(
+                                hasSibling(isChecked())
+                            ))
+                    }
+
+                    MovieSorting.FAVORITE -> {
+                        onView(allOf(
+                            hasDescendant(withText(R.string.title_action_sort_favorite)),
                             instanceOf(RelativeLayout::class.java)
                         ))
                             .check(matches(
@@ -341,6 +352,15 @@ class MoviesFragmentTest {
                     context,
                     0,
                     R.id.action_sort_rating,
+                    0,
+                    0,
+                    null
+                )
+
+                MovieSorting.FAVORITE -> ActionMenuItem(
+                    context,
+                    0,
+                    R.id.action_sort_favorite,
                     0,
                     0,
                     null

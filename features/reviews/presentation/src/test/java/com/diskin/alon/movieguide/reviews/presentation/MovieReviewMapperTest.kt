@@ -59,7 +59,8 @@ class MovieReviewMapperTest {
                         "summary",
                         "review",
                         "webUrl",
-                        listOf(TrailerDto("url1","url2"))
+                        listOf(TrailerDto("url1","url2")),
+                        true
                     )
                 )
             ),
@@ -75,7 +76,8 @@ class MovieReviewMapperTest {
                     "review",
                     "backdrop_url",
                     "webUrl",
-                    listOf(Trailer("url1","url2"))
+                    listOf(Trailer("url1","url2")),
+                    true
                 )
             )
         ),

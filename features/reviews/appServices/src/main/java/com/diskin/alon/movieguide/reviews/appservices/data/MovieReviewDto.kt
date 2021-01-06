@@ -9,6 +9,7 @@ data class MovieReviewDto(val id: String,
                           val summary: String,
                           val review: String,
                           val webUrl: String,
-                          val trailers: List<TrailerDto>)
+                          val trailers: List<TrailerDto>,
+                          val favorite: Boolean = false)
 
 

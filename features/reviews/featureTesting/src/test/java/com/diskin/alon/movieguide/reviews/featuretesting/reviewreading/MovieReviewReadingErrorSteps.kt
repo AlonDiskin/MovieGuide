@@ -36,7 +36,6 @@ class MovieReviewReadingErrorSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
     init {
         // Prepare test server
-        server.start()
         server.setDispatcher(dispatcher)
 
         // Mock out image loader
@@ -140,7 +139,7 @@ class MovieReviewReadingErrorSteps(server: MockWebServer) : GreenCoffeeSteps() {
         onView(withId(R.id.summary))
             .check(matches(withText(review.summary)))
 
-        onView(withId(R.id.review))
+        onView(withId(R.id.review_text))
             .check(matches(withText(review.review)))
 
         verify { ImageLoader.loadIntoImageView(any(),review.backDropImageUrl) }

@@ -5,18 +5,16 @@ import com.diskin.alon.movieguide.reviews.data.remote.data.MoviesResponse
 import com.diskin.alon.movieguide.reviews.domain.entities.MovieEntity
 import org.joda.time.LocalDate
 
-class MovieMapper : Mapper<List<MoviesResponse.MovieResponse>, List<MovieEntity>> {
+class MovieMapper : Mapper<MoviesResponse.MovieResponse, MovieEntity> {
 
-    override fun map(source: List<MoviesResponse.MovieResponse>): List<MovieEntity> {
-        return source.map { movieResponse ->
-            MovieEntity(
-                movieResponse.id.toString(),
-                movieResponse.title,
-                movieResponse.popularity,
-                movieResponse.vote_average,
-                LocalDate.parse(movieResponse.release_date).toDate().time,
-                MOVIE_DB_BASE_POSTER_PATH.plus(movieResponse.poster_path)
-            )
-        }
+    override fun map(source: MoviesResponse.MovieResponse): MovieEntity {
+        return MovieEntity(
+            source.id.toString(),
+            source.title ?: "",
+            source.popularity ?: 0.0,
+            source.vote_average ?: 0.0,
+            LocalDate.parse(source.release_date).toDate().time,
+            MOVIE_DB_BASE_POSTER_PATH.plus(source.poster_path)
+        )
     }
 }

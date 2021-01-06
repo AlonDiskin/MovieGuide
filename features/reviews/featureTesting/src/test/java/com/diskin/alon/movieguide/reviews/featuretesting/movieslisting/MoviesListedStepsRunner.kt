@@ -11,6 +11,7 @@ import com.mauriciotogneri.greencoffee.Scenario
 import com.mauriciotogneri.greencoffee.ScenarioConfig
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
+import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,6 +45,12 @@ class MoviesListedStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenar
 
             return res
         }
+
+        @JvmStatic
+        @BeforeClass
+        fun setupClass() {
+            RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
+        }
     }
 
     @JvmField
@@ -52,10 +59,8 @@ class MoviesListedStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenar
 
     @Test
     fun test() {
-        RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
-
         val testApp = ApplicationProvider.getApplicationContext<Context>() as TestApp
-        start(MoviesListedSteps(testApp.getMockWebServer()))
+        start(MoviesListedSteps(testApp.getMockWebServer(),testApp.getTestDatabase()))
     }
 
     override fun afterScenarioEnds(scenario: Scenario?, locale: Locale?) {

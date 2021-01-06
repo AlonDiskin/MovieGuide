@@ -1,14 +1,14 @@
 package com.diskin.alon.movieguide.di
 
 import com.diskin.alon.movieguide.news.di.common.NewsNetworkingModule
-import com.diskin.alon.movieguide.reviews.di.ReviewsNetworkingModule
+import com.diskin.alon.movieguide.reviews.di.common.ReviewsNetworkingModule
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Singleton
 
-@Module(includes = [NewsNetworkingModule::class,ReviewsNetworkingModule::class])
+@Module(includes = [NewsNetworkingModule::class, ReviewsNetworkingModule::class])
 object NetworkingModule {
 
     @JvmStatic

@@ -2,6 +2,7 @@ package com.diskin.alon.movieguide.reviews.data.remote
 
 import com.diskin.alon.movieguide.reviews.data.remote.data.MovieDetailResponse
 import com.diskin.alon.movieguide.reviews.data.remote.data.MoviesResponse
+import com.diskin.alon.movieguide.reviews.data.remote.data.MoviesResponse.*
 import com.diskin.alon.movieguide.reviews.data.remote.data.TrailersResponse
 import io.reactivex.Single
 import retrofit2.http.GET
@@ -32,6 +33,11 @@ interface TheMovieDbApi {
     fun getMovieDetail(@Path("id") id: Int,
                        @Query(MOVIE_DB_API_KEY_PARAM) apiKey: String
     ): Single<MovieDetailResponse>
+
+    @GET("${MOVIE_DB_MOVIE_DETAIL_PATH}/{id}")
+    fun getMovie(@Path("id") id: Int,
+                       @Query(MOVIE_DB_API_KEY_PARAM) apiKey: String
+    ): Single<MovieResponse>
 
     @GET("${MOVIE_DB_MOVIE_DETAIL_PATH}/{id}/videos")
     fun getTrailers(@Path("id") id: Int,

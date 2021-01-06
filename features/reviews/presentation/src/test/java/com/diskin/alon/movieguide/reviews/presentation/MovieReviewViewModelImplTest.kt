@@ -4,12 +4,14 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
 import com.diskin.alon.movieguide.common.appservices.AppError
 import com.diskin.alon.movieguide.common.appservices.Result
+import com.diskin.alon.movieguide.common.presentation.ErrorViewData
 import com.diskin.alon.movieguide.common.presentation.Model
 import com.diskin.alon.movieguide.common.presentation.RxViewModel
-import com.diskin.alon.movieguide.common.presentation.ViewData
-import com.diskin.alon.movieguide.common.presentation.ErrorViewData
+import com.diskin.alon.movieguide.common.presentation.UpdateViewData
+import com.diskin.alon.movieguide.reviews.presentation.data.FavoriteMovieModelRequest
 import com.diskin.alon.movieguide.reviews.presentation.data.MovieReview
 import com.diskin.alon.movieguide.reviews.presentation.data.ReviewModelRequest
+import com.diskin.alon.movieguide.reviews.presentation.data.UnFavoriteMovieModelRequest
 import com.diskin.alon.movieguide.reviews.presentation.viewmodel.MovieReviewViewModelImpl
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
@@ -19,6 +21,7 @@ import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.SingleSubject
 import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Rule
@@ -92,42 +95,123 @@ class MovieReviewViewModelImplTest {
     fun requestReviewFromModelAndUpdateViewDataWhenCreated() {
         // Given an initialized view model
 
-        // Then view model should request an observable movie review from model with movie id state
+        // Then view model should subscribe to model review updates
         verify { model.execute(ReviewModelRequest(movieId)) }
 
-        // When observable emit data
+        // When model update review data
         val review = mockk<MovieReview>()
         modelReview.onNext(Result.Success(review))
 
         // Then view model should update view review state
-        assertThat(viewModel.movieReview.value!!.data).isEqualTo(review)
+        assertThat(viewModel.movieReview.value).isEqualTo(review)
     }
 
     @Test
-    fun addModelReviewRxSubscriptionToContainer() {
+    fun addModelRxSubscriptionsToContainer() {
         // Given an initialized
 
         // Then view model should add model review subscription to disposable container
         val field = RxViewModel::class.java.getDeclaredField("container")
         field.isAccessible = true
         val disposable = field.get(viewModel) as CompositeDisposable
-        assertThat(disposable.size()).isEqualTo(1)
+        assertThat(disposable.size()).isEqualTo(2)
     }
 
     @Test
-    fun updateViewErrorDataWhenModelReviewRequestFail() {
+    fun updateReviewErrorViewDataWhenModelReviewUpdateFail() {
         // Given an initialized view model
 
-        // Then view model should request an observable movie review from model with movie id state
-        verify { model.execute(ReviewModelRequest(movieId)) }
-
-        // When model returned observable emit an error result
+        // When model review update fail
         val appError = AppError("message",false)
         modelReview.onNext(Result.Error(appError))
 
-        // Then view model should update review view state with error data
-        assertThat(viewModel.movieReview.value).isInstanceOf(ViewData.Error::class.java)
-        val viewError = viewModel.movieReview.value as ViewData.Error<MovieReview>
-        assertThat(viewError.error).isEqualTo(ErrorViewData.NotRetriable(appError.description))
+        // Then view model should update review error view data
+        assertThat(viewModel.reviewError.value).isEqualTo(ErrorViewData.NotRetriable(appError.description))
+    }
+
+    @Test
+    fun favoriteModelMovieWhenFavoritingReviewedMovie() {
+        //  Test case fixture
+        val modelSubject = SingleSubject.create<Result<Unit>>()
+        every { model.execute(any<FavoriteMovieModelRequest>()) } returns modelSubject
+
+        // Given an initialized view model
+
+        // When view model s asked to favorite a the reviewed movie
+        viewModel.favoriteReviewedMovie()
+
+        // Then view model should set review update view data state as 'updating'
+        assertThat(viewModel.reviewUpdate.value).isEqualTo(UpdateViewData.Update)
+
+        // And ask model to favorite the movie
+        verify { model.execute(FavoriteMovieModelRequest(movieId)) }
+
+        // When model completes operation
+        modelSubject.onSuccess(Result.Success(Unit))
+
+        // Then view model should set review update view data state as 'not updating'
+        assertThat(viewModel.reviewUpdate.value).isEqualTo(UpdateViewData.EndUpdate)
+    }
+
+    @Test
+    fun updateReviewErrorViewDataWhenFavoritingModelMovieFail() {
+        //  Test case fixture
+        val modelSubject = SingleSubject.create<Result<Unit>>()
+        every { model.execute(any<FavoriteMovieModelRequest>()) } returns modelSubject
+
+        // Given an initialized view model
+
+        // When view model asked to favorite the reviewed movie
+        viewModel.favoriteReviewedMovie()
+
+        // And model fail operation
+        val appError = AppError("message",false)
+        modelSubject.onSuccess(Result.Error(appError))
+
+        // Then view model should update review error view data
+        assertThat(viewModel.reviewError.value).isEqualTo(ErrorViewData.NotRetriable(appError.description))
+    }
+
+    @Test
+    fun unFavoriteModelMovieWhenUnFavoriteReviewedMovie() {
+        //  Test case fixture
+        val modelSubject = SingleSubject.create<Result<Unit>>()
+        every { model.execute(any<UnFavoriteMovieModelRequest>()) } returns modelSubject
+
+        // Given an initialized view model
+
+        // When view model asked to un favorite a the reviewed movie
+        viewModel.unFavoriteReviewedMovie()
+
+        // Then view model should set review update view data state as 'updating'
+        assertThat(viewModel.reviewUpdate.value).isEqualTo(UpdateViewData.Update)
+
+        // And ask model to un favorite the movie
+        verify { model.execute(UnFavoriteMovieModelRequest(movieId)) }
+
+        // When model completes operation
+        modelSubject.onSuccess(Result.Success(Unit))
+
+        // Then view model should set review update view data state as 'not updating'
+        assertThat(viewModel.reviewUpdate.value).isEqualTo(UpdateViewData.EndUpdate)
+    }
+
+    @Test
+    fun updateReviewErrorViewDataWhenUnFavoritingModelMovieFail() {
+        //  Test case fixture
+        val modelSubject = SingleSubject.create<Result<Unit>>()
+        every { model.execute(any<UnFavoriteMovieModelRequest>()) } returns modelSubject
+
+        // Given an initialized view model
+
+        // When view model asked to un favorite the reviewed movie
+        viewModel.favoriteReviewedMovie()
+
+        // And model fail operation
+        val appError = AppError("message",false)
+        modelSubject.onSuccess(Result.Error(appError))
+
+        // Then view model should update review error view data
+        assertThat(viewModel.reviewError.value).isEqualTo(ErrorViewData.NotRetriable(appError.description))
     }
 }

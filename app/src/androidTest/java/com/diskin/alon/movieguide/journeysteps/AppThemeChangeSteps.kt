@@ -14,8 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.movieguide.R
 import com.diskin.alon.movieguide.settings.presentation.R.string
 import com.diskin.alon.movieguide.util.DeviceUtil
-import com.google.common.truth.Truth
-import com.google.common.truth.Truth.*
+import com.google.common.truth.Truth.assertThat
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.And
 import com.mauriciotogneri.greencoffee.annotations.Given

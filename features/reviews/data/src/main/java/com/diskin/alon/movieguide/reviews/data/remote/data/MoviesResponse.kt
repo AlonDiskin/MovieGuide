@@ -9,9 +9,9 @@ data class MoviesResponse(val page: Int,
 ) {
 
     data class MovieResponse(val id: Int,
-                             val title: String,
-                             val release_date: String,
-                             val poster_path: String,
-                             val popularity: Double,
-                             val vote_average: Double)
+                             val title: String?,
+                             val release_date: String?,
+                             val poster_path: String?,
+                             val popularity: Double?,
+                             val vote_average: Double?)
 }

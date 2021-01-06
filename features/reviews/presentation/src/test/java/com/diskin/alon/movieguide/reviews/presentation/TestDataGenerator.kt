@@ -27,7 +27,7 @@ fun createMovies(): List<Movie> {
     )
 }
 
-fun createTestReview(): MovieReview {
+fun createReview(): MovieReview {
     return MovieReview(
         "id",
         "title",
@@ -38,6 +38,23 @@ fun createTestReview(): MovieReview {
         "review",
         "url",
         "webUrl",
-        listOf(Trailer("url1","url2"),Trailer("url3","url4"))
+        listOf(Trailer("url1","url2"),Trailer("url3","url4")),
+        false
+    )
+}
+
+fun createFavoritedMovieReview(): MovieReview {
+    return MovieReview(
+        "id",
+        "title",
+        "8.9",
+        "Horror,Comedy",
+        "22-10-2020",
+        "summary",
+        "review",
+        "url",
+        "webUrl",
+        listOf(Trailer("url1","url2"),Trailer("url3","url4")),
+        true
     )
 }

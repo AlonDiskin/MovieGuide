@@ -14,6 +14,7 @@ Feature: Movie reviews browsing
       | sorting      |
       | rating       |
       | release date |
+      | favorite     |
 
   @reviews-listed-errors
   Scenario Outline: Reviews listing browsing errors handling

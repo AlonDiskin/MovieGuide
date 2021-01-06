@@ -36,7 +36,6 @@ class ReviewSharingSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
     init {
         // Prepare test server
-        server.start()
         server.setDispatcher(dispatcher)
     }
 
@@ -88,17 +87,13 @@ class ReviewSharingSteps(server: MockWebServer) : GreenCoffeeSteps() {
         val movieDetailResourcePath = "json/themoviedb_movie_detail.json"
         val movieTrailersResourcePath = "json/themoviedb_movie_trailers.json"
         val movieResourceId = 724989
+        private val movieDetailPath = "/3/movie/$movieResourceId"
+        private val movieTrailersPath = "/3/movie/$movieResourceId/videos"
 
         override fun dispatch(request: RecordedRequest): MockResponse {
-            val movieDetailPath = "/3/movie/$movieResourceId"
-            val movieTrailersPath = "/3/movie/$movieResourceId/videos"
-
             return when(request.requestUrl.uri().path) {
                 movieDetailPath -> {
-                    return if (
-                        request.requestUrl.queryParameter("api_key") ==
-                        BuildConfig.MOVIE_DB_API_KEY
-                    ) {
+                    return if (isRequestHasApiKeyParam(request)) {
                         MockResponse()
                             .setBody(getJsonFromResource(movieDetailResourcePath))
                             .setResponseCode(200)
@@ -108,10 +103,7 @@ class ReviewSharingSteps(server: MockWebServer) : GreenCoffeeSteps() {
                 }
 
                 movieTrailersPath -> {
-                    return if (
-                        request.requestUrl.queryParameter("api_key") ==
-                        BuildConfig.MOVIE_DB_API_KEY
-                    ) {
+                    return if (isRequestHasApiKeyParam(request)) {
                         MockResponse()
                             .setBody(getJsonFromResource(movieTrailersResourcePath))
                             .setResponseCode(200)
@@ -122,6 +114,10 @@ class ReviewSharingSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
                 else -> MockResponse().setResponseCode(404)
             }
+        }
+
+        private fun isRequestHasApiKeyParam(request: RecordedRequest): Boolean {
+            return request.requestUrl.queryParameter("api_key") == BuildConfig.MOVIE_DB_API_KEY
         }
     }
 }

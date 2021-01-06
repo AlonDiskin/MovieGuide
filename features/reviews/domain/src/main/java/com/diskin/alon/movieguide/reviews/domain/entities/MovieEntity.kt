@@ -6,12 +6,12 @@ import com.diskin.alon.movieguide.common.domain.Entity
  * Movie entity class.
  */
 class MovieEntity(
-    override val id: String,
-    val title: String,
-    val popularity: Double,
-    val rating: Double,
-    val releaseDate: Long,
-    val posterUrl: String) : Entity<String> {
+    id: String,
+    var title: String,
+    var popularity: Double,
+    var rating: Double,
+    var releaseDate: Long,
+    var posterUrl: String) : Entity<String>(id) {
 
     init {
         require(rating in 0.0..10.0)

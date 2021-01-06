@@ -18,6 +18,10 @@ class TestApp : DaggerApplication(), TestLifecycleApplication {
         return testAppComponent.getMockWebServer()
     }
 
+    fun getTestDatabase():TestDatabase {
+        return testAppComponent.getTestDatabase()
+    }
+
     override fun beforeTest(method: Method?) {
 
     }
