@@ -1,6 +1,7 @@
 package com.diskin.alon.movieguide.news.presentation.controller
 
 import android.graphics.Color
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,7 +46,14 @@ class BookmarksAdapter(
                 if (isMultiSelect && selectedBookmarks.contains(headline.id)) {
                     Color.LTGRAY
                 } else {
-                    Color.WHITE
+                    val typedValue = TypedValue()
+
+                    binding.root.context.theme.resolveAttribute(
+                        android.R.attr.windowBackground,
+                        typedValue,
+                        true
+                    )
+                    typedValue.data
                 }
             )
         }

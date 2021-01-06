@@ -2,6 +2,7 @@ package com.diskin.alon.movieguide.news.presentation.controller
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
@@ -19,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_bookmarks.*
 import javax.inject.Inject
+
 
 class BookmarksFragment : Fragment(), ActionMode.Callback{
 
@@ -74,11 +76,12 @@ class BookmarksFragment : Fragment(), ActionMode.Callback{
         bookmarked_articles.adapter = adapter
 
         // Observe bookmarks state from view model
-        viewModel.bookmarks.observe(viewLifecycleOwner,{ headlines -> adapter.submitList(headlines) })
+        viewModel.bookmarks.observe(viewLifecycleOwner,
+            { headlines -> adapter.submitList(headlines) })
 
         // Observe view model update state
-        viewModel.update.observe(viewLifecycleOwner,{ update ->
-            when(update) {
+        viewModel.update.observe(viewLifecycleOwner, { update ->
+            when (update) {
                 is UpdateViewData.Update -> progress_bar?.visibility = View.VISIBLE
                 is UpdateViewData.EndUpdate -> progress_bar?.visibility = View.GONE
             }
@@ -95,18 +98,18 @@ class BookmarksFragment : Fragment(), ActionMode.Callback{
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putBoolean(KEY_ACTION_MODE,this.multiSelect )
-        outState.putStringArray(KEY_SELECTED,selectedBookmarksIds.toTypedArray())
+        outState.putBoolean(KEY_ACTION_MODE, this.multiSelect)
+        outState.putStringArray(KEY_SELECTED, selectedBookmarksIds.toTypedArray())
 
         super.onSaveInstanceState(outState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_bookmarks,menu)
+        inflater.inflate(R.menu.menu_bookmarks, menu)
 
         // Observe view model bookmarks sorting state
         viewModel.sorting.observe(viewLifecycleOwner, { sorting ->
-            when(sorting) {
+            when (sorting) {
                 BookmarkSorting.NEWEST -> menu.findItem(R.id.action_sort_newest).isChecked = true
                 BookmarkSorting.OLDEST -> menu.findItem(R.id.action_sort_oldest).isChecked = true
             }
@@ -140,7 +143,8 @@ class BookmarksFragment : Fragment(), ActionMode.Callback{
         errorSnackbar = Snackbar.make(
             bookmarked_articles,
             error.reason,
-            Snackbar.LENGTH_INDEFINITE)
+            Snackbar.LENGTH_INDEFINITE
+        )
 
         errorSnackbar?.show()
     }
@@ -149,7 +153,8 @@ class BookmarksFragment : Fragment(), ActionMode.Callback{
         errorSnackbar = Snackbar.make(
             bookmarked_articles,
             error.reason,
-            Snackbar.LENGTH_INDEFINITE)
+            Snackbar.LENGTH_INDEFINITE
+        )
             .setAction(getString(R.string.action_retry)) { error.retry() }
 
         errorSnackbar?.show()
@@ -160,7 +165,15 @@ class BookmarksFragment : Fragment(), ActionMode.Callback{
             if (selectedBookmarksIds.contains(headline.id)) {
                 selectedBookmarksIds.remove(headline.id)
                 view.isSelected = false
-                view.setBackgroundColor(Color.WHITE)
+                val typedValue = TypedValue()
+
+                requireActivity().theme.resolveAttribute(
+                    android.R.attr.windowBackground,
+                    typedValue,
+                    true
+                )
+                view.setBackgroundColor(typedValue.data)
+
             } else {
                 selectedBookmarksIds.add(headline.id)
                 view.setBackgroundColor(Color.LTGRAY)
@@ -194,7 +207,7 @@ class BookmarksFragment : Fragment(), ActionMode.Callback{
                 viewModel.removeBookmarks(selectedBookmarksIds.toList())
                 actionMode?.finish()
             }
-            .setNegativeButton(getString(R.string.dialog_neg_label),null)
+            .setNegativeButton(getString(R.string.dialog_neg_label), null)
             .create()
             .show()
     }
@@ -238,7 +251,7 @@ class BookmarksFragment : Fragment(), ActionMode.Callback{
                 viewModel.removeBookmarks(listOf(headline.id))
                 actionMode?.finish()
             }
-            .setNegativeButton(getString(R.string.dialog_neg_label),null)
+            .setNegativeButton(getString(R.string.dialog_neg_label), null)
             .create()
             .show()
     }
