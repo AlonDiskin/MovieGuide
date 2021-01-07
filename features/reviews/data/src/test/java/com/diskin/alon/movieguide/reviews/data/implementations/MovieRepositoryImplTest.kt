@@ -123,6 +123,26 @@ class MovieRepositoryImplTest {
         assertThat(actualResult).isEqualTo(storeResult)
     }
 
+    @Test
+    fun searchMoviesFromRemoteSourceWhenSearched() {
+        // Test case fixture
+        val storeResult: Observable<PagingData<MovieEntity>> = mockk()
+        every { movieStore.search(any(),any()) } returns storeResult
+
+        // Given an initialized repository
+
+        // When repository is searched  for movies
+        val query = "query"
+        val config = mockk<PagingConfig>()
+        val result = repository.search(query, config)
+
+        // Then repository should delegate search to remote movie store
+        verify { movieStore.search(config, query) }
+
+        // And return store result
+        assertThat(result).isEqualTo(storeResult)
+    }
+
     private fun sortingParams() =
         arrayOf(MovieSorting.POPULARITY,MovieSorting.RATING,MovieSorting.RATING)
 }

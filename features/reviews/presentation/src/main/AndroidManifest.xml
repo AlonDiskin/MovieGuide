@@ -3,9 +3,10 @@
     package="com.diskin.alon.movieguide.reviews.presentation">
 
     <application>
-        <activity android:name=".controller.MovieReviewActivity"
+        <activity
+            android:name=".controller.MovieReviewActivity"
             android:label="@string/title_review_activity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

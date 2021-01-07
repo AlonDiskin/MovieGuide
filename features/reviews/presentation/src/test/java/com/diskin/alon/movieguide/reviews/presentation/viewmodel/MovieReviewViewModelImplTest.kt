@@ -1,4 +1,4 @@
-package com.diskin.alon.movieguide.reviews.presentation
+package com.diskin.alon.movieguide.reviews.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
@@ -12,7 +12,6 @@ import com.diskin.alon.movieguide.reviews.presentation.data.FavoriteMovieModelRe
 import com.diskin.alon.movieguide.reviews.presentation.data.MovieReview
 import com.diskin.alon.movieguide.reviews.presentation.data.ReviewModelRequest
 import com.diskin.alon.movieguide.reviews.presentation.data.UnFavoriteMovieModelRequest
-import com.diskin.alon.movieguide.reviews.presentation.viewmodel.MovieReviewViewModelImpl
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk

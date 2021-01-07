@@ -157,8 +157,8 @@ class MovieReviewReadingErrorSteps(server: MockWebServer) : GreenCoffeeSteps() {
         private var serverFail = false
 
         override fun dispatch(request: RecordedRequest): MockResponse {
-            val movieDetailPath = "/3/movie/$movieResourceId"
-            val movieTrailersPath = "/3/movie/$movieResourceId/videos"
+            val movieDetailPath = "/movie/$movieResourceId"
+            val movieTrailersPath = "/movie/$movieResourceId/videos"
 
             return when {
                 networkingFail -> MockResponse()

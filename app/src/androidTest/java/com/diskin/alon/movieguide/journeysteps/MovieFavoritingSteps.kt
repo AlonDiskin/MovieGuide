@@ -7,10 +7,10 @@ import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.diskin.alon.movieguide.R
+import com.diskin.alon.movieguide.common.uitesting.isRecyclerViewItemsCount
 import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesAdapter
 import com.diskin.alon.movieguide.util.DeviceUtil
 import com.diskin.alon.movieguide.util.FileUtil
-import com.diskin.alon.movieguide.util.isRecyclerViewItemsCount
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.And
 import com.mauriciotogneri.greencoffee.annotations.Given
@@ -94,9 +94,9 @@ class MovieFavoritingSteps(server: MockWebServer) : GreenCoffeeSteps() {
         val movieDetailResource = "assets/json/themoviedb_movie_detail.json"
         private val moviesResource = "assets/json/themoviedb_movies_sorted_by_popularity.json"
         private val movieTrailersResource = "assets/json/themoviedb_movie_trailers.json"
-        private val moviesPath = "/3/discover/movie"
-        private val movieDetailPath = "/3/movie/724989"
-        private val movieTrailersPath = "/3/movie/724989/videos"
+        private val moviesPath = "/discover/movie"
+        private val movieDetailPath = "/movie/724989"
+        private val movieTrailersPath = "/movie/724989/videos"
 
         override fun dispatch(request: RecordedRequest): MockResponse {
             return when(request.requestUrl.uri().path) {

@@ -7,10 +7,10 @@ import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.diskin.alon.movieguide.R
+import com.diskin.alon.movieguide.common.uitesting.isRecyclerViewItemsCount
 import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesAdapter.HeadlineViewHolder
 import com.diskin.alon.movieguide.util.DeviceUtil
 import com.diskin.alon.movieguide.util.FileUtil
-import com.diskin.alon.movieguide.util.isRecyclerViewItemsCount
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.And
 import com.mauriciotogneri.greencoffee.annotations.Given

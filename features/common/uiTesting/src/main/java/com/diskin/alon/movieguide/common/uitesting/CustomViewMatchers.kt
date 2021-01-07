@@ -1,4 +1,4 @@
-package com.diskin.alon.movieguide.util
+package com.diskin.alon.movieguide.common.uitesting
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

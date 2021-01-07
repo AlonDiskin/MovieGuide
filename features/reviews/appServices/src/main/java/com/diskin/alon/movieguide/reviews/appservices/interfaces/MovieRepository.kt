@@ -20,4 +20,6 @@ interface MovieRepository {
     fun removeFromFavorites(movieId: String): Single<Result<Unit>>
 
     fun isFavorite(movieId: String): Observable<Result<Boolean>>
+
+    fun search(query: String,config: PagingConfig): Observable<PagingData<MovieEntity>>
 }

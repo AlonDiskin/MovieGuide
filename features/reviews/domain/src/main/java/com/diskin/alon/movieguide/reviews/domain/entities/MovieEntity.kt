@@ -10,7 +10,7 @@ class MovieEntity(
     var title: String,
     var popularity: Double,
     var rating: Double,
-    var releaseDate: Long,
+    var releaseDate: Long?,
     var posterUrl: String) : Entity<String>(id) {
 
     init {

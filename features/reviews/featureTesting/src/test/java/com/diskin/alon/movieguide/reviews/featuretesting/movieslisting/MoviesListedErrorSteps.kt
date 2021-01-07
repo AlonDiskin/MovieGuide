@@ -12,7 +12,7 @@ import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
 import com.diskin.alon.movieguide.common.presentation.ImageLoader
 import com.diskin.alon.movieguide.common.uitesting.RecyclerViewMatcher.withRecyclerView
 import com.diskin.alon.movieguide.reviews.data.remote.MOVIE_DB_MOVIES_PATH
-import com.diskin.alon.movieguide.reviews.data.remote.MOVIE_DB_PARAM_PAGE
+import com.diskin.alon.movieguide.reviews.data.remote.MOVIE_DB_PAGE_PARAM
 import com.diskin.alon.movieguide.reviews.data.remote.MOVIE_DB_POP_MOVIES_PARAMS
 import com.diskin.alon.movieguide.reviews.featuretesting.R
 import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesAdapter
@@ -192,7 +192,7 @@ class MoviesListedErrorSteps(server: MockWebServer) : GreenCoffeeSteps() {
         var mockRemoteServerFail = false
 
         override fun dispatch(request: RecordedRequest): MockResponse {
-            val supportedPath = "/$MOVIE_DB_MOVIES_PATH?$MOVIE_DB_POP_MOVIES_PARAMS&$MOVIE_DB_PARAM_PAGE=1"
+            val supportedPath = "/$MOVIE_DB_MOVIES_PATH?$MOVIE_DB_POP_MOVIES_PARAMS&$MOVIE_DB_PAGE_PARAM=1"
 
             return if (mockDeviceNetworkingFail) {
                 MockResponse()

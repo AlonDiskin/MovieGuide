@@ -4,5 +4,5 @@ data class MovieDto(val id: String,
                     val title: String,
                     val popularity: Double,
                     val rating: Double,
-                    val releaseDate: Long,
+                    val releaseDate: Long?,
                     val posterUrl: String)

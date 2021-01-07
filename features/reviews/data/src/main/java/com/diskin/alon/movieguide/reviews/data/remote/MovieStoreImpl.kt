@@ -30,13 +30,14 @@ class MovieStoreImpl @Inject constructor(
         config: PagingConfig,
         sorting: MovieSorting
     ): Observable<PagingData<MovieEntity>> {
-        return Pager(config)
-        { MoviePagingSource(
-            api,
-            networkErrorHandler,
-            toRemoteSorting(sorting),
-            mapper
-        ) }
+        return Pager(config) {
+            MoviePagingSource(
+                api,
+                networkErrorHandler,
+                toRemoteSorting(sorting),
+                mapper
+            )
+        }
             .observable
     }
 
@@ -45,6 +46,18 @@ class MovieStoreImpl @Inject constructor(
             .subscribeOn(Schedulers.io())
             .map(mapper::map)
             .toSingleResult(networkErrorHandler::handle)
+    }
+
+    override fun search(config: PagingConfig,query: String): Observable<PagingData<MovieEntity>> {
+        return Pager(config) {
+            MoviesSearchPagingSource(
+                api,
+                networkErrorHandler,
+                query,
+                mapper
+            )
+        }
+            .observable
     }
 
     private fun toRemoteSorting(sorting: MovieSorting): RemoteMovieSorting {

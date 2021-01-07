@@ -127,9 +127,9 @@ class MovieReviewReadingSteps(server: MockWebServer) : GreenCoffeeSteps() {
         private val moviesResourcePath = "json/themoviedb_movies_sorted_by_popularity.json"
         val movieDetailResourcePath = "json/themoviedb_movie_detail.json"
         val movieTrailersResourcePath = "json/themoviedb_movie_trailers.json"
-        private val moviesPath = "/3/discover/movie"
-        private val movieDetailPath = "/3/movie/724989"
-        private val movieTrailersPath = "/3/movie/724989/videos"
+        private val moviesPath = "/discover/movie"
+        private val movieDetailPath = "/movie/724989"
+        private val movieTrailersPath = "/movie/724989/videos"
 
         override fun dispatch(request: RecordedRequest): MockResponse {
             return when(request.requestUrl.uri().path) {

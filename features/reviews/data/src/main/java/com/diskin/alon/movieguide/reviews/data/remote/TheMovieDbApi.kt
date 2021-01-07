@@ -15,32 +15,30 @@ import retrofit2.http.Query
 interface TheMovieDbApi {
 
     @GET("$MOVIE_DB_MOVIES_PATH?$MOVIE_DB_POP_MOVIES_PARAMS")
-    fun getByPopularity(
-        @Query(MOVIE_DB_PARAM_PAGE) page: Int
-    ): Single<MoviesResponse>
+    fun getByPopularity(@Query(MOVIE_DB_PAGE_PARAM) page: Int): Single<MoviesResponse>
 
     @GET("$MOVIE_DB_MOVIES_PATH?$MOVIE_DB_RATING_MOVIES_PARAMS")
-    fun getByRating(
-        @Query(MOVIE_DB_PARAM_PAGE) page: Int
-    ): Single<MoviesResponse>
+    fun getByRating(@Query(MOVIE_DB_PAGE_PARAM) page: Int): Single<MoviesResponse>
 
     @GET("$MOVIE_DB_MOVIES_PATH?$MOVIE_DB_RELEASE_DATE_MOVIES_PARAMS")
-    fun getByReleaseDate(
-        @Query(MOVIE_DB_PARAM_PAGE) page: Int
-    ): Single<MoviesResponse>
+    fun getByReleaseDate(@Query(MOVIE_DB_PAGE_PARAM) page: Int): Single<MoviesResponse>
 
-    @GET("${MOVIE_DB_MOVIE_DETAIL_PATH}/{id}")
+    @GET("${MOVIE_DB_MOVIE_DETAIL_PATH}{id}")
     fun getMovieDetail(@Path("id") id: Int,
                        @Query(MOVIE_DB_API_KEY_PARAM) apiKey: String
     ): Single<MovieDetailResponse>
 
-    @GET("${MOVIE_DB_MOVIE_DETAIL_PATH}/{id}")
+    @GET("${MOVIE_DB_MOVIE_DETAIL_PATH}{id}")
     fun getMovie(@Path("id") id: Int,
-                       @Query(MOVIE_DB_API_KEY_PARAM) apiKey: String
+                 @Query(MOVIE_DB_API_KEY_PARAM) apiKey: String
     ): Single<MovieResponse>
 
-    @GET("${MOVIE_DB_MOVIE_DETAIL_PATH}/{id}/videos")
+    @GET("${MOVIE_DB_MOVIE_DETAIL_PATH}{id}/videos")
     fun getTrailers(@Path("id") id: Int,
                     @Query(MOVIE_DB_API_KEY_PARAM) apiKey: String
     ): Single<TrailersResponse>
+
+    @GET("$MOVIE_DB_SEARCH_PATH?$MOVIE_DB_SEARCH_PARAMS")
+    fun search(@Query(MOVIE_DB_QUERY_PARAM) query: String,
+               @Query(MOVIE_DB_PAGE_PARAM) page: Int): Single<MoviesResponse>
 }

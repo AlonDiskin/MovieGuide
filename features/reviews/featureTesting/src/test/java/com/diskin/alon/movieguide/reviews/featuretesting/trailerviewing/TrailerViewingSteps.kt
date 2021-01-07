@@ -100,8 +100,8 @@ class TrailerViewingSteps(server: MockWebServer) : GreenCoffeeSteps() {
         val movieResourceId = 724989
 
         override fun dispatch(request: RecordedRequest): MockResponse {
-            val movieDetailPath = "/3/movie/$movieResourceId"
-            val movieTrailersPath = "/3/movie/$movieResourceId/videos"
+            val movieDetailPath = "/movie/$movieResourceId"
+            val movieTrailersPath = "/movie/$movieResourceId/videos"
 
             return when(request.requestUrl.uri().path) {
                 movieDetailPath -> {

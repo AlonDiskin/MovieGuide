@@ -1,16 +1,15 @@
-package com.diskin.alon.movieguide.reviews.presentation
+package com.diskin.alon.movieguide.reviews.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
 import androidx.paging.PagingData
 import com.diskin.alon.movieguide.common.appservices.UseCase
-import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.common.localtesting.WhiteBox
+import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.reviews.appservices.data.MovieDto
 import com.diskin.alon.movieguide.reviews.appservices.data.MovieSorting
 import com.diskin.alon.movieguide.reviews.appservices.data.SortedMoviesRequest
 import com.diskin.alon.movieguide.reviews.presentation.data.Movie
-import com.diskin.alon.movieguide.reviews.presentation.viewmodel.MoviesViewModelImpl
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
