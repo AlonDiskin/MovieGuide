@@ -3,12 +3,14 @@ package com.diskin.alon.movieguide.reviews.presentation.controller
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import com.diskin.alon.movieguide.common.appservices.AppError
 import com.diskin.alon.movieguide.reviews.presentation.R
+import com.diskin.alon.movieguide.reviews.presentation.data.Movie
 import com.diskin.alon.movieguide.reviews.presentation.viewmodel.MoviesSearchViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.AndroidSupportInjection
@@ -43,7 +45,7 @@ class MoviesSearchFragment : Fragment(), SearchView.OnQueryTextListener,
         super.onViewCreated(view, savedInstanceState)
 
         // Setup search results ui adapter
-        val adapter = MoviesAdapter{}
+        val adapter = MoviesAdapter(::navigateToMovieReview)
         search_results.adapter = adapter
 
         // Listen to data set changes and update empty results notification accordingly
@@ -165,5 +167,10 @@ class MoviesSearchFragment : Fragment(), SearchView.OnQueryTextListener,
             0 -> empty_search_label.visibility = View.VISIBLE
             else -> empty_search_label.visibility = View.GONE
         }
+    }
+
+    private fun navigateToMovieReview(movie: Movie) {
+        val bundle = bundleOf(getString(R.string.movie_id_arg) to movie.id)
+        findNavController().navigate(R.id.movieReviewActivity, bundle)
     }
 }

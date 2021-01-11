@@ -1,7 +1,7 @@
 package com.diskin.alon.movieguide.reviews.presentation.controller
 
+import android.content.Context
 import android.os.Looper
-import android.view.KeyEvent
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
@@ -9,14 +9,12 @@ import androidx.paging.*
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.espresso.matcher.ViewMatchers.Visibility.GONE
@@ -336,67 +334,6 @@ class MoviesSearchFragmentTest {
                     )
                 )
             )
-
-            // And loading fail
-            listener.invoke(
-                CombinedLoadStates(
-                    LoadStates(
-                        LoadState.Error(Throwable()),
-                        LoadState.NotLoading(true),
-                        LoadState.NotLoading(true)
-                    )
-                )
-            )
-
-            // And later paged data loading initial page of search results again
-            listener.invoke(
-                CombinedLoadStates(
-                    LoadStates(
-                        LoadState.Loading,
-                        LoadState.NotLoading(true),
-                        LoadState.NotLoading(true)
-                    )
-                )
-            )
-        }
-
-        Shadows.shadowOf(Looper.getMainLooper()).runToEndOfTasks()
-
-        // Then fragment should hide error snackbar
-        onView(withId(R.id.snackbar_text))
-            .check(doesNotExist())
-    }
-
-    @Test
-    fun hideErrorIndicatorWhenResultsAvailable() {
-        // Given a resumed fragment
-
-        scenario.onActivity {
-            val listener = getMoviesAdapterLoadStatesListener(
-                it.search_results.adapter as MoviesAdapter
-            )
-
-            // When paged data search result loading fail
-            listener.invoke(
-                CombinedLoadStates(
-                    LoadStates(
-                        LoadState.Error(Throwable()),
-                        LoadState.NotLoading(true),
-                        LoadState.NotLoading(true)
-                    )
-                )
-            )
-
-            // And later loading complete with success
-            listener.invoke(
-                CombinedLoadStates(
-                    LoadStates(
-                        LoadState.NotLoading(false),
-                        LoadState.NotLoading(true),
-                        LoadState.NotLoading(true)
-                    )
-                )
-            )
         }
 
         Shadows.shadowOf(Looper.getMainLooper()).runToEndOfTasks()
@@ -468,6 +405,34 @@ class MoviesSearchFragmentTest {
 
         // Then fragment nav controller should nav user to movies fragment
         assertThat(navController.currentDestination?.id).isEqualTo(R.id.moviesFragment)
+    }
+
+    @Test
+    fun openMovieReviewScreenWhenUserSelectMovieSearchResult() {
+        // Given
+        val movies = createMovies()
+        results.value = PagingData.from(movies)
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // When user select to read first result movie review
+        onView(withId(R.id.search_results))
+            .perform(
+                actionOnItemAtPosition<MovieViewHolder>(
+                    0,
+                    click()
+                )
+            )
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then fragment nav controller should nav user to movie review activity
+        assertThat(navController.currentDestination?.id).isEqualTo(R.id.movieReviewActivity)
+
+        // And pass movie id to destination
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        assertThat(navController.currentBackStackEntry?.arguments?.get(context
+            .getString(R.string.movie_id_arg)))
+            .isEqualTo(movies.first().id)
+
     }
 
     private fun getMoviesAdapterLoadStatesListener(adapter: MoviesAdapter): (CombinedLoadStates) -> Unit {

@@ -13,6 +13,7 @@ fun isRecyclerViewItemsCount(size: Int): Matcher<View> {
         }
 
         override fun matchesSafely(item: RecyclerView): Boolean {
+
             return item.adapter!!.itemCount == size
         }
 
