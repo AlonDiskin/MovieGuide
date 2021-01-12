@@ -46,4 +46,8 @@ class MovieRepositoryImpl @Inject constructor(
     override fun isFavorite(movieId: String): Observable<Result<Boolean>> {
         return favoriteStore.contains(movieId)
     }
+
+    override fun search(query: String,config: PagingConfig): Observable<PagingData<MovieEntity>> {
+        return movieStore.search(config,query)
+    }
 }

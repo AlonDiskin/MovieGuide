@@ -87,8 +87,8 @@ class ReviewSharingSteps(server: MockWebServer) : GreenCoffeeSteps() {
         val movieDetailResourcePath = "json/themoviedb_movie_detail.json"
         val movieTrailersResourcePath = "json/themoviedb_movie_trailers.json"
         val movieResourceId = 724989
-        private val movieDetailPath = "/3/movie/$movieResourceId"
-        private val movieTrailersPath = "/3/movie/$movieResourceId/videos"
+        private val movieDetailPath = "/movie/$movieResourceId"
+        private val movieTrailersPath = "/movie/$movieResourceId/videos"
 
         override fun dispatch(request: RecordedRequest): MockResponse {
             return when(request.requestUrl.uri().path) {

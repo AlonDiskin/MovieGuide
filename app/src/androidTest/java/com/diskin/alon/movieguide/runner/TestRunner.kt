@@ -21,6 +21,7 @@ class TestRunner : AndroidJUnitRunner() {
         // Init RxIdler
         RxJavaPlugins.setInitIoSchedulerHandler(
             Rx2Idler.create("RxJava 2.x IO Scheduler"))
+        // Start test server
         NetworkUtil.initServer()
         super.onStart()
     }

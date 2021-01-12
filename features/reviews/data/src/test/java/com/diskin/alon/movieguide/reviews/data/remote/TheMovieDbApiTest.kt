@@ -69,10 +69,9 @@ class TheMovieDbApiTest {
         val dispatcher = object : Dispatcher() {
             val pageNum = 1
             val moviesResourcePath = "themoviedb_movies_sorted_by_popularity.json"
+            private val path = "/discover/movie"
 
             override fun dispatch(request: RecordedRequest): MockResponse {
-                val path = "/3/discover/movie"
-
                 return when(request.requestUrl.uri().path) {
                     path -> {
                         return if (
@@ -114,10 +113,9 @@ class TheMovieDbApiTest {
         val dispatcher = object : Dispatcher() {
             val pageNum = 1
             val moviesResourcePath = "themoviedb_movies_sorted_by_date.json"
+            private val path = "/discover/movie"
 
             override fun dispatch(request: RecordedRequest): MockResponse {
-                val path = "/3/discover/movie"
-
                 return when(request.requestUrl.uri().path) {
                     path -> {
                         return if (
@@ -159,10 +157,9 @@ class TheMovieDbApiTest {
         val dispatcher = object : Dispatcher() {
             val pageNum = 1
             val moviesResourcePath = "themoviedb_movies_sorted_by_rating.json"
+            private val path = "/discover/movie"
 
             override fun dispatch(request: RecordedRequest): MockResponse {
-                val path = "/3/discover/movie"
-
                 return when(request.requestUrl.uri().path) {
                     path -> {
                         return if (
@@ -205,10 +202,9 @@ class TheMovieDbApiTest {
             val movieId = 1
             val movieDetailResourcePath = "themoviedb_movie_detail.json"
             val apiKey = "key"
+            private val path = "/movie/$movieId?api_key=$apiKey"
 
             override fun dispatch(request: RecordedRequest): MockResponse {
-                val path = "/3/movie/$movieId?api_key=$apiKey"
-
                 return when(request.path) {
                     path -> MockResponse()
                         .setBody(getJsonFromResource(movieDetailResourcePath))
@@ -240,10 +236,9 @@ class TheMovieDbApiTest {
             val movieId = 1
             val movieDetailResourcePath = "themoviedb_movie_detail.json"
             val apiKey = "key"
+            private val path = "/movie/$movieId?api_key=$apiKey"
 
             override fun dispatch(request: RecordedRequest): MockResponse {
-                val path = "/3/movie/$movieId?api_key=$apiKey"
-
                 return when(request.path) {
                     path -> MockResponse()
                         .setBody(getJsonFromResource(movieDetailResourcePath))
@@ -275,10 +270,9 @@ class TheMovieDbApiTest {
             val movieId = 1
             val movieTrailersResourcePath = "themoviedb_movie_trailers.json"
             val apiKey = "key"
+            private val path = "/movie/$movieId/videos?api_key=$apiKey"
 
             override fun dispatch(request: RecordedRequest): MockResponse {
-                val path = "/3/movie/$movieId/videos?api_key=$apiKey"
-
                 return when(request.path) {
                     path -> MockResponse()
                         .setBody(getJsonFromResource(movieTrailersResourcePath))
@@ -302,6 +296,50 @@ class TheMovieDbApiTest {
         val expectedResponse = parseMovieTrailersResponseFromJson(testWebJson)
 
         testObserver.assertValue { it == expectedResponse }
+    }
+
+    @Test
+    fun searchMoviesFromRemoteAndMapResponse() {
+        // Text case fixture
+        val dispatcher = object : Dispatcher() {
+            val pageNum = 1
+            val query = "query"
+            val moviesResourcePath = "themoviedb_movies_sorted_by_rating.json"
+            private val path = "/search/movie"
+
+            override fun dispatch(request: RecordedRequest): MockResponse {
+                return when(request.requestUrl.uri().path) {
+                    path -> {
+                        return if (
+                            request.requestUrl.queryParameter("page") == pageNum.toString() &&
+                            request.requestUrl.queryParameter("include_adult") == "false" &&
+                            request.requestUrl.queryParameter("query") == query &&
+                            request.requestUrl.queryParameter("language") == "en-US" &&
+                            request.requestUrl.queryParameter("api_key") == BuildConfig.MOVIE_DB_API_KEY
+                        ) {
+                            MockResponse()
+                                .setBody(getJsonFromResource(moviesResourcePath))
+                                .setResponseCode(200)
+                        } else {
+                            MockResponse().setResponseCode(404)
+                        }
+                    }
+
+                    else -> MockResponse().setResponseCode(404)
+                }
+            }
+        }
+
+        // Given remote api server is running and api client is initialized
+        server.setDispatcher(dispatcher)
+
+        // When api sends GET request to search for movies
+        val testObserver = api.search(dispatcher.query,dispatcher.pageNum).test()
+
+        // Then api should map server response to expected data model
+        val testWebJson = getJsonFromResource(dispatcher.moviesResourcePath)
+        val expectedApiResponse = parseMoviesResponseFromJson(testWebJson)
+        testObserver.assertValue { it == expectedApiResponse }
     }
 
     private fun getJsonFromResource(resource: String): String {

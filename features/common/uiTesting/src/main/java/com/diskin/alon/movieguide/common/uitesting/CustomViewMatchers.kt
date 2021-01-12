@@ -1,4 +1,4 @@
-package com.diskin.alon.movieguide.util
+package com.diskin.alon.movieguide.common.uitesting
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +13,7 @@ fun isRecyclerViewItemsCount(size: Int): Matcher<View> {
         }
 
         override fun matchesSafely(item: RecyclerView): Boolean {
+
             return item.adapter!!.itemCount == size
         }
 

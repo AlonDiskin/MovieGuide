@@ -13,8 +13,16 @@ class MovieMapper : Mapper<MoviesResponse.MovieResponse, MovieEntity> {
             source.title ?: "",
             source.popularity ?: 0.0,
             source.vote_average ?: 0.0,
-            LocalDate.parse(source.release_date).toDate().time,
+            mapReleaseDateDate(source.release_date),
             MOVIE_DB_BASE_POSTER_PATH.plus(source.poster_path)
         )
+    }
+
+    private fun mapReleaseDateDate(releaseDate: String?): Long? {
+        return if (releaseDate != null && releaseDate.isNotEmpty()) {
+            LocalDate.parse(releaseDate).toDate().time
+        } else {
+            null
+        }
     }
 }

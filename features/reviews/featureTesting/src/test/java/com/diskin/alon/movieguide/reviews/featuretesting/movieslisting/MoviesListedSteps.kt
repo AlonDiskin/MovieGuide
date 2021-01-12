@@ -226,9 +226,9 @@ class MoviesListedSteps(server: MockWebServer, db: TestDatabase) : GreenCoffeeSt
         val moviesByDateResourcePath = "json/themoviedb_movies_sorted_by_date.json"
 
         override fun dispatch(request: RecordedRequest): MockResponse {
-            val sortedByPopularityPath = "/$MOVIE_DB_MOVIES_PATH?$MOVIE_DB_POP_MOVIES_PARAMS&$MOVIE_DB_PARAM_PAGE=1"
-            val sortedByDatePath = "/$MOVIE_DB_MOVIES_PATH?$MOVIE_DB_RELEASE_DATE_MOVIES_PARAMS&$MOVIE_DB_PARAM_PAGE=1"
-            val sortedByRatingPath = "/$MOVIE_DB_MOVIES_PATH?$MOVIE_DB_RATING_MOVIES_PARAMS&$MOVIE_DB_PARAM_PAGE=1"
+            val sortedByPopularityPath = "/$MOVIE_DB_MOVIES_PATH?$MOVIE_DB_POP_MOVIES_PARAMS&$MOVIE_DB_PAGE_PARAM=1"
+            val sortedByDatePath = "/$MOVIE_DB_MOVIES_PATH?$MOVIE_DB_RELEASE_DATE_MOVIES_PARAMS&$MOVIE_DB_PAGE_PARAM=1"
+            val sortedByRatingPath = "/$MOVIE_DB_MOVIES_PATH?$MOVIE_DB_RATING_MOVIES_PARAMS&$MOVIE_DB_PAGE_PARAM=1"
 
             return when(request.path) {
                 sortedByPopularityPath -> MockResponse()

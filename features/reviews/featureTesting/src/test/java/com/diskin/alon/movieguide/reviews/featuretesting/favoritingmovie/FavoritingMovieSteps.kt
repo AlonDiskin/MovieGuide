@@ -111,8 +111,8 @@ class FavoritingMovieSteps(
         val movieResourceId = 393209
         private val movieDetailResource = "json/themoviedb_movie_detail.json"
         private val movieTrailersResource = "json/themoviedb_movie_trailers.json"
-        private val movieDetailPath = "/3/movie/$movieResourceId"
-        private val movieTrailersPath = "/3/movie/$movieResourceId/videos"
+        private val movieDetailPath = "/movie/$movieResourceId"
+        private val movieTrailersPath = "/movie/$movieResourceId/videos"
 
         override fun dispatch(request: RecordedRequest): MockResponse {
             return when(request.requestUrl.uri().path) {

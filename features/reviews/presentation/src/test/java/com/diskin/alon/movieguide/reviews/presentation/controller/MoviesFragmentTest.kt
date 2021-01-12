@@ -1,4 +1,4 @@
-package com.diskin.alon.movieguide.reviews.presentation
+package com.diskin.alon.movieguide.reviews.presentation.controller
 
 import android.content.Context
 import android.os.Looper
@@ -24,9 +24,9 @@ import androidx.test.filters.SmallTest
 import com.diskin.alon.movieguide.common.uitesting.RecyclerViewMatcher.withRecyclerView
 import com.diskin.alon.movieguide.common.uitesting.swipeToRefresh
 import com.diskin.alon.movieguide.reviews.appservices.data.MovieSorting
-import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesAdapter
+import com.diskin.alon.movieguide.reviews.presentation.R
 import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesAdapter.MovieViewHolder
-import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesFragment
+import com.diskin.alon.movieguide.reviews.presentation.createMovies
 import com.diskin.alon.movieguide.reviews.presentation.data.Movie
 import com.diskin.alon.movieguide.reviews.presentation.viewmodel.MoviesViewModel
 import com.google.common.truth.Truth.assertThat
@@ -663,6 +663,27 @@ class MoviesFragmentTest {
         assertThat(navController.currentBackStackEntry?.arguments?.get(context
             .getString(R.string.movie_id_arg)))
             .isEqualTo(movies.first().id)
+    }
+
+    @Test
+    fun openMoviesSearchScreenWhenSearchSelected() {
+        // Given an initialized fragment
+
+        // When
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val menuItem = ActionMenuItem(
+                context,
+                0,
+                R.id.action_search,
+                0,
+                0,
+                null
+            )
+
+        scenario.onFragment { it.onOptionsItemSelected(menuItem) }
+
+        // Then
+        assertThat(navController.currentDestination?.id).isEqualTo(R.id.moviesSearchFragment)
     }
 
     private fun getMoviesAdapterLoadStatesListener(adapter: MoviesAdapter): (CombinedLoadStates) -> Unit {

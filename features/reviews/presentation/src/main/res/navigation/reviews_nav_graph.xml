@@ -19,10 +19,22 @@
                 app:argType="string"
                 android:defaultValue="" />
         </action>
+        <action
+            android:id="@+id/action_moviesFragment_to_moviesSearchFragment"
+            app:destination="@id/moviesSearchFragment" />
     </fragment>
     <activity
         android:id="@+id/movieReviewActivity"
         android:name="com.diskin.alon.movieguide.reviews.presentation.controller.MovieReviewActivity"
         android:label="MovieReviewActivity"
         tools:layout="@layout/activity_movie_review"/>
+    <fragment
+        android:id="@+id/moviesSearchFragment"
+        android:name="com.diskin.alon.movieguide.reviews.presentation.controller.MoviesSearchFragment"
+        android:label="MoviesSearchFragment"
+        tools:layout="@layout/fragment_search_movies">
+        <action
+            android:id="@+id/action_moviesSearchFragment_to_movieReviewActivity"
+            app:destination="@id/movieReviewActivity" />
+    </fragment>
 </navigation>

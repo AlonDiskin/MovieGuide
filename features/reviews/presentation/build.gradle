@@ -49,6 +49,10 @@ android {
     packagingOptions {
         exclude 'META-INF/appServices.kotlin_module'
     }
+
+    packagingOptions {
+        exclude 'META-INF/domain.kotlin_module'
+    }
 }
 
 dependencies {
@@ -107,9 +111,6 @@ dependencies {
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
-    // Instrumentation testing
-    androidTestImplementation project(":features:common:uiTesting")
-
     // Local/Unit testing
     testImplementation project(":features:common:localTesting")
     testImplementation project(":features:common:uiTesting")
@@ -118,4 +119,11 @@ dependencies {
     testImplementation "androidx.paging:paging-common-ktx:$paging_version"
     testImplementation "androidx.test.espresso:espresso-intents:3.3.0"
     testImplementation "androidx.navigation:navigation-testing:2.3.1"
+
+    // Instrumentation
+    androidTestImplementation project(':features:common:uiTesting')
+    androidTestImplementation 'io.mockk:mockk-android:1.10.3-jdk8'
+    androidTestImplementation "com.google.truth:truth:1.0.1"
+    androidTestImplementation 'pl.pragmatists:JUnitParams:1.1.1'
+    androidTestImplementation 'com.github.ignaciotcrespo:junitwithparams:1.0.4'
 }

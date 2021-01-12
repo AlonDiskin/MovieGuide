@@ -1,4 +1,4 @@
-package com.diskin.alon.movieguide.reviews.presentation
+package com.diskin.alon.movieguide.reviews.presentation.controller
 
 import android.content.Context
 import android.content.Intent
@@ -21,8 +21,10 @@ import androidx.test.filters.SmallTest
 import com.diskin.alon.movieguide.common.presentation.ErrorViewData
 import com.diskin.alon.movieguide.common.presentation.ImageLoader
 import com.diskin.alon.movieguide.common.presentation.UpdateViewData
-import com.diskin.alon.movieguide.reviews.presentation.controller.MovieReviewActivity
+import com.diskin.alon.movieguide.reviews.presentation.R
 import com.diskin.alon.movieguide.reviews.presentation.controller.TrailersAdapter.MovieTrailerViewHolder
+import com.diskin.alon.movieguide.reviews.presentation.createFavoritedMovieReview
+import com.diskin.alon.movieguide.reviews.presentation.createReview
 import com.diskin.alon.movieguide.reviews.presentation.data.MovieReview
 import com.diskin.alon.movieguide.reviews.presentation.viewmodel.MovieReviewViewModel
 import com.google.common.truth.Truth.assertThat

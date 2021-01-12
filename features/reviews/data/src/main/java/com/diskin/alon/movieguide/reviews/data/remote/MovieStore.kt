@@ -16,4 +16,6 @@ interface MovieStore {
     fun getAllBySorting(config: PagingConfig, sorting: MovieSorting): Observable<PagingData<MovieEntity>>
 
     fun get(id: String): Single<Result<MovieEntity>>
+
+    fun search(config: PagingConfig,query: String): Observable<PagingData<MovieEntity>>
 }

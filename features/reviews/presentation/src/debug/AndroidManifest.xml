@@ -1,0 +1,7 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <activity android:name="com.diskin.alon.movieguide.reviews.presentation.TestSingleFragmentActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+    </application>
+</manifest>

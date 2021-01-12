@@ -9,9 +9,8 @@ import com.diskin.alon.movieguide.reviews.domain.entities.MovieEntity
 import com.diskin.alonmovieguide.common.data.NetworkErrorHandler
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import javax.inject.Inject
 
-class MoviePagingSource @Inject constructor(
+class MoviePagingSource(
     private val api: TheMovieDbApi,
     private val networkErrorHandler: NetworkErrorHandler,
     private val sorting: RemoteMovieSorting,

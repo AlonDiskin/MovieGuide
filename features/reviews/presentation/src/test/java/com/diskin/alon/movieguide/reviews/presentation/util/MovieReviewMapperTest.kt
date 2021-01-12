@@ -1,13 +1,13 @@
-package com.diskin.alon.movieguide.reviews.presentation
+package com.diskin.alon.movieguide.reviews.presentation.util
 
 import android.content.res.Resources
 import com.diskin.alon.movieguide.common.appservices.AppError
 import com.diskin.alon.movieguide.common.appservices.Result
 import com.diskin.alon.movieguide.reviews.appservices.data.MovieReviewDto
 import com.diskin.alon.movieguide.reviews.appservices.data.TrailerDto
+import com.diskin.alon.movieguide.reviews.presentation.R
 import com.diskin.alon.movieguide.reviews.presentation.data.MovieReview
 import com.diskin.alon.movieguide.reviews.presentation.data.Trailer
-import com.diskin.alon.movieguide.reviews.presentation.util.MovieReviewMapper
 import io.mockk.every
 import io.mockk.mockk
 import io.reactivex.Observable
