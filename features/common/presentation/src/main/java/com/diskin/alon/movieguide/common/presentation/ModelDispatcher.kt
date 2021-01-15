@@ -2,7 +2,6 @@ package com.diskin.alon.movieguide.common.presentation
 
 import com.diskin.alon.movieguide.common.appservices.UseCase
 import com.diskin.alon.movieguide.common.util.Mapper
-import javax.inject.Inject
 
 /**
  * Central dispatcher that serves requests from view models. This class handles
@@ -11,7 +10,7 @@ import javax.inject.Inject
  *
  * @param map
  */
-class ModelDispatcher @Inject constructor(
+class ModelDispatcher(
     private val map: Map<Class<out ModelRequest<*,*>>,Pair<UseCase<*,*>, Mapper<*, *>?>>
 ) :  Model {
 

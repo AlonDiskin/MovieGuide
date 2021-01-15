@@ -1,16 +1,12 @@
 package com.diskin.alon.movieguide
 
+import android.app.Application
 import android.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatDelegate
-import com.diskin.alon.movieguide.di.DaggerAppComponent
-import dagger.android.AndroidInjector
-import dagger.android.support.DaggerApplication
+import dagger.hilt.android.HiltAndroidApp
 
-class MovieGuideApp : DaggerApplication() {
-
-    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-        return DaggerAppComponent.factory().create(this)
-    }
+@HiltAndroidApp
+class MovieGuideApp : Application() {
 
     override fun onCreate() {
         super.onCreate()

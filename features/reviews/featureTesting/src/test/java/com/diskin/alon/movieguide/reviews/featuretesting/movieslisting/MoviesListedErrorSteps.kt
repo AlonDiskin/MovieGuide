@@ -1,8 +1,8 @@
 package com.diskin.alon.movieguide.reviews.featuretesting.movieslisting
 
 import android.os.Looper
-import androidx.fragment.app.testing.FragmentScenario
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -10,7 +10,9 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
 import com.diskin.alon.movieguide.common.presentation.ImageLoader
+import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
 import com.diskin.alon.movieguide.common.uitesting.RecyclerViewMatcher.withRecyclerView
+import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.reviews.data.remote.MOVIE_DB_MOVIES_PATH
 import com.diskin.alon.movieguide.reviews.data.remote.MOVIE_DB_PAGE_PARAM
 import com.diskin.alon.movieguide.reviews.data.remote.MOVIE_DB_POP_MOVIES_PARAMS
@@ -36,7 +38,7 @@ import org.robolectric.Shadows
  */
 class MoviesListedErrorSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
-    private lateinit var scenario: FragmentScenario<MoviesFragment>
+    private lateinit var scenario: ActivityScenario<HiltTestActivity>
     private lateinit var expectedUiErrorMessage: String
     private val dispatcher = TestDispatcher()
 
@@ -69,12 +71,7 @@ class MoviesListedErrorSteps(server: MockWebServer) : GreenCoffeeSteps() {
     @When("^User open reviews screen$")
     fun userOpenReviewsScreen() {
         // Launch movies fragment
-        scenario = FragmentScenario.launchInContainer(
-            MoviesFragment::class.java,
-            null,
-            R.style.AppTheme,
-            null
-        )
+        scenario = launchFragmentInHiltContainer<MoviesFragment>()
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 
@@ -139,9 +136,9 @@ class MoviesListedErrorSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
     private fun checkExpectedUiMoviesDataShown(movies: List<UiMovieData>) {
         // Check shown movies count is correct
-        scenario.onFragment { fragment ->
+        scenario.onActivity { activity ->
             val itemsCount =
-                fragment.view!!.findViewById<RecyclerView>(R.id.movies).adapter!!.itemCount
+                activity.findViewById<RecyclerView>(R.id.movies).adapter!!.itemCount
             assertThat(itemsCount).isEqualTo(movies.size)
         }
 

@@ -41,8 +41,12 @@ class ThemeSelectionSteps : GreenCoffeeSteps() {
 
     @And("^User open settings screen$")
     fun userOpenSettingsScreen() {
-        scenario = FragmentScenario.launchInContainer(SettingsFragment::class.java,
-            null, R.style.Theme_AppCompat_Light_DarkActionBar,null)
+        scenario = FragmentScenario.launchInContainer(
+            SettingsFragment::class.java,
+            null,
+            R.style.Theme_MaterialComponents_DayNight,
+            null
+        )
     }
 
     @Then("^App theme should be set to the default$")

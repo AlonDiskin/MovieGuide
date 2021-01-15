@@ -21,7 +21,7 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxkotlin:2.4.0"
 
     // Paging(for kotlin modules)
-    implementation "androidx.paging:paging-common-ktx:3.0.0-alpha08"
+    implementation "androidx.paging:paging-common-ktx:3.0.0-alpha12"
 
     // Javax annotation
     implementation "javax.inject:javax.inject:1"

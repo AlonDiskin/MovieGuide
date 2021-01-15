@@ -3,20 +3,23 @@ package com.diskin.alon.movieguide.news.featuretesting.sharebookmark
 import android.content.Context
 import android.content.Intent
 import android.os.Looper
-import androidx.fragment.app.testing.FragmentScenario
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.*
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
+import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
+import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.news.data.local.data.Bookmark
-import com.diskin.alon.movieguide.news.featuretesting.R
-import com.diskin.alon.movieguide.news.featuretesting.TestDatabase
-import com.diskin.alon.movieguide.news.presentation.R.*
+import com.diskin.alon.movieguide.news.featuretesting.di.TestDatabase
+import com.diskin.alon.movieguide.news.presentation.R.id
+import com.diskin.alon.movieguide.news.presentation.R.string
 import com.diskin.alon.movieguide.news.presentation.controller.BookmarksFragment
-import com.google.common.truth.Truth.*
+import com.google.common.truth.Truth.assertThat
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.And
 import com.mauriciotogneri.greencoffee.annotations.Given
@@ -38,7 +41,7 @@ class ShareBookmarkSteps(
     private val database: TestDatabase
 ) : GreenCoffeeSteps() {
 
-    private lateinit var bookmarksFragmentScenario: FragmentScenario<BookmarksFragment>
+    private lateinit var bookmarksFragmentScenario: ActivityScenario<HiltTestActivity>
     private val dispatcher = TestDispatcher()
 
     init {
@@ -53,12 +56,7 @@ class ShareBookmarkSteps(
 
     @And("^User open bookmarks screen$")
     fun user_open_bookmarks_screen() {
-        bookmarksFragmentScenario = FragmentScenario.launchInContainer(
-            BookmarksFragment::class.java,
-        null,
-            R.style.AppTheme,
-            null
-        )
+        bookmarksFragmentScenario = launchFragmentInHiltContainer<BookmarksFragment>()
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 

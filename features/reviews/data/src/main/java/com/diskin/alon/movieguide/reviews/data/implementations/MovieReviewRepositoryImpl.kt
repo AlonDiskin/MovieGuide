@@ -6,12 +6,10 @@ import com.diskin.alon.movieguide.reviews.data.remote.MovieReviewStore
 import com.diskin.alon.movieguide.reviews.domain.entities.MovieReviewEntity
 import io.reactivex.Observable
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Handles data sources operations to provide [MovieReviewEntity]s.
  */
-@Singleton
 class MovieReviewRepositoryImpl @Inject constructor(
     private val remoteMovieReviewSource: MovieReviewStore
 ) : MovieReviewRepository {

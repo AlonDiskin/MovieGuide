@@ -1,6 +1,5 @@
 package com.diskin.alon.movieguide.reviews.di.moviessearchcontainer
 
-import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagingData
 import com.diskin.alon.movieguide.common.appservices.UseCase
 import com.diskin.alon.movieguide.common.presentation.Model
@@ -8,27 +7,27 @@ import com.diskin.alon.movieguide.common.presentation.ModelDispatcher
 import com.diskin.alon.movieguide.common.presentation.ModelRequest
 import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.reviews.appservices.data.MovieDto
-import com.diskin.alon.movieguide.reviews.appservices.usecase.MovieDtoPagingMapper
 import com.diskin.alon.movieguide.reviews.appservices.usecase.SearchMoviesUseCase
-import com.diskin.alon.movieguide.reviews.domain.entities.MovieEntity
-import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesSearchFragment
 import com.diskin.alon.movieguide.reviews.presentation.data.Movie
 import com.diskin.alon.movieguide.reviews.presentation.data.SearchMoviesModelRequest
 import com.diskin.alon.movieguide.reviews.presentation.util.MoviesPagingMapper
-import com.diskin.alon.movieguide.reviews.presentation.viewmodel.MoviesSearchViewModel
-import com.diskin.alon.movieguide.reviews.presentation.viewmodel.MoviesSearchViewModelImpl
+import com.diskin.alon.movieguide.reviews.presentation.util.MoviesSearchModelDispatcher
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ViewModelScoped
 import io.reactivex.Observable
 
 @Module
+@InstallIn(ViewModelComponent::class)
 abstract class MoviesSearchModule {
 
-    @Module
     companion object {
 
-        @JvmStatic
+        @ViewModelScoped
+        @MoviesSearchModelDispatcher
         @Provides
         fun provideModelDispatcher(
             searchMoviesUseCase: SearchMoviesUseCase,
@@ -40,21 +39,9 @@ abstract class MoviesSearchModule {
 
             return ModelDispatcher(map)
         }
-
-        @JvmStatic
-        @Provides
-        fun provideMoviesSearchViewModel(
-            fragment: MoviesSearchFragment,
-            factory: MoviesSearchViewModelFactory
-        ): MoviesSearchViewModel {
-            return ViewModelProvider(fragment, factory)
-                .get(MoviesSearchViewModelImpl::class.java)
-        }
     }
 
+    @ViewModelScoped
     @Binds
     abstract fun bindMoviePagingMapper(mapper: MoviesPagingMapper): Mapper<Observable<PagingData<MovieDto>>, Observable<PagingData<Movie>>>
-
-    @Binds
-    abstract fun provideMoviePagingDtoMapper(mapper: MovieDtoPagingMapper): Mapper<PagingData<MovieEntity>, PagingData<MovieDto>>
 }

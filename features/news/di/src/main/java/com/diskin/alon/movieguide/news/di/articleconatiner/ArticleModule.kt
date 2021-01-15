@@ -11,28 +11,29 @@ import com.diskin.alon.movieguide.news.appservices.data.ArticleDto
 import com.diskin.alon.movieguide.news.appservices.usecase.BookmarkArticleUseCase
 import com.diskin.alon.movieguide.news.appservices.usecase.GetArticleUseCase
 import com.diskin.alon.movieguide.news.appservices.usecase.UnBookmarkArticlesUseCase
-import com.diskin.alon.movieguide.news.presentation.controller.ArticleActivity
 import com.diskin.alon.movieguide.news.presentation.data.Article
 import com.diskin.alon.movieguide.news.presentation.data.ArticleModelRequest
 import com.diskin.alon.movieguide.news.presentation.data.BookmarkingModelRequest
 import com.diskin.alon.movieguide.news.presentation.data.UnBookmarkingModelRequest
 import com.diskin.alon.movieguide.news.presentation.util.ArticleMapper
-import com.diskin.alon.movieguide.news.presentation.viewmodel.ArticleViewModel
-import com.diskin.alon.movieguide.news.presentation.viewmodel.ArticleViewModelImpl
+import com.diskin.alon.movieguide.news.presentation.util.ArticleModelDispatcher
+import com.diskin.alon.movieguide.news.presentation.util.ArticleViewModelFactoryQualifier
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityComponent
 import io.reactivex.Observable
 
 @Module
+@InstallIn(ActivityComponent::class)
 abstract class ArticleModule {
 
-    @Module
     companion object {
 
-        @JvmStatic
+        @ArticleModelDispatcher
         @Provides
-        fun provideModelDispatcher(
+        fun provideModelDispatcherMap(
             getArticleUseCase: GetArticleUseCase,
             bookmarkArticleUseCase: BookmarkArticleUseCase,
             unBookmarkArticlesUseCase: UnBookmarkArticlesUseCase,
@@ -45,18 +46,12 @@ abstract class ArticleModule {
 
             return ModelDispatcher(map)
         }
-
-        @JvmStatic
-        @Provides
-        fun provideArticleViewModel(
-            activity: ArticleActivity,
-            factory: ArticleViewModelFactory
-        ): ArticleViewModel {
-            return ViewModelProvider(activity, factory)
-                .get(ArticleViewModelImpl::class.java)
-        }
     }
 
     @Binds
     abstract fun bindArticleMapper(mapper: ArticleMapper): Mapper<Observable<Result<ArticleDto>>,Observable<Result<Article>>>
+
+    @ArticleViewModelFactoryQualifier
+    @Binds
+    abstract fun bindArticleViewModelFactory(factory: ArticleViewModelFactory): ViewModelProvider.Factory
 }

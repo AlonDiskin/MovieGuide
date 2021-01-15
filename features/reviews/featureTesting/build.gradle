@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin'
 
 android {
     compileSdkVersion 29
@@ -43,8 +44,11 @@ android {
     }
 }
 
+hilt {
+    enableTransformForLocalTests = true
+}
+
 dependencies {
-    def dagger_version = "2.25.4"
     def fragment_version = "1.2.5"
     def room_version = "2.3.0-alpha04"
 
@@ -58,35 +62,41 @@ dependencies {
 
     // Fragment testing
     debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
+    testImplementation "androidx.fragment:fragment-ktx:1.2.5"
 
     // Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
-
-    // Dagger
-    implementation "com.google.dagger:dagger-android:$dagger_version"
-    implementation "com.google.dagger:dagger-android-support:$dagger_version"
-    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
-    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    testImplementation 'com.squareup.retrofit2:retrofit:2.6.2'
 
     // Rx
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
-    implementation "io.reactivex.rxjava2:rxkotlin:2.4.0"
+    testImplementation 'io.reactivex.rxjava2:rxjava:2.2.19'
+    testImplementation "io.reactivex.rxjava2:rxkotlin:2.4.0"
 
     // Room
-    implementation "androidx.room:room-runtime:$room_version"
-    implementation "androidx.room:room-rxjava2:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
+    testImplementation "androidx.room:room-runtime:$room_version"
+    testImplementation "androidx.room:room-rxjava2:$room_version"
+    kaptTest "androidx.room:room-compiler:$room_version"
 
     // Retrofit Mock web server
-    implementation "com.squareup.okhttp3:mockwebserver:3.9.1"
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
-    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    testImplementation "com.squareup.okhttp3:mockwebserver:3.9.1"
+    testImplementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    testImplementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
+    testImplementation 'com.squareup.retrofit2:retrofit:2.6.2'
+    testImplementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
 
-    // Local testing
-    kaptTest "androidx.databinding:databinding-compiler:4.1.1"
+    // Data binding
+    kaptTest "androidx.databinding:databinding-compiler:4.1.2"
+
+    // Espresso Intents
     testImplementation "androidx.test.espresso:espresso-intents:3.3.0"
+
+    // Navigation testing
     testImplementation "androidx.navigation:navigation-testing:2.3.1"
+
+    // Joda time
     testImplementation "joda-time:joda-time:2.10.4"
+
+    // Hilt
+    testImplementation "com.google.dagger:hilt-android:$hilt_version"
+    kaptTest "com.google.dagger:hilt-android-compiler:$hilt_version"
+    testImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
 }

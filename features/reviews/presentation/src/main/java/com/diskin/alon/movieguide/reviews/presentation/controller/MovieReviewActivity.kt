@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ShareCompat
 import androidx.databinding.DataBindingUtil
@@ -17,26 +18,24 @@ import com.diskin.alon.movieguide.reviews.presentation.data.Trailer
 import com.diskin.alon.movieguide.reviews.presentation.databinding.ActivityMovieReviewBinding
 import com.diskin.alon.movieguide.reviews.presentation.viewmodel.MovieReviewViewModel
 import com.google.android.material.snackbar.Snackbar
-import dagger.android.AndroidInjection
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.migration.OptionalInject
 import kotlinx.android.synthetic.main.activity_movie_review.*
-import javax.inject.Inject
 
 /**
  * Display movie review info,and provide content engagement actions.
  */
+@OptionalInject
+@AndroidEntryPoint
 class MovieReviewActivity : AppCompatActivity() {
 
-    @Inject
-    lateinit var viewModel: MovieReviewViewModel
+    private val viewModel: MovieReviewViewModel by viewModels()
     private var errorSnackbar: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = DataBindingUtil
             .setContentView<ActivityMovieReviewBinding>(this,R.layout.activity_movie_review)
-
-        // Inject activity
-        AndroidInjection.inject(this)
 
         // Setup toolbar
         setSupportActionBar(toolbar)

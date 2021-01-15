@@ -3,8 +3,8 @@ package com.diskin.alon.movieguide.reviews.featuretesting.movieslisting
 import android.content.Context
 import android.os.Looper
 import androidx.appcompat.view.menu.ActionMenuItem
-import androidx.fragment.app.testing.FragmentScenario
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -12,10 +12,12 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
 import com.diskin.alon.movieguide.common.presentation.ImageLoader
+import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
 import com.diskin.alon.movieguide.common.uitesting.RecyclerViewMatcher.withRecyclerView
+import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.reviews.data.local.FavoriteMovie
 import com.diskin.alon.movieguide.reviews.data.remote.*
-import com.diskin.alon.movieguide.reviews.featuretesting.TestDatabase
+import com.diskin.alon.movieguide.reviews.featuretesting.di.TestDatabase
 import com.diskin.alon.movieguide.reviews.presentation.R
 import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesAdapter
 import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesFragment
@@ -39,7 +41,7 @@ import java.util.*
  */
 class MoviesListedSteps(server: MockWebServer, db: TestDatabase) : GreenCoffeeSteps() {
 
-    private lateinit var scenario: FragmentScenario<MoviesFragment>
+    private lateinit var scenario: ActivityScenario<HiltTestActivity>
     private val dispatcher = TestDispatcher()
     private val favoriteMovies = listOf(
         FavoriteMovie(
@@ -81,7 +83,7 @@ class MoviesListedSteps(server: MockWebServer, db: TestDatabase) : GreenCoffeeSt
 
     @Given("^User opened movie reviews screen$")
     fun userOpenedMovieReviewsScreen() {
-        scenario = FragmentScenario.launchInContainer(MoviesFragment::class.java)
+        scenario = launchFragmentInHiltContainer<MoviesFragment>()
     }
 
     @Then("^Reviewed movies should be listed and sorted by movie popularity in desc order$")
@@ -129,8 +131,8 @@ class MoviesListedSteps(server: MockWebServer, db: TestDatabase) : GreenCoffeeSt
             else -> throw IllegalArgumentException("unknown scenario argument:${sorting}")
         }
 
-        scenario.onFragment { fragment ->
-            fragment.onOptionsItemSelected(menItem)
+        scenario.onActivity { activity ->
+            activity.supportFragmentManager.fragments[0].onOptionsItemSelected(menItem)
         }
 
         Shadows.shadowOf(Looper.getMainLooper()).idle()
@@ -177,9 +179,9 @@ class MoviesListedSteps(server: MockWebServer, db: TestDatabase) : GreenCoffeeSt
 
     private fun checkExpectedUiMoviesDataShown(movies: List<UiMovieData>) {
         // Check shown movies count is correct
-        scenario.onFragment { fragment ->
-            val itemsCount =
-                fragment.view!!.findViewById<RecyclerView>(R.id.movies).adapter!!.itemCount
+        scenario.onActivity { activity ->
+            val adapter = activity.findViewById<RecyclerView>(R.id.movies).adapter!!
+            val itemsCount = adapter.itemCount
             assertThat(itemsCount).isEqualTo(movies.size)
         }
 

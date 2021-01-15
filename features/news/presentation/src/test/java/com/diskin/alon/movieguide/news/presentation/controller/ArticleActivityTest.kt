@@ -17,6 +17,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.diskin.alon.movieguide.common.presentation.ErrorViewData
 import com.diskin.alon.movieguide.common.presentation.UpdateViewData
+import com.diskin.alon.movieguide.common.presentation.createActivityViewModel
 import com.diskin.alon.movieguide.news.presentation.R
 import com.diskin.alon.movieguide.news.presentation.createBookmarkedTestArticle
 import com.diskin.alon.movieguide.news.presentation.createTestArticle
@@ -24,8 +25,10 @@ import com.diskin.alon.movieguide.news.presentation.createUnBookmarkedTestArticl
 import com.diskin.alon.movieguide.news.presentation.data.Article
 import com.diskin.alon.movieguide.news.presentation.viewmodel.ArticleViewModel
 import com.google.common.truth.Truth.assertThat
-import dagger.android.AndroidInjection
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.verify
 import kotlinx.android.synthetic.main.activity_article.*
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Before
@@ -58,12 +61,9 @@ class ArticleActivityTest {
 
     @Before
     fun setUp() {
-        // Mock out dagger di
-        mockkStatic(AndroidInjection::class)
-        val slot  = slot<ArticleActivity>()
-        every { AndroidInjection.inject(capture(slot)) } answers {
-            slot.captured.viewModel = viewModel
-        }
+        // Mock and stub view model generator for activity
+        mockkStatic("com.diskin.alon.movieguide.common.presentation.ViewModelUtilKt")
+        every { createActivityViewModel<ArticleViewModel>(any(),any()) } returns lazy { viewModel }
 
         // Stub mocked view model
         every { viewModel.article } returns articleViewData

@@ -1,15 +1,17 @@
 package com.diskin.alon.movieguide.news.featuretesting.listarticles
 
 import android.os.Looper
-import androidx.fragment.app.testing.FragmentScenario
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
 import com.diskin.alon.movieguide.common.presentation.ImageLoader
+import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
 import com.diskin.alon.movieguide.common.uitesting.RecyclerViewMatcher.withRecyclerView
+import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.common.uitesting.swipeToRefresh
 import com.diskin.alon.movieguide.news.data.remote.*
 import com.diskin.alon.movieguide.news.featuretesting.R
@@ -45,7 +47,7 @@ class ListArticlesSteps(server: MockWebServer) : GreenCoffeeSteps() {
         private const val PAGES_NUM = 2
     }
 
-    private lateinit var scenario: FragmentScenario<HeadlinesFragment>
+    private lateinit var scenario: ActivityScenario<HiltTestActivity>
     private val dispatcher = ArticlesDispatcher()
 
     init {
@@ -59,7 +61,8 @@ class ListArticlesSteps(server: MockWebServer) : GreenCoffeeSteps() {
     @Given("^User opened articles screen$")
     fun userOpenedArticlesScreen() {
         // launch movies headlines fragment
-        scenario = FragmentScenario.launchInContainer(HeadlinesFragment::class.java)
+        scenario = launchFragmentInHiltContainer<HeadlinesFragment>()
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 
     @When("^User scrolls to bottom of ui$")
@@ -100,16 +103,16 @@ class ListArticlesSteps(server: MockWebServer) : GreenCoffeeSteps() {
     }
 
     private fun verifyShownHeadlinesListSize(expectedSize: Int) {
-        scenario.onFragment { fragment ->
-            val recycler = fragment.view!!.findViewById<RecyclerView>(R.id.headlines)
+        scenario.onActivity { activity ->
+            val recycler = activity.findViewById<RecyclerView>(R.id.headlines)
             assertThat(recycler.adapter!!.itemCount).isEqualTo(expectedSize)
         }
     }
 
     private fun scrollToBottom() {
         for (i in 0 until PAGES_NUM) {
-            scenario.onFragment { fragment ->
-                val recycler = fragment.view!!.findViewById<RecyclerView>(R.id.headlines)
+            scenario.onActivity { activity ->
+                val recycler = activity.findViewById<RecyclerView>(R.id.headlines)
                 val lastPosition = recycler.adapter!!.itemCount
                 recycler.smoothScrollToPosition(lastPosition)
             }

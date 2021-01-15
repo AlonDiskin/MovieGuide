@@ -9,13 +9,15 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.google.common.truth.Truth.assertThat
-import dagger.android.AndroidInjection
+import dagger.hilt.android.testing.BindValue
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.HiltTestApplication
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
-import io.mockk.slot
 import kotlinx.android.synthetic.main.activity_main.*
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -24,29 +26,26 @@ import org.robolectric.annotation.LooperMode
 /**
  * [MainActivity] hermetic ui test class.
  */
+@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @MediumTest
-@Config(sdk = [28])
+@Config(sdk = [28],application = HiltTestApplication::class)
 class MainActivityTest {
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
 
     // System under test
     private lateinit var scenario: ActivityScenario<MainActivity>
 
     // SUT collaborators
-    private val navigator: HomeNavigator = mockk()
+    @BindValue
+    @JvmField
+    val navigator: HomeNavigator = mockk()
 
     @Before
     fun setUp() {
-        // Mock out dagger di
-        mockkStatic(AndroidInjection::class)
-
-        // Stub dagger di to inject activity with mock collaborators
-        val activitySlot = slot<MainActivity>()
-        every { AndroidInjection.inject(capture(activitySlot)) } answers {
-            activitySlot.captured.navigator = navigator
-        }
-
         // Stub mocked navigator
         every { navigator.getNewsNavGraph() } returns getTestNewsGraph()
         every { navigator.getReviewsNavGraph() } returns getTestReviewsGraph()

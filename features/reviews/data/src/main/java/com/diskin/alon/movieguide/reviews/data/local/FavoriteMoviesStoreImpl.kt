@@ -1,6 +1,9 @@
 package com.diskin.alon.movieguide.reviews.data.local
 
-import androidx.paging.*
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import androidx.paging.rxjava2.observable
 import com.diskin.alon.movieguide.common.appservices.Result
 import com.diskin.alon.movieguide.common.appservices.toResult
@@ -11,9 +14,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class FavoriteMoviesStoreImpl @Inject constructor(
     private val dao: FavoriteMovieDao,
     private val errorHandler: StorageErrorHandler,

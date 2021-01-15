@@ -3,7 +3,6 @@ package com.diskin.alon.movieguide.news.featuretesting.readarticle
 import android.content.Context
 import android.content.Intent
 import android.os.Looper
-import androidx.fragment.app.testing.FragmentScenario
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ActivityScenario
@@ -15,6 +14,8 @@ import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
+import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
+import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.news.featuretesting.R
 import com.diskin.alon.movieguide.news.presentation.controller.ArticleActivity
 import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesAdapter.HeadlineViewHolder
@@ -38,7 +39,7 @@ import java.net.URLEncoder
  */
 class ArticleReadingSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
-    private lateinit var movieHeadlinesScenario: FragmentScenario<HeadlinesFragment>
+    private lateinit var movieHeadlinesScenario: ActivityScenario<HiltTestActivity>
     private lateinit var articleScenario: ActivityScenario<ArticleActivity>
     private val navController = TestNavHostController(getApplicationContext())
     private val dispatcher = TestDispatcher()
@@ -71,9 +72,15 @@ class ArticleReadingSteps(server: MockWebServer) : GreenCoffeeSteps() {
     @Given("^User opened articles screen$")
     fun userOpenedArticlesScreen() {
         // launch movies headlines fragment
-        movieHeadlinesScenario = FragmentScenario.launchInContainer(HeadlinesFragment::class.java)
+        movieHeadlinesScenario = launchFragmentInHiltContainer<HeadlinesFragment>()
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
         // Set test nav controller on headlines fragment
-        movieHeadlinesScenario.onFragment { Navigation.setViewNavController(it.requireView(), navController) }
+        movieHeadlinesScenario.onActivity {
+            Navigation.setViewNavController(
+                it.supportFragmentManager.fragments[0].requireView(),
+                navController
+            )
+        }
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 

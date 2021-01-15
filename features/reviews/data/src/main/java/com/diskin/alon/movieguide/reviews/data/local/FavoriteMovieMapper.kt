@@ -5,9 +5,7 @@ import com.diskin.alon.movieguide.reviews.domain.entities.MovieEntity
 import org.joda.time.LocalDate
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class FavoriteMovieMapper @Inject constructor() : Mapper<MovieEntity, FavoriteMovie> {
 
     override fun map(source: MovieEntity): FavoriteMovie {

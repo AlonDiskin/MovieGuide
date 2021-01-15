@@ -1,9 +1,6 @@
 package com.diskin.alon.movieguide.journeysteps
 
-import android.content.Context
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
@@ -12,8 +9,6 @@ import com.diskin.alon.movieguide.R
 import com.diskin.alon.movieguide.reviews.data.BuildConfig
 import com.diskin.alon.movieguide.reviews.presentation.R.string
 import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesAdapter.MovieViewHolder
-import com.diskin.alon.movieguide.runner.TestApp
-import com.diskin.alon.movieguide.util.DataBindingIdlingResource
 import com.diskin.alon.movieguide.util.DeviceUtil
 import com.diskin.alon.movieguide.util.FileUtil
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
@@ -34,16 +29,11 @@ import org.json.JSONObject
 class MovieSearchSteps(private val server: MockWebServer) : GreenCoffeeSteps() {
 
     private lateinit var dispatcher: TestDispatcher
-    private lateinit var idlingResource: DataBindingIdlingResource
 
     @Given("^User launched app from device home$")
     fun user_launched_app_from_device_home() {
         DeviceUtil.openDeviceHome()
         DeviceUtil.launchApp()
-
-        val testApp = ApplicationProvider.getApplicationContext<Context>() as TestApp
-        idlingResource = DataBindingIdlingResource(testApp.currentActivity)
-        IdlingRegistry.getInstance().register(idlingResource)
     }
 
     @And("^Open movies screen$")

@@ -3,6 +3,7 @@ package com.diskin.alon.movieguide.reviews.presentation.controller
 import android.content.Context
 import android.os.Looper
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelLazy
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.paging.*
@@ -22,15 +23,15 @@ import androidx.test.espresso.matcher.ViewMatchers.Visibility.VISIBLE
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.diskin.alon.movieguide.common.appservices.AppError
+import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
 import com.diskin.alon.movieguide.common.uitesting.RecyclerViewMatcher.withRecyclerView
+import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.reviews.presentation.R
-import com.diskin.alon.movieguide.reviews.presentation.TestSingleFragmentActivity
 import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesAdapter.MovieViewHolder
 import com.diskin.alon.movieguide.reviews.presentation.createMovies
 import com.diskin.alon.movieguide.reviews.presentation.data.Movie
 import com.diskin.alon.movieguide.reviews.presentation.viewmodel.MoviesSearchViewModel
 import com.google.common.truth.Truth.assertThat
-import dagger.android.support.AndroidSupportInjection
 import io.mockk.*
 import kotlinx.android.synthetic.main.fragment_search_movies.*
 import org.hamcrest.CoreMatchers.allOf
@@ -52,7 +53,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 class MoviesSearchFragmentTest {
 
     // Test subject
-    private lateinit var scenario: ActivityScenario<TestSingleFragmentActivity>
+    private lateinit var scenario: ActivityScenario<HiltTestActivity>
 
     // Collaborators
     private val viewModel: MoviesSearchViewModel = mockk()
@@ -67,12 +68,9 @@ class MoviesSearchFragmentTest {
 
     @Before
     fun setUp() {
-        // Mock out dagger
-        val slot  = slot<MoviesSearchFragment>()
-        mockkStatic(AndroidSupportInjection::class)
-        every { AndroidSupportInjection.inject(capture(slot)) } answers {
-            slot.captured.viewModel = viewModel
-        }
+        // Stub view model creation with test mock
+        mockkConstructor(ViewModelLazy::class)
+        every { anyConstructed<ViewModelLazy<MoviesSearchViewModel>>().value } returns viewModel
 
         // Stub collaborators
         searchTextSlot.captured = ""
@@ -85,7 +83,7 @@ class MoviesSearchFragmentTest {
         navController.setGraph(R.navigation.reviews_nav_graph)
 
         // Launch fragment under test
-        scenario = ActivityScenario.launch(TestSingleFragmentActivity::class.java)
+        scenario = launchFragmentInHiltContainer<MoviesSearchFragment>()
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Set the NavController property on the fragment with test controller
@@ -184,6 +182,9 @@ class MoviesSearchFragmentTest {
 
             listener.invoke(
                 CombinedLoadStates(
+                    LoadState.Loading,
+                    LoadState.NotLoading(true),
+                    LoadState.NotLoading(true),
                     LoadStates(
                         LoadState.Loading,
                         LoadState.NotLoading(true),
@@ -207,6 +208,9 @@ class MoviesSearchFragmentTest {
 
             listener.invoke(
                 CombinedLoadStates(
+                    LoadState.NotLoading(false),
+                    LoadState.NotLoading(true),
+                    LoadState.Loading,
                     LoadStates(
                         LoadState.NotLoading(false),
                         LoadState.NotLoading(true),
@@ -235,6 +239,9 @@ class MoviesSearchFragmentTest {
 
             listener.invoke(
                 CombinedLoadStates(
+                    LoadState.NotLoading(false),
+                    LoadState.NotLoading(true),
+                    LoadState.NotLoading(true),
                     LoadStates(
                         LoadState.NotLoading(false),
                         LoadState.NotLoading(true),
@@ -264,6 +271,9 @@ class MoviesSearchFragmentTest {
 
             listener.invoke(
                 CombinedLoadStates(
+                    LoadState.Error(error),
+                    LoadState.NotLoading(true),
+                    LoadState.NotLoading(true),
                     LoadStates(
                         LoadState.Error(error),
                         LoadState.NotLoading(true),
@@ -293,6 +303,9 @@ class MoviesSearchFragmentTest {
 
             listener.invoke(
                 CombinedLoadStates(
+                    LoadState.Error(Throwable()),
+                    LoadState.NotLoading(true),
+                    LoadState.NotLoading(true),
                     LoadStates(
                         LoadState.Error(Throwable()),
                         LoadState.NotLoading(true),
@@ -327,6 +340,9 @@ class MoviesSearchFragmentTest {
             // When paged data loading initial page of search results
             listener.invoke(
                 CombinedLoadStates(
+                    LoadState.Loading,
+                    LoadState.NotLoading(true),
+                    LoadState.NotLoading(true),
                     LoadStates(
                         LoadState.Loading,
                         LoadState.NotLoading(true),

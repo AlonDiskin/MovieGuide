@@ -10,13 +10,15 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
 import com.diskin.alon.movieguide.common.presentation.ImageLoader
+import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
 import com.diskin.alon.movieguide.common.uitesting.RecyclerViewMatcher.withRecyclerView
 import com.diskin.alon.movieguide.common.uitesting.isRecyclerViewItemsCount
+import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.reviews.data.BuildConfig
 import com.diskin.alon.movieguide.reviews.data.remote.MOVIE_DB_BASE_POSTER_PATH
 import com.diskin.alon.movieguide.reviews.presentation.R
-import com.diskin.alon.movieguide.reviews.presentation.TestSingleFragmentActivity
 import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesAdapter
+import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesSearchFragment
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.And
 import com.mauriciotogneri.greencoffee.annotations.Given
@@ -37,7 +39,7 @@ import org.robolectric.Shadows
  */
 class SearchSteps(private val server: MockWebServer) : GreenCoffeeSteps() {
 
-    private lateinit var scenario: ActivityScenario<TestSingleFragmentActivity>
+    private lateinit var scenario: ActivityScenario<HiltTestActivity>
     private lateinit var dispatcher: TestDispatcher
 
     init {
@@ -53,7 +55,7 @@ class SearchSteps(private val server: MockWebServer) : GreenCoffeeSteps() {
 
     @When("^User open movies search screen$")
     fun user_open_movies_search_screen() {
-        scenario = ActivityScenario.launch(TestSingleFragmentActivity::class.java)
+        scenario = launchFragmentInHiltContainer<MoviesSearchFragment>()
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 

@@ -1,6 +1,8 @@
 package com.diskin.alon.movieguide.news.presentation.util
 
+import android.content.Context
 import android.content.res.Resources
+import androidx.test.core.app.ApplicationProvider
 import com.diskin.alon.movieguide.common.appservices.AppError
 import com.diskin.alon.movieguide.common.appservices.Result
 import com.diskin.alon.movieguide.news.appservices.data.ArticleDto
@@ -27,12 +29,15 @@ class ArticleMapperTest {
     private lateinit var mapper: ArticleMapper
 
     // Collaborators
+    private val app: Context = mockk()
     private val resources: Resources = mockk()
 
     @Before
     fun setUp() {
+        every { app.resources } returns resources
+
         // Init subject
-        mapper = ArticleMapper(resources)
+        mapper = ArticleMapper(app)
     }
 
     @Test

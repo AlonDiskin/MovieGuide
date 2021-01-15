@@ -3,8 +3,8 @@ package com.diskin.alon.movieguide.news.featuretesting.listbookmarks
 import android.content.Context
 import android.os.Looper
 import androidx.appcompat.view.menu.ActionMenuItem
-import androidx.fragment.app.testing.FragmentScenario
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -12,10 +12,12 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
 import com.diskin.alon.movieguide.common.presentation.ImageLoader
+import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
 import com.diskin.alon.movieguide.common.uitesting.RecyclerViewMatcher.withRecyclerView
+import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.news.data.local.data.Bookmark
 import com.diskin.alon.movieguide.news.featuretesting.R
-import com.diskin.alon.movieguide.news.featuretesting.TestDatabase
+import com.diskin.alon.movieguide.news.featuretesting.di.TestDatabase
 import com.diskin.alon.movieguide.news.presentation.R.id
 import com.diskin.alon.movieguide.news.presentation.controller.BookmarksAdapter
 import com.diskin.alon.movieguide.news.presentation.controller.BookmarksFragment
@@ -45,7 +47,7 @@ class ListBookmarksSteps(
     private val database: TestDatabase
 ) : GreenCoffeeSteps() {
 
-    private lateinit var bookmarksFragmentScenario: FragmentScenario<BookmarksFragment>
+    private lateinit var bookmarksFragmentScenario: ActivityScenario<HiltTestActivity>
     private val dispatcher = TestDispatcher()
 
     init {
@@ -63,7 +65,7 @@ class ListBookmarksSteps(
 
     @And("^User open bookmarks screen$")
     fun user_open_bookmarks_screen() {
-        bookmarksFragmentScenario = FragmentScenario.launchInContainer(BookmarksFragment::class.java)
+        bookmarksFragmentScenario = launchFragmentInHiltContainer<BookmarksFragment>()
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 
@@ -84,8 +86,8 @@ class ListBookmarksSteps(
             null
         )
 
-        bookmarksFragmentScenario.onFragment { fragment ->
-            fragment.onOptionsItemSelected(menuItem)
+        bookmarksFragmentScenario.onActivity { activity ->
+            activity.supportFragmentManager.fragments[0].onOptionsItemSelected(menuItem)
         }
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
@@ -99,10 +101,8 @@ class ListBookmarksSteps(
     }
 
     private fun verifyBookmarksShow(bookmarks: List<UiBookmark>) {
-        bookmarksFragmentScenario.onFragment { fragment ->
-            val adapter =
-                fragment.view!!.findViewById<RecyclerView>(R.id.bookmarked_articles).adapter!!
-
+        bookmarksFragmentScenario.onActivity { activity ->
+            val adapter = activity.findViewById<RecyclerView>(R.id.bookmarked_articles).adapter!!
             assertThat(adapter.itemCount).isEqualTo(bookmarks.size)
         }
 

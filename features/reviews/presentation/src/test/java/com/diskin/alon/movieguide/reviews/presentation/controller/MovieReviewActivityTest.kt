@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Looper
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelLazy
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
@@ -28,7 +29,6 @@ import com.diskin.alon.movieguide.reviews.presentation.createReview
 import com.diskin.alon.movieguide.reviews.presentation.data.MovieReview
 import com.diskin.alon.movieguide.reviews.presentation.viewmodel.MovieReviewViewModel
 import com.google.common.truth.Truth.assertThat
-import dagger.android.AndroidInjection
 import io.mockk.*
 import kotlinx.android.synthetic.main.activity_movie_review.*
 import org.hamcrest.CoreMatchers.allOf
@@ -62,12 +62,9 @@ class MovieReviewActivityTest {
 
     @Before
     fun setUp() {
-        // Mock out dagger
-        mockkStatic(AndroidInjection::class)
-        val slot  = slot<MovieReviewActivity>()
-        every { AndroidInjection.inject(capture(slot)) } answers {
-            slot.captured.viewModel = viewModel
-        }
+        // Stub view model creation with test mock
+        mockkConstructor(ViewModelLazy::class)
+        every { anyConstructed<ViewModelLazy<MovieReviewViewModel>>().value } returns viewModel
 
         // Stub collaborators
         every { viewModel.movieReview } returns movieReview
@@ -109,19 +106,23 @@ class MovieReviewActivityTest {
         onView(withId(R.id.review_text))
             .check(matches(withText(review.review)))
 
-        verify { ImageLoader.loadIntoImageView(any(),review.backDropImageUrl) }
+        verify { ImageLoader.loadIntoImageView(any(), review.backDropImageUrl) }
 
         review.trailers.forEach { trailer ->
-            verify { ImageLoader.loadIntoImageView(any(),trailer.thumbnailUrl) }
+            verify { ImageLoader.loadIntoImageView(any(), trailer.thumbnailUrl) }
         }
 
         onView(withId(R.id.action_favoriting))
-            .check(matches(withContentDescription(
-                if (review.favorite)
-                    R.string.title_action_unfavorite_movie
-                else
-                    R.string.title_action_favorite_movie
-            )))
+            .check(
+                matches(
+                    withContentDescription(
+                        if (review.favorite)
+                            R.string.title_action_unfavorite_movie
+                        else
+                            R.string.title_action_favorite_movie
+                    )
+                )
+            )
     }
 
     @Test
@@ -200,12 +201,14 @@ class MovieReviewActivityTest {
 
         // Then activity should show snackbar with error message
         onView(withId(R.id.snackbar_text))
-            .check(matches(
-                allOf(
-                    withText(error.reason),
-                    isDisplayed()
+            .check(
+                matches(
+                    allOf(
+                        withText(error.reason),
+                        isDisplayed()
+                    )
                 )
-            ))
+            )
     }
 
     @Test
@@ -217,18 +220,20 @@ class MovieReviewActivityTest {
         // Given a resumed activity
 
         // When review ui state related retriable error happen
-        val error = ErrorViewData.Retriable("message",retryAction)
+        val error = ErrorViewData.Retriable("message", retryAction)
         reviewError.value = error
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then activity should show retry option
         onView(withId(R.id.snackbar_action))
-            .check(matches(
-                allOf(
-                    withText(R.string.action_retry),
-                    isDisplayed()
+            .check(
+                matches(
+                    allOf(
+                        withText(R.string.action_retry),
+                        isDisplayed()
+                    )
                 )
-            ))
+            )
 
         // When user selects to retry
         onView(withId(R.id.snackbar_action))
@@ -306,12 +311,12 @@ class MovieReviewActivityTest {
         movieReview.value = review
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
-        scenario.onActivity { it.appBar.setExpanded(false,false) }
+        scenario.onActivity { it.appBar.setExpanded(false, false) }
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // When user clicks on first listed trailer
         onView(withId(R.id.trailers))
-            .perform(actionOnItemAtPosition<MovieTrailerViewHolder>(0,click()))
+            .perform(actionOnItemAtPosition<MovieTrailerViewHolder>(0, click()))
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then activity should open link to view trailer via Android intent resolver ui

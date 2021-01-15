@@ -1,17 +1,17 @@
 package com.diskin.alon.movieguide.di
 
-import com.diskin.alon.movieguide.news.di.common.NewsNetworkingModule
-import com.diskin.alon.movieguide.reviews.di.common.ReviewsNetworkingModule
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Singleton
 
-@Module(includes = [NewsNetworkingModule::class, ReviewsNetworkingModule::class])
+@Module
+@InstallIn(SingletonComponent::class)
 object NetworkingModule {
 
-    @JvmStatic
     @Singleton
     @Provides
     fun provideLogging(): HttpLoggingInterceptor {
@@ -21,7 +21,6 @@ object NetworkingModule {
         return logging
     }
 
-    @JvmStatic
     @Singleton
     @Provides
     fun provideHttpClient(logging: HttpLoggingInterceptor): OkHttpClient {

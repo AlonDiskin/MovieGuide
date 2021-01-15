@@ -5,9 +5,8 @@ import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.news.appservices.data.HeadlineDto
 import com.diskin.alon.movieguide.news.presentation.data.Headline
 import io.reactivex.Observable
-import javax.inject.Inject
 
-class BookmarksModelRequestMapper @Inject constructor(
+class BookmarksModelRequestMapper(
     private val mapper: Mapper<HeadlineDto,Headline>
 ) : Mapper<Observable<Result<List<HeadlineDto>>>,Observable<Result<List<Headline>>>> {
 

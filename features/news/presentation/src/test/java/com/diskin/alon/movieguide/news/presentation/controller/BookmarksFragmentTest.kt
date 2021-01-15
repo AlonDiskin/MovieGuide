@@ -6,10 +6,11 @@ import android.os.Looper
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.menu.ActionMenuItem
-import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelLazy
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
@@ -26,15 +27,16 @@ import androidx.test.filters.SmallTest
 import com.diskin.alon.movieguide.common.presentation.ErrorViewData
 import com.diskin.alon.movieguide.common.presentation.ImageLoader
 import com.diskin.alon.movieguide.common.presentation.UpdateViewData
+import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
 import com.diskin.alon.movieguide.common.uitesting.RecyclerViewMatcher.withRecyclerView
+import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.news.appservices.data.BookmarkSorting
 import com.diskin.alon.movieguide.news.presentation.R
 import com.diskin.alon.movieguide.news.presentation.controller.BookmarksAdapter.BookmarkViewHolder
 import com.diskin.alon.movieguide.news.presentation.createNewsHeadlines
 import com.diskin.alon.movieguide.news.presentation.data.Headline
 import com.diskin.alon.movieguide.news.presentation.viewmodel.BookmarksViewModel
-import com.google.common.truth.Truth.*
-import dagger.android.support.AndroidSupportInjection
+import com.google.common.truth.Truth.assertThat
 import io.mockk.*
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.instanceOf
@@ -56,7 +58,7 @@ import org.robolectric.shadows.ShadowAlertDialog
 class BookmarksFragmentTest {
 
     // Test subject
-    private lateinit var scenario: FragmentScenario<BookmarksFragment>
+    private lateinit var scenario: ActivityScenario<HiltTestActivity>
 
     // Collaborators
     private val viewModel: BookmarksViewModel = mockk()
@@ -72,12 +74,9 @@ class BookmarksFragmentTest {
 
     @Before
     fun setUp() {
-        // Mock out dagger di
-        val fragmentSlot = slot<BookmarksFragment>()
-        mockkStatic(AndroidSupportInjection::class)
-        every { AndroidSupportInjection.inject(capture(fragmentSlot)) } answers {
-            fragmentSlot.captured.viewModel = viewModel
-        }
+        // Stub view model creation with test mock
+        mockkConstructor(ViewModelLazy::class)
+        every { anyConstructed<ViewModelLazy<BookmarksViewModel>>().value } returns viewModel
 
         // Stub collaborators
         every { viewModel.bookmarks } returns bookmarks
@@ -90,16 +89,13 @@ class BookmarksFragmentTest {
         navController.setGraph(R.navigation.bookmarks_nav_graph)
 
         // Launch fragment under test
-        scenario = FragmentScenario.launchInContainer(
-            BookmarksFragment::class.java,
-            null,
-            R.style.AppTheme,
-            null
-        )
+        scenario = launchFragmentInHiltContainer<BookmarksFragment>()
 
         // Set the NavController property on the fragment with test controller
-        scenario.onFragment {
-            Navigation.setViewNavController(it.requireView(), navController)
+        scenario.onActivity {
+            Navigation.setViewNavController(
+                it.supportFragmentManager.fragments[0].requireView(),
+                navController)
         }
     }
 
@@ -189,7 +185,8 @@ class BookmarksFragmentTest {
         // And use open sorting menu in ui
         openActionBarOverflowOrOptionsMenu(getApplicationContext())
         Shadows.shadowOf(Looper.getMainLooper()).idle()
-        onView(withText(R.string.title_action_sort))
+
+        onView(withContentDescription(R.string.title_action_sort))
             .perform(click())
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
@@ -208,7 +205,7 @@ class BookmarksFragmentTest {
         // And use open sorting menu in ui
         openActionBarOverflowOrOptionsMenu(getApplicationContext())
         Shadows.shadowOf(Looper.getMainLooper()).idle()
-        onView(withText(R.string.title_action_sort))
+        onView(withContentDescription(R.string.title_action_sort))
             .perform(click())
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
@@ -250,8 +247,8 @@ class BookmarksFragmentTest {
                 )
             }
 
-            scenario.onFragment { fragment ->
-                fragment.onOptionsItemSelected(menuItem)
+            scenario.onActivity {
+                it.supportFragmentManager.fragments[0].onOptionsItemSelected(menuItem)
             }
 
             // Then fragment should ask view model to sort bookmarks by selected sorting
@@ -336,7 +333,7 @@ class BookmarksFragmentTest {
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then fragment should show an alert dialog to confirm removal
-        val dialog = (ShadowAlertDialog.getLatestDialog() as AlertDialog)
+         val dialog = (ShadowAlertDialog.getLatestDialog() as AlertDialog)
         assertThat(dialog.isShowing).isTrue()
 
         // When user approve confirm removal

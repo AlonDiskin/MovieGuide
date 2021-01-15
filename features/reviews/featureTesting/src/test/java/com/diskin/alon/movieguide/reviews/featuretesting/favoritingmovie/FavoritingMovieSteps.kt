@@ -13,7 +13,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
 import com.diskin.alon.movieguide.reviews.data.BuildConfig
 import com.diskin.alon.movieguide.reviews.featuretesting.R
-import com.diskin.alon.movieguide.reviews.featuretesting.TestDatabase
+import com.diskin.alon.movieguide.reviews.featuretesting.di.TestDatabase
 import com.diskin.alon.movieguide.reviews.presentation.controller.MovieReviewActivity
 import com.google.common.truth.Truth.assertThat
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps

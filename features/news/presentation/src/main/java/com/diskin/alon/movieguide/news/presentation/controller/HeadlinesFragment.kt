@@ -7,13 +7,17 @@ import android.view.ViewGroup
 import androidx.core.app.ShareCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import com.diskin.alon.movieguide.common.presentation.createFragmentViewModel
 import com.diskin.alon.movieguide.news.presentation.R
 import com.diskin.alon.movieguide.news.presentation.data.Headline
+import com.diskin.alon.movieguide.news.presentation.util.HeadlinesViewModelFactoryQualifier
 import com.diskin.alon.movieguide.news.presentation.viewmodel.HeadlinesViewModel
 import com.google.android.material.snackbar.Snackbar
-import dagger.android.support.AndroidSupportInjection
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.migration.OptionalInject
 import kotlinx.android.synthetic.main.fragment_headlines.*
 import javax.inject.Inject
 
@@ -21,17 +25,15 @@ import javax.inject.Inject
  * Display a listing of [Headline]s, and provide user interaction
  * with listed items.
  */
+@OptionalInject
+@AndroidEntryPoint
 class HeadlinesFragment : Fragment() {
 
     @Inject
-    lateinit var viewModel: HeadlinesViewModel
+    @HeadlinesViewModelFactoryQualifier
+    lateinit var factory: ViewModelProvider.Factory
+    private val viewModel: HeadlinesViewModel by createFragmentViewModel(this) { factory }
     private var snackbar: Snackbar? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // Inject fragment
-        AndroidSupportInjection.inject(this)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

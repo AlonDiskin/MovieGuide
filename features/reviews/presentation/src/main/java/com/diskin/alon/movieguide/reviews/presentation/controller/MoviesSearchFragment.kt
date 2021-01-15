@@ -5,6 +5,7 @@ import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
@@ -13,24 +14,24 @@ import com.diskin.alon.movieguide.reviews.presentation.R
 import com.diskin.alon.movieguide.reviews.presentation.data.Movie
 import com.diskin.alon.movieguide.reviews.presentation.viewmodel.MoviesSearchViewModel
 import com.google.android.material.snackbar.Snackbar
-import dagger.android.support.AndroidSupportInjection
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.migration.OptionalInject
 import kotlinx.android.synthetic.main.fragment_search_movies.*
-import javax.inject.Inject
 
 /**
  * Provides ui for searching movies.
  */
+@OptionalInject
+@AndroidEntryPoint
 class MoviesSearchFragment : Fragment(), SearchView.OnQueryTextListener,
     MenuItem.OnActionExpandListener {
 
-    @Inject
-    lateinit var viewModel: MoviesSearchViewModel
+    private val viewModel: MoviesSearchViewModel by viewModels()
     private var errorSnackbar: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        AndroidSupportInjection.inject(this)
     }
 
     override fun onCreateView(

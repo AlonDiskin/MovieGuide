@@ -10,6 +10,7 @@ import com.diskin.alon.movieguide.common.presentation.Model
 import com.diskin.alon.movieguide.common.presentation.RxViewModel
 import com.diskin.alon.movieguide.news.presentation.data.Headline
 import com.diskin.alon.movieguide.news.presentation.data.HeadlinesModelRequest
+import com.diskin.alon.movieguide.news.presentation.util.HeadlinesModelDispatcher
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 
@@ -17,7 +18,7 @@ import io.reactivex.disposables.Disposable
  * Stores and manage UI related data for the headlines UI controller.
  */
 class HeadlinesViewModelImpl(
-    private val model: Model
+    @HeadlinesModelDispatcher private val model: Model
 ) : RxViewModel(), HeadlinesViewModel {
 
     companion object {

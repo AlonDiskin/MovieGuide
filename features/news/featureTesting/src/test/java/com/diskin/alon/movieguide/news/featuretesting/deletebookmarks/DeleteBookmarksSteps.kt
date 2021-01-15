@@ -2,8 +2,8 @@ package com.diskin.alon.movieguide.news.featuretesting.deletebookmarks
 
 import android.os.Looper
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.testing.FragmentScenario
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.longClick
@@ -11,10 +11,12 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
+import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
 import com.diskin.alon.movieguide.common.uitesting.RecyclerViewMatcher.withRecyclerView
+import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.news.data.local.data.Bookmark
 import com.diskin.alon.movieguide.news.featuretesting.R
-import com.diskin.alon.movieguide.news.featuretesting.TestDatabase
+import com.diskin.alon.movieguide.news.featuretesting.di.TestDatabase
 import com.diskin.alon.movieguide.news.presentation.R.id
 import com.diskin.alon.movieguide.news.presentation.R.string
 import com.diskin.alon.movieguide.news.presentation.controller.BookmarksAdapter
@@ -42,7 +44,7 @@ class DeleteBookmarksSteps(
     private val database: TestDatabase
 ) : GreenCoffeeSteps() {
 
-    private lateinit var scenario: FragmentScenario<BookmarksFragment>
+    private lateinit var scenario: ActivityScenario<HiltTestActivity>
     private val dispatcher = TestDispatcher()
 
     init {
@@ -57,12 +59,7 @@ class DeleteBookmarksSteps(
 
     @And("^User open bookmarks screen$")
     fun user_open_bookmarks_screen() {
-        scenario = FragmentScenario.launchInContainer(
-            BookmarksFragment::class.java,
-            null,
-            R.style.AppTheme,
-            null
-        )
+        scenario = launchFragmentInHiltContainer<BookmarksFragment>()
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 
@@ -91,8 +88,8 @@ class DeleteBookmarksSteps(
 
     @Then("^Bookmarks screen should be updated to show no items$")
     fun bookmarks_screen_should_be_updated_to_show_no_items() {
-        scenario.onFragment { fragment ->
-            val recycler = fragment.view!!.findViewById<RecyclerView>(R.id.bookmarked_articles)
+        scenario.onActivity { activity ->
+            val recycler = activity.findViewById<RecyclerView>(R.id.bookmarked_articles)
             assertThat(recycler.adapter!!.itemCount).isEqualTo(0)
         }
     }
