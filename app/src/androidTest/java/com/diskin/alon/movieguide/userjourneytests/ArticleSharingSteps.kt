@@ -1,4 +1,4 @@
-package com.diskin.alon.movieguide.journeysteps
+package com.diskin.alon.movieguide.userjourneytests
 
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView

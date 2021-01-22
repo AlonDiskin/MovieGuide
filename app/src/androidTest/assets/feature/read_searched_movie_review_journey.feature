@@ -6,8 +6,10 @@ Feature: User search for movie
   Scenario Outline: User search for movie
     Given User launched app from device home
     And Open movies screen
+    And User rotate device to land
     And User perform a search with the query "<query>"
     And User read first resulted review detail
+    And User rotate device to port
     Then Movie review detail should be shown
     Examples:
       | query      |

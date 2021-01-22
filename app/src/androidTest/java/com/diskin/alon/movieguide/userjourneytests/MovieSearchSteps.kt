@@ -1,4 +1,4 @@
-package com.diskin.alon.movieguide.journeysteps
+package com.diskin.alon.movieguide.userjourneytests
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
@@ -42,6 +42,11 @@ class MovieSearchSteps(private val server: MockWebServer) : GreenCoffeeSteps() {
             .perform(click())
     }
 
+    @And("^User rotate device to land$")
+    fun user_rotate_device_to_land() {
+        DeviceUtil.rotateDeviceLand()
+    }
+
     @And("^User perform a search with the query \"([^\"]*)\"$")
     fun user_perform_a_search_with_the_query_something(query: String) {
         dispatcher = TestDispatcher(query)
@@ -63,6 +68,11 @@ class MovieSearchSteps(private val server: MockWebServer) : GreenCoffeeSteps() {
                     click()
                 )
             )
+    }
+
+    @And("^User rotate device to port$")
+    fun user_rotate_device_to_port() {
+        DeviceUtil.rotateDevicePort()
     }
 
     @Then("^Movie review detail should be shown$")
