@@ -1,4 +1,4 @@
-package com.diskin.alon.movieguide.journeysteps
+package com.diskin.alon.movieguide.userjourneytests
 
 import androidx.test.filters.LargeTest
 import com.diskin.alon.movieguide.di.NetworkingModule
@@ -17,20 +17,20 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 /**
- * Step definitions runner for 'User share article' scenario.
+ * Step definitions runner for 'User bookmarks article' scenario.
  */
 @HiltAndroidTest
 @UninstallModules(NetworkingModule::class, ReviewsNetworkingModule::class, NewsNetworkingModule::class)
 @RunWith(Parameterized::class)
 @LargeTest
-class ArticleSharingStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
+class ArticleBookmarkingStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
 
     companion object {
         @JvmStatic
         @Parameterized.Parameters(name = "{0}")
         fun scenarios(): Iterable<ScenarioConfig> {
             return GreenCoffeeConfig()
-                .withFeatureFromAssets("assets/feature/article_sharing_journey.feature")
+                .withFeatureFromAssets("assets/feature/article_bookmarking_journey.feature")
                 .scenarios()
         }
     }
@@ -40,6 +40,6 @@ class ArticleSharingStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scen
 
     @Test
     fun test() {
-        start(ArticleSharingSteps(NetworkUtil.server))
+        start(ArticleBookmarkingSteps(NetworkUtil.server))
     }
 }

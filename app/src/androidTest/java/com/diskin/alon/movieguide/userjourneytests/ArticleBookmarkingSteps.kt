@@ -1,4 +1,4 @@
-package com.diskin.alon.movieguide.journeysteps
+package com.diskin.alon.movieguide.userjourneytests
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -59,6 +59,11 @@ class ArticleBookmarkingSteps(server: MockWebServer): GreenCoffeeSteps() {
             )
         onView(withId(R.id.action_bookmarking))
             .perform(click())
+    }
+
+    @And("^User rotate device$")
+    fun user_rotate_device() {
+        DeviceUtil.rotateDeviceLand()
     }
 
     @And("^Open bookmarks screen$")

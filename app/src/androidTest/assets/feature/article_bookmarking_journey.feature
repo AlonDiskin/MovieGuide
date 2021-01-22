@@ -7,6 +7,7 @@ Feature: User bookmarks article
     Given User launched app from device home
     And Open news screen
     When User bookmarks first listed article
+    And User rotate device
     And Open bookmarks screen
     Then Bookmarked article should be listed
 

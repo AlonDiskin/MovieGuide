@@ -1,4 +1,4 @@
-package com.diskin.alon.movieguide.journeysteps
+package com.diskin.alon.movieguide.userjourneytests
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -46,6 +46,11 @@ class MovieFavoritingSteps(server: MockWebServer) : GreenCoffeeSteps() {
             .perform(click())
     }
 
+    @And("^User rotate device to land$")
+    fun user_rotate_device_to_land() {
+        DeviceUtil.rotateDeviceLand()
+    }
+
     @When("^User favorite first listed movie$")
     fun user_favorite_first_listed_movie() {
         onView(withId(R.id.movies))
@@ -57,6 +62,11 @@ class MovieFavoritingSteps(server: MockWebServer) : GreenCoffeeSteps() {
             )
         onView(withId(R.id.action_favoriting))
             .perform(click())
+    }
+
+    @And("^User rotate device to port$")
+    fun user_rotate_device_to_port() {
+        DeviceUtil.rotateDevicePort()
     }
 
     @And("^Select to see all favorite movies$")

@@ -1,4 +1,4 @@
-package com.diskin.alon.movieguide.journeysteps
+package com.diskin.alon.movieguide.userjourneytests
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -54,7 +54,7 @@ class AppThemeChangeSteps : GreenCoffeeSteps() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         val themePrefKey = context.getString(R.string.pref_theme_key)
-        val currentTheme = prefs.getString(themePrefKey,"")!!
+        val currentTheme = prefs.getString(themePrefKey, "")!!
 
         when(currentTheme) {
             context.getString(R.string.pref_theme_day_value) -> {
@@ -71,6 +71,11 @@ class AppThemeChangeSteps : GreenCoffeeSteps() {
                 expectedNightMode = AppCompatDelegate.MODE_NIGHT_NO
             }
         }
+    }
+
+    @And("^User rotate device$")
+    fun user_rotate_device() {
+        DeviceUtil.rotateDeviceLand()
     }
 
     @Then("^App visual theme should be changed as selected$")

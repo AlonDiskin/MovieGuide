@@ -7,4 +7,5 @@ Feature: User change app theme
     Given User launched app from device home
     And User open app settings screen
     When User select different app theme
+    And User rotate device
     Then App visual theme should be changed as selected

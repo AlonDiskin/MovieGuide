@@ -1,4 +1,4 @@
-package com.diskin.alon.movieguide.journeysteps
+package com.diskin.alon.movieguide.userjourneytests
 
 import androidx.test.filters.LargeTest
 import com.diskin.alon.movieguide.di.NetworkingModule
