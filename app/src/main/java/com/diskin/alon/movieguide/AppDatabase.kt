@@ -7,7 +7,7 @@ import com.diskin.alon.movieguide.news.data.local.data.Bookmark
 import com.diskin.alon.movieguide.reviews.data.local.FavoriteMovie
 import com.diskin.alon.movieguide.reviews.data.local.FavoriteMovieDao
 
-@Database(entities = [Bookmark::class,FavoriteMovie::class], version = 1, exportSchema = true)
+@Database(entities = [Bookmark::class,FavoriteMovie::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase(){
     abstract fun bookmarkDao(): BookmarkDao
 

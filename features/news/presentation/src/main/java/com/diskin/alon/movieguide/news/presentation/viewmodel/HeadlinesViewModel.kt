@@ -7,4 +7,5 @@ import com.diskin.alon.movieguide.news.presentation.data.Headline
 interface HeadlinesViewModel {
 
     val headlines: LiveData<PagingData<Headline>>
+
 }

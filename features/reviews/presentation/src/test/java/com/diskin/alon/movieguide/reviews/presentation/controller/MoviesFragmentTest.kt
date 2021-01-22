@@ -4,12 +4,15 @@ import android.content.Context
 import android.os.Looper
 import android.widget.RelativeLayout
 import androidx.appcompat.view.menu.ActionMenuItem
-import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelLazy
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.paging.*
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
@@ -21,7 +24,9 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
 import com.diskin.alon.movieguide.common.uitesting.RecyclerViewMatcher.withRecyclerView
+import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.common.uitesting.swipeToRefresh
 import com.diskin.alon.movieguide.reviews.appservices.data.MovieSorting
 import com.diskin.alon.movieguide.reviews.presentation.R
@@ -30,9 +35,10 @@ import com.diskin.alon.movieguide.reviews.presentation.createMovies
 import com.diskin.alon.movieguide.reviews.presentation.data.Movie
 import com.diskin.alon.movieguide.reviews.presentation.viewmodel.MoviesViewModel
 import com.google.common.truth.Truth.assertThat
-import dagger.android.support.AndroidSupportInjection
-import io.mockk.*
-import kotlinx.android.synthetic.main.fragment_movies.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkConstructor
+import io.mockk.verify
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Before
@@ -53,7 +59,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 class MoviesFragmentTest {
 
     // Test subject
-    private lateinit var scenario: FragmentScenario<MoviesFragment>
+    private lateinit var scenario: ActivityScenario<HiltTestActivity>
 
     // Collaborators
     private val viewModel: MoviesViewModel = mockk()
@@ -67,12 +73,9 @@ class MoviesFragmentTest {
 
     @Before
     fun setUp() {
-        // Mock out dagger di
-        val fragmentSlot = slot<MoviesFragment>()
-        mockkStatic(AndroidSupportInjection::class)
-        every { AndroidSupportInjection.inject(capture(fragmentSlot)) } answers {
-            fragmentSlot.captured.viewModel = viewModel
-        }
+        // Stub view model creation with test mock
+        mockkConstructor(ViewModelLazy::class)
+        every { anyConstructed<ViewModelLazy<MoviesViewModel>>().value } returns viewModel
 
         // Stub collaborators
         every { viewModel.sorting } returns sorting
@@ -83,15 +86,14 @@ class MoviesFragmentTest {
         navController.setGraph(R.navigation.reviews_nav_graph)
 
         // Launch fragment under test
-        scenario = FragmentScenario.launchInContainer(
-            MoviesFragment::class.java,
-            null,
-            R.style.AppTheme,
-            null
-        )
+        scenario = launchFragmentInHiltContainer<MoviesFragment>()
 
         // Set the NavController property on the fragment with test controller
-        scenario.onFragment { Navigation.setViewNavController(it.requireView(), navController) }
+        scenario.onActivity {
+            Navigation.setViewNavController(
+                it.supportFragmentManager.fragments[0].requireView(),
+                navController)
+        }
     }
 
     @Test
@@ -103,8 +105,9 @@ class MoviesFragmentTest {
         this.movies.value = PagingData.from(movies)
 
         // Then fragment should display paging
-        scenario.onFragment { fragment ->
-            assertThat(fragment.movies.adapter!!.itemCount).isEqualTo(movies.size)
+        scenario.onActivity { activity ->
+            val adapter = activity.findViewById<RecyclerView>(R.id.movies).adapter!!
+            assertThat(adapter.itemCount).isEqualTo(movies.size)
         }
 
         movies.forEachIndexed { index, movie ->
@@ -146,12 +149,17 @@ class MoviesFragmentTest {
         // Given a resumed fragment
 
         // When movies paging data is refreshing
-        scenario.onFragment {
+        scenario.onActivity { activity ->
+            val adapter = activity.findViewById<RecyclerView>(R.id.movies).adapter!!
+            val swipeRefreshLayout = activity.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh)
             val listener =
-                getMoviesAdapterLoadStatesListener(it.movies.adapter as MoviesAdapter)
+                getMoviesAdapterLoadStatesListener(adapter as MoviesAdapter)
 
             listener.invoke(
                 CombinedLoadStates(
+                    LoadState.Loading,
+                    LoadState.NotLoading(true),
+                    LoadState.NotLoading(true),
                     LoadStates(
                         LoadState.Loading,
                         LoadState.NotLoading(true),
@@ -161,7 +169,7 @@ class MoviesFragmentTest {
             )
 
             // Then fragment should show refresh bar
-            assertThat(it.swipe_refresh.isRefreshing).isTrue()
+            assertThat(swipeRefreshLayout.isRefreshing).isTrue()
         }
     }
 
@@ -170,12 +178,17 @@ class MoviesFragmentTest {
         // Given a resumed fragment
 
         // When movies paging data refreshing is finished
-        scenario.onFragment {
+        scenario.onActivity { activity ->
+            val adapter = activity.findViewById<RecyclerView>(R.id.movies).adapter!!
+            val swipeRefreshLayout = activity.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh)
             val listener =
-                getMoviesAdapterLoadStatesListener(it.movies.adapter as MoviesAdapter)
+                getMoviesAdapterLoadStatesListener(adapter as MoviesAdapter)
 
             listener.invoke(
                 CombinedLoadStates(
+                    LoadState.NotLoading(false),
+                    LoadState.NotLoading(true),
+                    LoadState.NotLoading(true),
                     LoadStates(
                         LoadState.NotLoading(false),
                         LoadState.NotLoading(true),
@@ -185,7 +198,7 @@ class MoviesFragmentTest {
             )
 
             // Then fragment should hide refresh bar
-            assertThat(it.swipe_refresh.isRefreshing).isFalse()
+            assertThat(swipeRefreshLayout.isRefreshing).isFalse()
         }
     }
 
@@ -198,7 +211,10 @@ class MoviesFragmentTest {
             .perform(swipeToRefresh())
 
         // Then movies adapter should refresh paging
-        scenario.onFragment { assertThat(it.swipe_refresh.isRefreshing).isTrue() }
+        scenario.onActivity {  activity ->
+            val swipeRefreshLayout = activity.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh)
+            assertThat(swipeRefreshLayout.isRefreshing).isTrue()
+        }
     }
 
     @Test
@@ -206,12 +222,16 @@ class MoviesFragmentTest {
         // Given a resumed fragment
 
         // When movies paging loading an appended page
-        scenario.onFragment {
+        scenario.onActivity { activity ->
+            val adapter = activity.findViewById<RecyclerView>(R.id.movies).adapter!!
             val listener =
-                getMoviesAdapterLoadStatesListener(it.movies.adapter as MoviesAdapter)
+                getMoviesAdapterLoadStatesListener(adapter as MoviesAdapter)
 
             listener.invoke(
                 CombinedLoadStates(
+                    LoadState.NotLoading(false),
+                    LoadState.NotLoading(true),
+                    LoadState.Loading,
                     LoadStates(
                         LoadState.NotLoading(false),
                         LoadState.NotLoading(true),
@@ -231,12 +251,16 @@ class MoviesFragmentTest {
         // Given a resumed fragment
 
         // When movies paging appended page loading is finished
-        scenario.onFragment {
+        scenario.onActivity { activity ->
+            val adapter = activity.findViewById<RecyclerView>(R.id.movies).adapter!!
             val listener =
-                getMoviesAdapterLoadStatesListener(it.movies.adapter as MoviesAdapter)
+                getMoviesAdapterLoadStatesListener(adapter as MoviesAdapter)
 
             listener.invoke(
                 CombinedLoadStates(
+                    LoadState.NotLoading(false),
+                    LoadState.NotLoading(true),
+                    LoadState.NotLoading(true),
                     LoadStates(
                         LoadState.NotLoading(false),
                         LoadState.NotLoading(true),
@@ -259,7 +283,7 @@ class MoviesFragmentTest {
         // When user open sorting menu
         openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext())
         Shadows.shadowOf(Looper.getMainLooper()).idle()
-        onView(withText(R.string.title_action_sort))
+        onView(withContentDescription(R.string.title_action_sort))
             .perform(click())
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
@@ -367,8 +391,8 @@ class MoviesFragmentTest {
                 )
             }
 
-            scenario.onFragment { fragment ->
-                fragment.onOptionsItemSelected(addMenuItem)
+            scenario.onActivity { activity ->
+                activity.supportFragmentManager.fragments[0].onOptionsItemSelected(addMenuItem)
             }
 
             // Then fragment should ask view model to sort movies according to user selection
@@ -382,12 +406,16 @@ class MoviesFragmentTest {
 
         // When paging refresh fail with error that contain error message
         val error = Throwable("error_message")
-        scenario.onFragment {
+        scenario.onActivity { activity ->
+            val adapter = activity.findViewById<RecyclerView>(R.id.movies).adapter!!
             val listener =
-                getMoviesAdapterLoadStatesListener(it.movies.adapter as MoviesAdapter)
+                getMoviesAdapterLoadStatesListener(adapter as MoviesAdapter)
 
             listener.invoke(
                 CombinedLoadStates(
+                    LoadState.Error(error),
+                    LoadState.NotLoading(true),
+                    LoadState.NotLoading(true),
                     LoadStates(
                         LoadState.Error(error),
                         LoadState.NotLoading(true),
@@ -416,12 +444,16 @@ class MoviesFragmentTest {
             ))
 
         // When paging append fail with error that contain error message
-        scenario.onFragment {
+        scenario.onActivity { activity ->
+            val adapter = activity.findViewById<RecyclerView>(R.id.movies).adapter!!
             val listener =
-                getMoviesAdapterLoadStatesListener(it.movies.adapter as MoviesAdapter)
+                getMoviesAdapterLoadStatesListener(adapter as MoviesAdapter)
 
             listener.invoke(
                 CombinedLoadStates(
+                    LoadState.NotLoading(false),
+                    LoadState.NotLoading(true),
+                    LoadState.Error(error),
                     LoadStates(
                         LoadState.NotLoading(false),
                         LoadState.NotLoading(true),
@@ -455,12 +487,16 @@ class MoviesFragmentTest {
         // Given a resume fragment
 
         // When paging refresh fail without error message in error instance
-        scenario.onFragment {
+        scenario.onActivity { activity ->
+            val adapter = activity.findViewById<RecyclerView>(R.id.movies).adapter!!
             val listener =
-                getMoviesAdapterLoadStatesListener(it.movies.adapter as MoviesAdapter)
+                getMoviesAdapterLoadStatesListener(adapter as MoviesAdapter)
 
             listener.invoke(
                 CombinedLoadStates(
+                    LoadState.Error(Throwable()),
+                    LoadState.NotLoading(true),
+                    LoadState.NotLoading(true),
                     LoadStates(
                         LoadState.Error(Throwable()),
                         LoadState.NotLoading(true),
@@ -484,12 +520,16 @@ class MoviesFragmentTest {
             .check(matches(withEffectiveVisibility(Visibility.GONE)))
 
         // When paging append fail without error message in error instance
-        scenario.onFragment {
+        scenario.onActivity { activity ->
+            val adapter = activity.findViewById<RecyclerView>(R.id.movies).adapter!!
             val listener =
-                getMoviesAdapterLoadStatesListener(it.movies.adapter as MoviesAdapter)
+                getMoviesAdapterLoadStatesListener(adapter as MoviesAdapter)
 
             listener.invoke(
                 CombinedLoadStates(
+                    LoadState.NotLoading(false),
+                    LoadState.NotLoading(true),
+                    LoadState.Error(Throwable()),
                     LoadStates(
                         LoadState.NotLoading(false),
                         LoadState.NotLoading(true),
@@ -518,12 +558,16 @@ class MoviesFragmentTest {
         // Given a resume fragment
 
         // When paging refreshing fail
-        scenario.onFragment {
+        scenario.onActivity { activity ->
+            val adapter = activity.findViewById<RecyclerView>(R.id.movies).adapter!!
             val listener =
-                getMoviesAdapterLoadStatesListener(it.movies.adapter as MoviesAdapter)
+                getMoviesAdapterLoadStatesListener(adapter as MoviesAdapter)
 
             listener.invoke(
                 CombinedLoadStates(
+                    LoadState.Error(Throwable()),
+                    LoadState.NotLoading(true),
+                    LoadState.NotLoading(true),
                     LoadStates(
                         LoadState.Error(Throwable()),
                         LoadState.NotLoading(true),
@@ -536,12 +580,16 @@ class MoviesFragmentTest {
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // And paging refreshing again
-        scenario.onFragment {
+        scenario.onActivity { activity ->
+            val adapter = activity.findViewById<RecyclerView>(R.id.movies).adapter!!
             val listener =
-                getMoviesAdapterLoadStatesListener(it.movies.adapter as MoviesAdapter)
+                getMoviesAdapterLoadStatesListener(adapter as MoviesAdapter)
 
             listener.invoke(
                 CombinedLoadStates(
+                    LoadState.Loading,
+                    LoadState.NotLoading(true),
+                    LoadState.NotLoading(true),
                     LoadStates(
                         LoadState.Loading,
                         LoadState.NotLoading(true),
@@ -565,9 +613,10 @@ class MoviesFragmentTest {
         // handset device
 
         // Then fragment should display a handset port layout
-        scenario.onFragment { fragment ->
-            val manager = fragment.movies.layoutManager as GridLayoutManager
-            val expectedSpan = fragment.resources.getInteger(R.integer.movies_port_span)
+        scenario.onActivity { activity ->
+            val recyclerView = activity.findViewById<RecyclerView>(R.id.movies)
+            val manager = recyclerView.layoutManager as GridLayoutManager
+            val expectedSpan = activity.resources.getInteger(R.integer.movies_port_span)
 
             assertThat(manager.spanCount).isEqualTo(expectedSpan)
         }
@@ -580,9 +629,10 @@ class MoviesFragmentTest {
         // handset device
 
         // Then fragment should display a handset land layout
-        scenario.onFragment { fragment ->
-            val manager = fragment.movies.layoutManager as GridLayoutManager
-            val expectedSpan = fragment.resources.getInteger(R.integer.movies_land_span)
+        scenario.onActivity { activity ->
+            val recyclerView = activity.findViewById<RecyclerView>(R.id.movies)
+            val manager = recyclerView.layoutManager as GridLayoutManager
+            val expectedSpan = activity.resources.getInteger(R.integer.movies_land_span)
 
             assertThat(manager.spanCount).isEqualTo(expectedSpan)
         }
@@ -594,9 +644,10 @@ class MoviesFragmentTest {
         // Given a resumed fragment in port orientation shown in small tablet device
 
         // Then fragment should display a small tablet port layout
-        scenario.onFragment { fragment ->
-            val manager = fragment.movies.layoutManager as GridLayoutManager
-            val expectedSpan = fragment.resources.getInteger(R.integer.movies_small_tablet_port_span)
+        scenario.onActivity { activity ->
+            val recyclerView = activity.findViewById<RecyclerView>(R.id.movies)
+            val manager = recyclerView.layoutManager as GridLayoutManager
+            val expectedSpan = activity.resources.getInteger(R.integer.movies_small_tablet_port_span)
 
             assertThat(manager.spanCount).isEqualTo(expectedSpan)
         }
@@ -608,9 +659,10 @@ class MoviesFragmentTest {
         // Given a resumed fragment in land orientation shown in small tablet device
 
         // Then fragment should display a small tablet land layout
-        scenario.onFragment { fragment ->
-            val manager = fragment.movies.layoutManager as GridLayoutManager
-            val expectedSpan = fragment.resources.getInteger(R.integer.movies_small_tablet_land_span)
+        scenario.onActivity { activity ->
+            val recyclerView = activity.findViewById<RecyclerView>(R.id.movies)
+            val manager = recyclerView.layoutManager as GridLayoutManager
+            val expectedSpan = activity.resources.getInteger(R.integer.movies_small_tablet_land_span)
 
             assertThat(manager.spanCount).isEqualTo(expectedSpan)
         }
@@ -622,9 +674,10 @@ class MoviesFragmentTest {
         // Given a resumed fragment in port orientation shown in tablet device
 
         // Then fragment should display a large tablet port layout
-        scenario.onFragment { fragment ->
-            val manager = fragment.movies.layoutManager as GridLayoutManager
-            val expectedSpan = fragment.resources.getInteger(R.integer.movies_large_tablet_port_span)
+        scenario.onActivity { activity ->
+            val recyclerView = activity.findViewById<RecyclerView>(R.id.movies)
+            val manager = recyclerView.layoutManager as GridLayoutManager
+            val expectedSpan = activity.resources.getInteger(R.integer.movies_large_tablet_port_span)
 
             assertThat(manager.spanCount).isEqualTo(expectedSpan)
         }
@@ -636,9 +689,10 @@ class MoviesFragmentTest {
         // Given a resumed fragment in land orientation shown in large tablet device
 
         // Then fragment should display a large tablet land layout
-        scenario.onFragment { fragment ->
-            val manager = fragment.movies.layoutManager as GridLayoutManager
-            val expectedSpan = fragment.resources.getInteger(R.integer.movies_large_tablet_land_span)
+        scenario.onActivity { activity ->
+            val recyclerView = activity.findViewById<RecyclerView>(R.id.movies)
+            val manager = recyclerView.layoutManager as GridLayoutManager
+            val expectedSpan = activity.resources.getInteger(R.integer.movies_large_tablet_land_span)
 
             assertThat(manager.spanCount).isEqualTo(expectedSpan)
         }
@@ -667,7 +721,7 @@ class MoviesFragmentTest {
 
     @Test
     fun openMoviesSearchScreenWhenSearchSelected() {
-        // Given an initialized fragment
+        // Given a resumed fragment
 
         // When
         val context = ApplicationProvider.getApplicationContext<Context>()
@@ -680,7 +734,9 @@ class MoviesFragmentTest {
                 null
             )
 
-        scenario.onFragment { it.onOptionsItemSelected(menuItem) }
+        scenario.onActivity { activity ->
+            activity.supportFragmentManager.fragments[0].onOptionsItemSelected(menuItem)
+        }
 
         // Then
         assertThat(navController.currentDestination?.id).isEqualTo(R.id.moviesSearchFragment)

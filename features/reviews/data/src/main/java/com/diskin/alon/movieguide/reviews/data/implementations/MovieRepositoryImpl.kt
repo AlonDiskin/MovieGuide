@@ -12,12 +12,10 @@ import com.diskin.alon.movieguide.reviews.domain.entities.MovieEntity
 import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Handles data sources operations to provide [MovieEntity]s.
  */
-@Singleton
 class MovieRepositoryImpl @Inject constructor(
     private val movieStore: MovieStore,
     private val favoriteStore: FavoriteMoviesStore

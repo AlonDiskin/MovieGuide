@@ -1,13 +1,15 @@
 package com.diskin.alon.movieguide.news.featuretesting.listarticles
 
 import android.os.Looper
-import androidx.fragment.app.testing.FragmentScenario
+import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
+import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.news.data.remote.FEEDLY_FEED_PATH
-import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesFragment
 import com.diskin.alon.movieguide.news.presentation.R
+import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesFragment
 import com.diskin.alonmovieguide.common.data.NetworkErrorHandler.Companion.ERR_API_SERVER
 import com.diskin.alonmovieguide.common.data.NetworkErrorHandler.Companion.ERR_DEVICE_NETWORK
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
@@ -27,7 +29,7 @@ import org.robolectric.Shadows
  */
 class ListArticlesErrorSteps(private val server: MockWebServer) : GreenCoffeeSteps(){
 
-    private lateinit var scenario: FragmentScenario<HeadlinesFragment>
+    private lateinit var scenario: ActivityScenario<HiltTestActivity>
     private lateinit var expectedErrorMessage: String
 
     @Given("^Existing app error due to \"([^\"]*)\"$")
@@ -60,12 +62,7 @@ class ListArticlesErrorSteps(private val server: MockWebServer) : GreenCoffeeSte
     @When("^User open news headlines screen$")
     fun userOpenNewsHeadlinesScreen() {
         // Launch movies headlines fragment
-        scenario = FragmentScenario.launchInContainer(
-            HeadlinesFragment::class.java,
-            null,
-            R.style.AppTheme,
-            null
-        )
+        scenario = launchFragmentInHiltContainer<HeadlinesFragment>()
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 

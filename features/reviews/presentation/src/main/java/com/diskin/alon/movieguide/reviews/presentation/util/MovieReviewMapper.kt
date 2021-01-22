@@ -10,12 +10,11 @@ import com.diskin.alon.movieguide.reviews.presentation.data.MovieReview
 import com.diskin.alon.movieguide.reviews.presentation.data.Trailer
 import io.reactivex.Observable
 import org.joda.time.LocalDateTime
-import javax.inject.Inject
 
 /**
  * Maps app services movie review data model, to presentation data model.
  */
-class MovieReviewMapper @Inject constructor(
+class MovieReviewMapper(
     private val resources: Resources
 ) : Mapper<Observable<Result<MovieReviewDto>>,Observable<Result<MovieReview>>> {
 

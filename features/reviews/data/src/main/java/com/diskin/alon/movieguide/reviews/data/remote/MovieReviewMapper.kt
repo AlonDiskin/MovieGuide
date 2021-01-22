@@ -8,12 +8,10 @@ import com.diskin.alon.movieguide.reviews.domain.value.MovieGenre
 import com.diskin.alon.movieguide.reviews.domain.value.Trailer
 import org.joda.time.LocalDate
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Map remote data model of movie reviews data,to domain data model.
  */
-@Singleton
 class MovieReviewMapper @Inject constructor() : Mapper2<MovieDetailResponse, TrailersResponse, MovieReviewEntity> {
 
     override fun map(source1: MovieDetailResponse, source2: TrailersResponse): MovieReviewEntity {

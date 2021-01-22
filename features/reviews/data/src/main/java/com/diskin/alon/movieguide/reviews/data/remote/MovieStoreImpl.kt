@@ -17,9 +17,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class MovieStoreImpl @Inject constructor(
     private val api: TheMovieDbApi,
     private val networkErrorHandler: NetworkErrorHandler,

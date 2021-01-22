@@ -13,6 +13,7 @@ import com.diskin.alon.movieguide.news.presentation.data.Article
 import com.diskin.alon.movieguide.news.presentation.data.ArticleModelRequest
 import com.diskin.alon.movieguide.news.presentation.data.BookmarkingModelRequest
 import com.diskin.alon.movieguide.news.presentation.data.UnBookmarkingModelRequest
+import com.diskin.alon.movieguide.news.presentation.util.ArticleModelDispatcher
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
@@ -20,8 +21,8 @@ import io.reactivex.subjects.BehaviorSubject
 /**
  * Stores and manage UI related data for the article UI controller.
  */
-class ArticleViewModelImpl(
-    private val model: Model,
+class ArticleViewModelImpl constructor(
+    @ArticleModelDispatcher private val model: Model,
     private val stateHandle: SavedStateHandle,
 ) : RxViewModel(), ArticleViewModel {
 

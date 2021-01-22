@@ -3,7 +3,6 @@ package com.diskin.alon.movieguide.reviews.featuretesting.reviewreading
 import android.content.Context
 import android.content.Intent
 import android.os.Looper
-import androidx.fragment.app.testing.FragmentScenario
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ActivityScenario
@@ -15,6 +14,8 @@ import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
 import com.diskin.alon.movieguide.common.presentation.ImageLoader
+import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
+import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.reviews.data.BuildConfig
 import com.diskin.alon.movieguide.reviews.featuretesting.R
 import com.diskin.alon.movieguide.reviews.presentation.controller.MovieReviewActivity
@@ -38,7 +39,7 @@ import org.robolectric.Shadows
  */
 class MovieReviewReadingSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
-    private lateinit var moviesFragmentScenario: FragmentScenario<MoviesFragment>
+    private lateinit var moviesFragmentScenario: ActivityScenario<HiltTestActivity>
     private lateinit var reviewActivityScenario: ActivityScenario<MovieReviewActivity>
     private val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
     private val dispatcher = TestDispatcher()
@@ -72,9 +73,13 @@ class MovieReviewReadingSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
     @Given("^User opened movies screen$")
     fun userOpenedMoviesScreen() {
-        moviesFragmentScenario = FragmentScenario.launchInContainer(MoviesFragment::class.java)
+        moviesFragmentScenario = launchFragmentInHiltContainer<MoviesFragment>()
         // Set test nav controller on movies fragment
-        moviesFragmentScenario.onFragment { Navigation.setViewNavController(it.requireView(), navController) }
+        moviesFragmentScenario.onActivity {
+            Navigation.setViewNavController(
+                it.supportFragmentManager.fragments[0].requireView(),
+                navController)
+        }
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 

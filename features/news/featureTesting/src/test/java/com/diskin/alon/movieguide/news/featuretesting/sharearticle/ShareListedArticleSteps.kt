@@ -3,8 +3,8 @@ package com.diskin.alon.movieguide.news.featuretesting.sharearticle
 import android.content.Context
 import android.content.Intent
 import android.os.Looper
-import androidx.fragment.app.testing.FragmentScenario
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -15,16 +15,18 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
+import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
 import com.diskin.alon.movieguide.common.uitesting.RecyclerViewMatcher.withRecyclerView
+import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.news.data.remote.FEEDLY_FEED_ID_PARAM
 import com.diskin.alon.movieguide.news.data.remote.FEEDLY_FEED_PATH
 import com.diskin.alon.movieguide.news.data.remote.FEEDLY_FEED_SIZE_PARAM
 import com.diskin.alon.movieguide.news.data.remote.MOVIES_NEWS_FEED
 import com.diskin.alon.movieguide.news.featuretesting.R
 import com.diskin.alon.movieguide.news.featuretesting.util.parseFeedlyResponseJsonToNewsHeadlines
+import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesAdapter.HeadlineViewHolder
 import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesFragment
 import com.diskin.alon.movieguide.news.presentation.viewmodel.HeadlinesViewModelImpl.Companion.PAGE_SIZE
-import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesAdapter.HeadlineViewHolder
 import com.google.common.truth.Truth.assertThat
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.Given
@@ -45,7 +47,7 @@ class ShareListedArticleSteps(server: MockWebServer) : GreenCoffeeSteps() {
         const val TEST_WEB_JSON = "json/feed_movie_headlines.json"
     }
 
-    private lateinit var scenario: FragmentScenario<HeadlinesFragment>
+    private lateinit var scenario: ActivityScenario<HiltTestActivity>
     private val expectedUiHeadlines =
         parseFeedlyResponseJsonToNewsHeadlines(getJsonFromResource(TEST_WEB_JSON))
 
@@ -76,16 +78,15 @@ class ShareListedArticleSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
     @Given("^User opened news headline screen$")
     fun userOpenedNewsHeadlineScreen() {
-        scenario = FragmentScenario.launchInContainer(HeadlinesFragment::class.java)
+        scenario = launchFragmentInHiltContainer<HeadlinesFragment>()
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 
     @Then("^All headlines should provide sharing option$")
     fun allHeadlinesShouldProvideSharingOption() {
         // Verify all test headlines loaded to ui
-        scenario.onFragment { fragment ->
-            val recycler = fragment.view!!.findViewById<RecyclerView>(R.id.headlines)
-
+        scenario.onActivity { activity ->
+            val recycler = activity.findViewById<RecyclerView>(R.id.headlines)
             assertThat(recycler.adapter!!.itemCount).isEqualTo(expectedUiHeadlines.size)
         }
 

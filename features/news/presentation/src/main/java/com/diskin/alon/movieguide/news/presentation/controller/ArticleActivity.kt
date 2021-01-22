@@ -8,20 +8,28 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ShareCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import com.diskin.alon.movieguide.common.presentation.ErrorViewData
 import com.diskin.alon.movieguide.common.presentation.UpdateViewData
+import com.diskin.alon.movieguide.common.presentation.createActivityViewModel
 import com.diskin.alon.movieguide.news.presentation.R
 import com.diskin.alon.movieguide.news.presentation.databinding.ActivityArticleBinding
+import com.diskin.alon.movieguide.news.presentation.util.ArticleViewModelFactoryQualifier
 import com.diskin.alon.movieguide.news.presentation.viewmodel.ArticleViewModel
 import com.google.android.material.snackbar.Snackbar
-import dagger.android.AndroidInjection
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.migration.OptionalInject
 import kotlinx.android.synthetic.main.activity_article.*
 import javax.inject.Inject
 
+@OptionalInject
+@AndroidEntryPoint
 class ArticleActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var viewModel: ArticleViewModel
+    @ArticleViewModelFactoryQualifier
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModel: ArticleViewModel by createActivityViewModel(this) { viewModelFactory }
     private var errorSnackbar: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,9 +38,6 @@ class ArticleActivity : AppCompatActivity() {
             this,
             R.layout.activity_article
         )
-
-        // Inject activity
-        AndroidInjection.inject(this)
 
         // Setup toolbar
         setSupportActionBar(toolbar)

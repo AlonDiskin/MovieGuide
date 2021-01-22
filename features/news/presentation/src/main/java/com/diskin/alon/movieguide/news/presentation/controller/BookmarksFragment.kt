@@ -9,6 +9,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ShareCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.diskin.alon.movieguide.common.presentation.ErrorViewData
 import com.diskin.alon.movieguide.common.presentation.UpdateViewData
@@ -17,11 +18,12 @@ import com.diskin.alon.movieguide.news.presentation.R
 import com.diskin.alon.movieguide.news.presentation.data.Headline
 import com.diskin.alon.movieguide.news.presentation.viewmodel.BookmarksViewModel
 import com.google.android.material.snackbar.Snackbar
-import dagger.android.support.AndroidSupportInjection
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.migration.OptionalInject
 import kotlinx.android.synthetic.main.fragment_bookmarks.*
-import javax.inject.Inject
 
-
+@OptionalInject
+@AndroidEntryPoint
 class BookmarksFragment : Fragment(), ActionMode.Callback{
 
     companion object {
@@ -29,8 +31,7 @@ class BookmarksFragment : Fragment(), ActionMode.Callback{
         private const val KEY_SELECTED = "selected"
     }
 
-    @Inject
-    lateinit var viewModel: BookmarksViewModel
+    private val viewModel: BookmarksViewModel by viewModels()
     private var errorSnackbar: Snackbar? = null
     private val selectedBookmarksIds: MutableList<String> = mutableListOf()
     private var actionMode: ActionMode? = null
@@ -40,7 +41,6 @@ class BookmarksFragment : Fragment(), ActionMode.Callback{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        AndroidSupportInjection.inject(this)
     }
 
     override fun onCreateView(

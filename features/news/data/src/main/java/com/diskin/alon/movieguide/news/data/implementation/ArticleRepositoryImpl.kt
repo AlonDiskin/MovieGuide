@@ -13,12 +13,10 @@ import com.diskin.alon.movieguide.news.domain.ArticleEntity
 import io.reactivex.Observable
 import io.reactivex.Single
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Handles data sources operations to provide movie news articles.
  */
-@Singleton
 class ArticleRepositoryImpl @Inject constructor(
     private val remoteStore: RemoteArticleStore,
     private val bookmarkedStore: BookmarkStore

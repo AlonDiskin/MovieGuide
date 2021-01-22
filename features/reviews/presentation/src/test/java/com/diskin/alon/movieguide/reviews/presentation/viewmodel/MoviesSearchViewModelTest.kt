@@ -21,7 +21,7 @@ import org.junit.Rule
 import org.junit.Test
 
 /**
- * [MoviesSearchViewModelImpl] unit test class.
+ * [MoviesSearchViewModel] unit test class.
  */
 class MoviesSearchViewModelTest {
 
@@ -41,7 +41,7 @@ class MoviesSearchViewModelTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     // Test subject
-    private lateinit var viewModel: MoviesSearchViewModelImpl
+    private lateinit var viewModel: MoviesSearchViewModel
 
     // Collaborators
     private val model: Model = mockk()
@@ -56,7 +56,7 @@ class MoviesSearchViewModelTest {
         // Stub collaborators
         every { model.execute(capture(modelRequestSlot)) } returns searchResultsSubject
 
-        viewModel = MoviesSearchViewModelImpl(model,savedStateHandle)
+        viewModel = MoviesSearchViewModel(model,savedStateHandle)
     }
 
     @Test
@@ -71,7 +71,7 @@ class MoviesSearchViewModelTest {
         assertThat(modelRequestSlot.captured).isInstanceOf(SearchMoviesModelRequest::class.java)
         assertThat((modelRequestSlot.captured as SearchMoviesModelRequest).query).isEqualTo(query)
         assertThat((modelRequestSlot.captured as SearchMoviesModelRequest).config.pageSize)
-            .isEqualTo(MoviesSearchViewModelImpl.RESULTS_PAGE_SIZE)
+            .isEqualTo(MoviesSearchViewModel.RESULTS_PAGE_SIZE)
 
         // When
         val paging = PagingData.from(createMovies())
@@ -85,14 +85,14 @@ class MoviesSearchViewModelTest {
     fun restoreSearchResultsWhenCreatedWithPrevState() {
         // Given
         val query = "query"
-        savedStateHandle.set<String>(MoviesSearchViewModelImpl.SEARCH_QUERY_KEY,query)
-        viewModel = MoviesSearchViewModelImpl(model,savedStateHandle)
+        savedStateHandle.set<String>(MoviesSearchViewModel.SEARCH_QUERY_KEY,query)
+        viewModel = MoviesSearchViewModel(model,savedStateHandle)
 
         // Then
         assertThat(modelRequestSlot.captured).isInstanceOf(SearchMoviesModelRequest::class.java)
         assertThat((modelRequestSlot.captured as SearchMoviesModelRequest).query).isEqualTo(query)
         assertThat((modelRequestSlot.captured as SearchMoviesModelRequest).config.pageSize)
-            .isEqualTo(MoviesSearchViewModelImpl.RESULTS_PAGE_SIZE)
+            .isEqualTo(MoviesSearchViewModel.RESULTS_PAGE_SIZE)
     }
 
     @Test
@@ -104,7 +104,7 @@ class MoviesSearchViewModelTest {
         viewModel.search(query)
 
         // Then
-        assertThat(savedStateHandle.get<String>(MoviesSearchViewModelImpl.SEARCH_QUERY_KEY)).isEqualTo(query)
+        assertThat(savedStateHandle.get<String>(MoviesSearchViewModel.SEARCH_QUERY_KEY)).isEqualTo(query)
     }
 
     @Test
@@ -119,8 +119,8 @@ class MoviesSearchViewModelTest {
     fun restoreSearchTextWhenCreatedWithPrevState() {
         // Given
         val text = "text"
-        savedStateHandle.set<String>(MoviesSearchViewModelImpl.SEARCH_TXT_KEY,text)
-        viewModel = MoviesSearchViewModelImpl(model,savedStateHandle)
+        savedStateHandle.set<String>(MoviesSearchViewModel.SEARCH_TXT_KEY,text)
+        viewModel = MoviesSearchViewModel(model,savedStateHandle)
 
         // Then
         assertThat(viewModel.searchText).isEqualTo(text)
@@ -135,6 +135,6 @@ class MoviesSearchViewModelTest {
         viewModel.searchText = text
 
         // Then
-        assertThat(savedStateHandle.get<String>(MoviesSearchViewModelImpl.SEARCH_TXT_KEY)).isEqualTo(text)
+        assertThat(savedStateHandle.get<String>(MoviesSearchViewModel.SEARCH_TXT_KEY)).isEqualTo(text)
     }
 }

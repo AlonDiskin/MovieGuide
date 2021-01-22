@@ -14,12 +14,14 @@ import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
 import com.diskin.alon.movieguide.common.presentation.ImageLoader
+import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
+import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.reviews.data.BuildConfig
 import com.diskin.alon.movieguide.reviews.featuretesting.R
 import com.diskin.alon.movieguide.reviews.presentation.R.string
-import com.diskin.alon.movieguide.reviews.presentation.TestSingleFragmentActivity
 import com.diskin.alon.movieguide.reviews.presentation.controller.MovieReviewActivity
 import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesAdapter
+import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesSearchFragment
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.And
 import com.mauriciotogneri.greencoffee.annotations.Given
@@ -41,7 +43,7 @@ import org.robolectric.Shadows
  */
 class ReadSearchedReviewSteps(private val server: MockWebServer) : GreenCoffeeSteps() {
 
-    private lateinit var searchFragmentScenario: ActivityScenario<TestSingleFragmentActivity>
+    private lateinit var searchFragmentScenario: ActivityScenario<HiltTestActivity>
     private lateinit var reviewActivityScenario: ActivityScenario<MovieReviewActivity>
     private val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
     private lateinit var dispatcher: TestDispatcher
@@ -78,12 +80,13 @@ class ReadSearchedReviewSteps(private val server: MockWebServer) : GreenCoffeeSt
 
     @When("^User open movies search screen$")
     fun user_open_movies_search_screen() {
-        searchFragmentScenario = ActivityScenario.launch(TestSingleFragmentActivity::class.java)
+        searchFragmentScenario = launchFragmentInHiltContainer<MoviesSearchFragment>()
 
         // Set the NavController property on the fragment with test controller
         searchFragmentScenario.onActivity {
-            val fragment = it.supportFragmentManager.fragments[0]
-            Navigation.setViewNavController(fragment.requireView(), navController)
+            Navigation.setViewNavController(
+                it.supportFragmentManager.fragments[0].requireView(),
+                navController)
         }
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }

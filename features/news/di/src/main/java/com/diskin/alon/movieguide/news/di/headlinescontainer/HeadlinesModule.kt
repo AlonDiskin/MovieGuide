@@ -11,27 +11,27 @@ import com.diskin.alon.movieguide.news.appservices.data.HeadlineDto
 import com.diskin.alon.movieguide.news.appservices.usecase.GetHeadlinesUseCase
 import com.diskin.alon.movieguide.news.appservices.util.HeadlinesDtoPagingMapper
 import com.diskin.alon.movieguide.news.domain.ArticleEntity
-import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesFragment
 import com.diskin.alon.movieguide.news.presentation.data.Headline
 import com.diskin.alon.movieguide.news.presentation.data.HeadlinesModelRequest
-import com.diskin.alon.movieguide.news.presentation.util.HeadlineMapper
+import com.diskin.alon.movieguide.news.presentation.util.HeadlinesModelDispatcher
 import com.diskin.alon.movieguide.news.presentation.util.HeadlinesPagingMapper
-import com.diskin.alon.movieguide.news.presentation.viewmodel.HeadlinesViewModel
-import com.diskin.alon.movieguide.news.presentation.viewmodel.HeadlinesViewModelImpl
+import com.diskin.alon.movieguide.news.presentation.util.HeadlinesViewModelFactoryQualifier
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityComponent
 import io.reactivex.Observable
 
 @Module
+@InstallIn(ActivityComponent::class)
 abstract class HeadlinesModule {
 
-    @Module
     companion object {
 
-        @JvmStatic
+        @HeadlinesModelDispatcher
         @Provides
-        fun provideModelDispatcher(
+        fun provideModelDispatcherMap(
             getHeadlinesUseCase: GetHeadlinesUseCase,
             headlinesMapper: Mapper<Observable<PagingData<HeadlineDto>>, Observable<PagingData<Headline>>>
         ): Model {
@@ -40,24 +40,15 @@ abstract class HeadlinesModule {
 
             return ModelDispatcher(map)
         }
-
-        @JvmStatic
-        @Provides
-        fun provideHeadlinesViewModel(
-            fragment: HeadlinesFragment,
-            factory: HeadlinesViewModelFactory
-        ): HeadlinesViewModel {
-            return ViewModelProvider(fragment, factory)
-                .get(HeadlinesViewModelImpl::class.java)
-        }
     }
 
     @Binds
     abstract fun bindHeadlinesDtoPagingMapper(mapper: HeadlinesDtoPagingMapper): Mapper<PagingData<ArticleEntity>, PagingData<HeadlineDto>>
 
     @Binds
-    abstract fun bindsHeadlineMapper(mapper: HeadlineMapper): Mapper<HeadlineDto,Headline>
-
-    @Binds
     abstract fun bindHeadlinesPagingMapper(mapper: HeadlinesPagingMapper): Mapper<Observable<PagingData<HeadlineDto>>, Observable<PagingData<Headline>>>
+
+    @HeadlinesViewModelFactoryQualifier
+    @Binds
+    abstract fun provideViewModelFactory(factory: HeadlinesViewModelFactory): ViewModelProvider.Factory
 }

@@ -5,7 +5,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.rxjava2.observable
 import com.diskin.alon.movieguide.common.appservices.Result
-import com.diskin.alon.movieguide.common.appservices.toResult
 import com.diskin.alon.movieguide.common.appservices.toSingleResult
 import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.news.data.remote.data.FeedlyArticleId
@@ -13,13 +12,10 @@ import com.diskin.alon.movieguide.news.data.remote.data.FeedlyEntryResponse
 import com.diskin.alon.movieguide.news.domain.ArticleEntity
 import com.diskin.alonmovieguide.common.data.NetworkErrorHandler
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import java.net.URLEncoder
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class RemoteArticleStoreImpl @Inject constructor(
     private val api: FeedlyApi,
     private val errorHandler: NetworkErrorHandler,

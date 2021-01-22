@@ -10,7 +10,7 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
-import com.diskin.alon.movieguide.news.featuretesting.TestDatabase
+import com.diskin.alon.movieguide.news.featuretesting.di.TestDatabase
 import com.diskin.alon.movieguide.news.presentation.R
 import com.diskin.alon.movieguide.news.presentation.controller.ArticleActivity
 import com.google.common.truth.Truth.assertThat

@@ -3,7 +3,6 @@ package com.diskin.alon.movieguide.news.featuretesting.readbookmark
 import android.content.Context
 import android.content.Intent
 import android.os.Looper
-import androidx.fragment.app.testing.FragmentScenario
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ActivityScenario
@@ -16,9 +15,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
 import com.diskin.alon.movieguide.common.presentation.ImageLoader
+import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
+import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.news.data.local.data.Bookmark
 import com.diskin.alon.movieguide.news.featuretesting.R
-import com.diskin.alon.movieguide.news.featuretesting.TestDatabase
+import com.diskin.alon.movieguide.news.featuretesting.di.TestDatabase
 import com.diskin.alon.movieguide.news.presentation.controller.ArticleActivity
 import com.diskin.alon.movieguide.news.presentation.controller.BookmarksAdapter
 import com.diskin.alon.movieguide.news.presentation.controller.BookmarksFragment
@@ -46,7 +47,7 @@ class ReadBookmarkSteps(
     private val database: TestDatabase
 ) : GreenCoffeeSteps() {
 
-    private lateinit var bookmarksFragmentScenario: FragmentScenario<BookmarksFragment>
+    private lateinit var bookmarksFragmentScenario: ActivityScenario<HiltTestActivity>
     private lateinit var articleActivityScenario: ActivityScenario<ArticleActivity>
     private val navController = TestNavHostController(getApplicationContext())
     private val dispatcher = TestDispatcher()
@@ -86,17 +87,14 @@ class ReadBookmarkSteps(
 
     @And("^User open bookmarks screen$")
     fun user_open_bookmarks_screen() {
-        bookmarksFragmentScenario = FragmentScenario.launchInContainer(
-            BookmarksFragment::class.java,
-            null,
-            R.style.AppTheme,
-            null
-        )
+        bookmarksFragmentScenario = launchFragmentInHiltContainer<BookmarksFragment>()
         // Set test nav controller on headlines fragment
-        bookmarksFragmentScenario.onFragment { Navigation.setViewNavController(
-            it.requireView(),
-            navController
-        ) }
+        bookmarksFragmentScenario.onActivity {
+            Navigation.setViewNavController(
+                it.supportFragmentManager.fragments[0].requireView(),
+                navController
+            )
+        }
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 

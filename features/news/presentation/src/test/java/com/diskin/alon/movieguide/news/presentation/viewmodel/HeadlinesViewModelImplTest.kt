@@ -56,6 +56,9 @@ class HeadlinesViewModelImplTest {
 
     @Before
     fun setUp() {
+//        mockkStatic("androidx.paging.rxjava2.PagingRxKt")
+//
+//        every { cachedIn(any()) }
         // Stub mocked collaborator
         every { model.execute(capture(modelRequestSlot)) } returns modelHeadlinesSubject
 

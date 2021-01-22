@@ -34,12 +34,12 @@ android {
 }
 
 dependencies {
-    def robolectric_version = "4.3.1"
+    def robolectric_version = "4.3"
     def greencoffee_version = "3.5.0"
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.3.1'
+    implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.appcompat:appcompat:1.2.0'
 
     api project(':features:common:uiTesting')

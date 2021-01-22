@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.diskin.alon.movieguide.reviews.appservices.data.MovieSorting
@@ -11,23 +12,23 @@ import com.diskin.alon.movieguide.reviews.presentation.R
 import com.diskin.alon.movieguide.reviews.presentation.data.Movie
 import com.diskin.alon.movieguide.reviews.presentation.viewmodel.MoviesViewModel
 import com.google.android.material.snackbar.Snackbar
-import dagger.android.support.AndroidSupportInjection
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.migration.OptionalInject
 import kotlinx.android.synthetic.main.fragment_movies.*
-import javax.inject.Inject
 
 /**
  * Provides ui for browsing movie reviews.
  */
+@OptionalInject
+@AndroidEntryPoint
 class MoviesFragment : Fragment() {
 
-    @Inject
-    lateinit var viewModel: MoviesViewModel
+    private val viewModel: MoviesViewModel by viewModels()
     private var snackbar: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        AndroidSupportInjection.inject(this)
     }
 
     override fun onCreateView(

@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.test.runner.AndroidJUnitRunner
 import com.diskin.alon.movieguide.util.NetworkUtil
 import com.squareup.rx2.idler.Rx2Idler
+import dagger.hilt.android.testing.HiltTestApplication
 import io.reactivex.plugins.RxJavaPlugins
 
 class TestRunner : AndroidJUnitRunner() {
@@ -14,7 +15,7 @@ class TestRunner : AndroidJUnitRunner() {
         className: String?,
         context: Context?
     ): Application {
-        return super.newApplication(cl, TestApp::class.java.name, context)
+        return super.newApplication(cl, HiltTestApplication::class.java.name, context)
     }
 
     override fun onStart() {

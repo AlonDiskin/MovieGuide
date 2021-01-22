@@ -9,9 +9,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class BookmarkStoreImpl @Inject constructor(
     private val dao: BookmarkDao,
     private val errorHandler: StorageErrorHandler

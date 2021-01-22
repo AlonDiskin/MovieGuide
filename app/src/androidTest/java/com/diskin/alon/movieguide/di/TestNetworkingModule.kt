@@ -5,6 +5,8 @@ import com.diskin.alon.movieguide.reviews.data.remote.TheMovieDbApi
 import com.diskin.alon.movieguide.util.NetworkUtil
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -13,9 +15,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
+@InstallIn(SingletonComponent::class)
 object TestNetworkingModule {
 
-    @JvmStatic
     @Singleton
     @Provides
     fun provideHttpClient(): OkHttpClient {
@@ -27,7 +29,6 @@ object TestNetworkingModule {
             .build()
     }
 
-    @JvmStatic
     @Singleton
     @Provides
     fun provideFeedlyApi(httpClient: OkHttpClient): FeedlyApi {
@@ -40,7 +41,6 @@ object TestNetworkingModule {
             .create(FeedlyApi::class.java)
     }
 
-    @JvmStatic
     @Singleton
     @Provides
     fun provideTheMovieDbApi(httpClient: OkHttpClient): TheMovieDbApi {
