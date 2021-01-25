@@ -2,6 +2,6 @@
 
     <application>
         <activity android:name="com.diskin.alon.movieguide.reviews.presentation.TestSingleFragmentActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme"/>
     </application>
 </manifest>

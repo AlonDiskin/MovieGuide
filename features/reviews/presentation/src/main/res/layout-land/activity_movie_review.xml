@@ -84,15 +84,16 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="8dp"
+                android:layout_margin="@dimen/item_margin"
                 app:cardElevation="8dp"
+                app:cardCornerRadius="@dimen/cardCornerRadius"
                 android:padding="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
                     android:orientation="vertical" >
 
                     <TextView
@@ -102,16 +103,14 @@
                         android:layout_marginTop="24dp"
                         android:layout_marginBottom="4dp"
                         android:text="@{review.title}"
-                        android:fontFamily="sans-serif-black"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        android:textAppearance="?attr/textAppearanceHeadline5"
                         tools:text="@string/stub_movie_title" />
 
                     <TextView
                         android:id="@+id/rating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:fontFamily="sans-serif-medium"
+                        android:textAppearance="?attr/textAppearanceSubtitle1"
                         android:text="@{review.rating}"
                         tools:text="@string/stub_movie_rating"/>
 
@@ -119,8 +118,7 @@
                         android:id="@+id/genre"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:fontFamily="sans-serif-medium"
+                        android:textAppearance="?attr/textAppearanceSubtitle1"
                         android:text="@{review.genres}"
                         tools:text="@string/stub_movie_genre" />
 
@@ -128,8 +126,7 @@
                         android:id="@+id/release_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:fontFamily="sans-serif-medium"
+                        android:textAppearance="?attr/textAppearanceSubtitle1"
                         android:text="@{review.releaseDate}"
                         android:layout_marginEnd="10dp"
                         tools:text="@string/stub_movie_release" />
@@ -138,17 +135,15 @@
                         android:id="@+id/summary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:fontFamily="sans-serif-medium"
+                        android:textAppearance="?attr/textAppearanceBody1"
                         android:text="@{review.summary}"
-                        android:textStyle="bold"
                         android:layout_marginTop="16dp"
                         tools:text="@string/stub_movie_summary" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textAppearance="?attr/textAppearanceSubtitle1"
                         android:layout_marginBottom="6dp"
                         android:layout_marginTop="10dp"
                         android:text="@string/label_trailers" />
@@ -166,18 +161,16 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:fontFamily="sans-serif-medium"
+                        android:textAppearance="?attr/textAppearanceSubtitle1"
                         android:layout_marginBottom="6dp"
                         android:layout_marginTop="10dp"
                         android:text="@string/label_review" />
 
                     <TextView
-                        android:id="@+id/review"
+                        android:id="@+id/review_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:fontFamily="sans-serif-medium"
+                        android:textAppearance="?attr/textAppearanceBody1"
                         android:text="@{review.review}"
                         tools:text="@string/stub_movie_review"/>
 

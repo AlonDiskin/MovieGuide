@@ -21,68 +21,82 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/cardCornerRadius"
         android:clickable="true"
+        android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
-        android:onClick="@{(v) -> bookmarkClickListener.invoke(bookmark,v)}"
-        android:focusable="true">
+        android:onClick="@{(v) -> bookmarkClickListener.invoke(bookmark,v)}">
 
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:scaleType="centerCrop"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            loadImage="@{bookmark.imageUrl}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars[3]" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-black"
-            tools:text="@string/stub_item_title"
-            android:text="@{bookmark.title}"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textSize="17sp"
-            android:maxLines="3"
-            android:ellipsize="end"
-            android:layout_marginStart="6dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintStart_toEndOf="@+id/image"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/image" />
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="centerCrop"
+                loadImage="@{bookmark.imageUrl}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/avatars[3]" />
 
-        <TextView
-            android:id="@+id/published"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@{bookmark.date}"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textSize="14sp"
-            android:lines="1"
-            android:ellipsize="end"
-            app:layout_constraintStart_toStartOf="@+id/title"
-            app:layout_constraintTop_toBottomOf="@+id/title"
-            tools:text="@string/stub_item_date" />
+            <View
+                android:id="@+id/selected_background"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@id/image"
+                app:layout_constraintStart_toEndOf="@id/image"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/image"/>
 
-        <ImageButton
-            android:id="@+id/bookmarkOptions"
-            style="@style/Widget.AppCompat.ActionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:onClick="@{(v) -> optionsClickListener.invoke(bookmark,v)}"
-            app:srcCompat="@drawable/ic_more_24" />
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_marginTop="6dp"
+                android:layout_height="wrap_content"
+                tools:text="@string/stub_item_title"
+                android:text="@{bookmark.title}"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:textSize="16.5sp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintStart_toEndOf="@+id/image"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/image" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/published"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lines="1"
+                android:layout_marginBottom="6dp"
+                android:text="@{bookmark.date}"
+                android:textAppearance="?attr/textAppearanceSubtitle1"
+                app:layout_constraintBottom_toBottomOf="@+id/image"
+                app:layout_constraintStart_toStartOf="@+id/title"
+                tools:text="@string/stub_item_date" />
+
+            <ImageButton
+                android:id="@+id/bookmarkOptions"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:onClick="@{(v) -> optionsClickListener.invoke(bookmark,v)}"
+                app:srcCompat="@drawable/ic_more_24" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
 
 </layout>

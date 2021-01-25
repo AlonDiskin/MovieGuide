@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import com.diskin.alon.movieguide.common.appservices.AppError
+import com.diskin.alon.movieguide.common.presentation.setCustomDecoration
 import com.diskin.alon.movieguide.reviews.presentation.R
 import com.diskin.alon.movieguide.reviews.presentation.data.Movie
 import com.diskin.alon.movieguide.reviews.presentation.viewmodel.MoviesSearchViewModel
@@ -48,6 +49,12 @@ class MoviesSearchFragment : Fragment(), SearchView.OnQueryTextListener,
         // Setup search results ui adapter
         val adapter = MoviesAdapter(::navigateToMovieReview)
         search_results.adapter = adapter
+
+        setCustomDecoration(
+            requireContext(),
+            search_results,
+            requireContext().resources.getInteger(R.integer.movies_span)
+        )
 
         // Listen to data set changes and update empty results notification accordingly
         search_results.addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener{

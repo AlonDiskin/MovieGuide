@@ -81,6 +81,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/item_margin"
+                android:layout_marginEnd="@dimen/item_margin"
                 android:orientation="vertical" >
 
                 <TextView
@@ -88,33 +90,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
                     android:layout_marginBottom="8dp"
                     android:text="@{article.title}"
-                    android:fontFamily="sans-serif-black"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textAppearance="?attr/textAppearanceHeadline5"
                     tools:text="@string/stub_item_title" />
 
                 <TextView
                     android:id="@+id/author"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:fontFamily="sans-serif-medium"
+                    android:textAppearance="?attr/textAppearanceSubtitle1"
                     android:text="@{article.author}"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
                     tools:text="@string/stub_article_author" />
 
                 <TextView
                     android:id="@+id/published"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textAppearance="?attr/textAppearanceSubtitle1"
                     android:text="@{article.date}"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
                     tools:text="@string/stub_item_date" />
 
                 <TextView
@@ -122,10 +116,9 @@
                     android:minLines="14"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:layout_marginTop="10dp"
+                    android:textAppearance="?attr/textAppearanceBody1"
                     android:text="@{article.content}"
-                    android:layout_margin="16dp"
-                    android:textStyle="bold"
                     tools:text="@string/stub_item_content" />
 
             </LinearLayout>
