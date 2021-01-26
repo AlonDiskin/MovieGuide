@@ -1,5 +1,7 @@
 package com.diskin.alon.movieguide.news.presentation.controller
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -62,6 +64,15 @@ class ArticleActivity : AppCompatActivity() {
                 is ErrorViewData.NoError -> errorSnackbar?.dismiss()
                 is ErrorViewData.NotRetriable -> showNotRetriableError(error)
                 is ErrorViewData.Retriable -> showRetriableError(error)
+            }
+        }
+
+        // Set fab click listener
+        fab.setOnClickListener {
+            val article = binding.article
+            when{
+                article == null -> notifyActionNotAvailable()
+                else -> openArticleWebUrl(article.articleUrl)
             }
         }
     }
@@ -146,5 +157,16 @@ class ArticleActivity : AppCompatActivity() {
                 Toast.LENGTH_LONG
             ).show()
         }
+    }
+
+    private fun openArticleWebUrl(url: String) {
+        val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        val chooser = Intent.createChooser(webIntent, getString(R.string.title_read_article_origin))
+
+        startActivity(chooser)
+    }
+
+    private fun notifyActionNotAvailable() {
+        Toast.makeText(this,"Action not available",Toast.LENGTH_LONG).show()
     }
 }
