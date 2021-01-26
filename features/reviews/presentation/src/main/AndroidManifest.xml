@@ -6,7 +6,7 @@
         <activity
             android:name=".controller.MovieReviewActivity"
             android:label="@string/title_review_activity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

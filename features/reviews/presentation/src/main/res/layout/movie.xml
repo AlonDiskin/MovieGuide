@@ -18,8 +18,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        app:cardCornerRadius="2dp"
+        app:cardCornerRadius="@dimen/cardCornerRadius"
         android:foreground="?android:attr/selectableItemBackground"
         android:onClick="@{() -> movieClickListener.invoke(movie)}">
 
@@ -59,9 +58,7 @@
                 android:layout_margin="4dp"
                 android:gravity="center"
                 tools:text="@string/stub_movie_title"
-                android:fontFamily="sans-serif-black"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textSize="18sp"
+                android:textAppearance="?attr/textAppearanceHeadline6"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -81,9 +78,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
                 android:text="@{movie.rating}"
-                android:fontFamily="sans-serif-condensed-medium"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textSize="16sp"
+                android:textAppearance="?attr/textAppearanceHeadline6"
                 tools:text="7.7"
                 app:layout_constraintBottom_toBottomOf="@+id/ic_rating"
                 app:layout_constraintEnd_toStartOf="@+id/ic_rating"

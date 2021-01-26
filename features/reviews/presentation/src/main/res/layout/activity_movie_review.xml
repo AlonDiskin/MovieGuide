@@ -84,8 +84,8 @@
                 android:id="@+id/review_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="@dimen/item_margin"
+                android:layout_marginEnd="@dimen/item_margin"
                 android:orientation="vertical" >
 
                 <TextView
@@ -95,16 +95,14 @@
                     android:layout_marginTop="24dp"
                     android:layout_marginBottom="4dp"
                     android:text="@{movieReview.title}"
-                    android:fontFamily="sans-serif-black"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textAppearance="?attr/textAppearanceHeadline5"
                     tools:text="@string/stub_movie_title" />
 
                 <TextView
                     android:id="@+id/rating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:fontFamily="sans-serif-medium"
+                    android:textAppearance="?attr/textAppearanceSubtitle1"
                     android:text="@{movieReview.rating}"
                     tools:text="@string/stub_movie_rating"/>
 
@@ -112,8 +110,7 @@
                     android:id="@+id/genre"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:fontFamily="sans-serif-medium"
+                    android:textAppearance="?attr/textAppearanceSubtitle1"
                     android:text="@{movieReview.genres}"
                     tools:text="@string/stub_movie_genre" />
 
@@ -121,27 +118,23 @@
                     android:id="@+id/release_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:fontFamily="sans-serif-medium"
+                    android:textAppearance="?attr/textAppearanceSubtitle1"
                     android:text="@{movieReview.releaseDate}"
-                    android:layout_marginEnd="10dp"
                     tools:text="@string/stub_movie_release" />
 
                 <TextView
                     android:id="@+id/summary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:fontFamily="sans-serif-medium"
+                    android:textAppearance="?attr/textAppearanceBody1"
                     android:text="@{movieReview.summary}"
-                    android:textStyle="bold"
                     android:layout_marginTop="16dp"
                     tools:text="@string/stub_movie_summary" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textAppearance="?attr/textAppearanceSubtitle1"
                     android:layout_marginBottom="6dp"
                     android:layout_marginTop="10dp"
                     android:text="@string/label_trailers" />
@@ -159,8 +152,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:fontFamily="sans-serif-medium"
+                    android:textAppearance="?attr/textAppearanceSubtitle1"
                     android:layout_marginBottom="6dp"
                     android:layout_marginTop="10dp"
                     android:text="@string/label_review" />
@@ -169,8 +161,7 @@
                     android:id="@+id/review_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:fontFamily="sans-serif-medium"
+                    android:textAppearance="?attr/textAppearanceBody1"
                     android:text="@{movieReview.review}"
                     tools:text="@string/stub_movie_review"/>
 

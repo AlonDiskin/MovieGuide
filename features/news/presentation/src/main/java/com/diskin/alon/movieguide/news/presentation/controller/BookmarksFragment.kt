@@ -2,7 +2,6 @@ package com.diskin.alon.movieguide.news.presentation.controller
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
@@ -13,10 +12,12 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.diskin.alon.movieguide.common.presentation.ErrorViewData
 import com.diskin.alon.movieguide.common.presentation.UpdateViewData
+import com.diskin.alon.movieguide.common.presentation.setCustomDecoration
 import com.diskin.alon.movieguide.news.appservices.data.BookmarkSorting
 import com.diskin.alon.movieguide.news.presentation.R
 import com.diskin.alon.movieguide.news.presentation.data.Headline
 import com.diskin.alon.movieguide.news.presentation.viewmodel.BookmarksViewModel
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.migration.OptionalInject
@@ -74,6 +75,15 @@ class BookmarksFragment : Fragment(), ActionMode.Callback{
             multiSelect
         )
         bookmarked_articles.adapter = adapter
+
+        setCustomDecoration(
+            requireContext(),
+            bookmarked_articles,
+            requireContext().resources.getInteger(R.integer.headlines_span)
+        )
+
+        MaterialColors.getColor(requireActivity(), R.attr.colorSurface, Color.GREEN)
+
 
         // Observe bookmarks state from view model
         viewModel.bookmarks.observe(viewLifecycleOwner,
@@ -165,18 +175,11 @@ class BookmarksFragment : Fragment(), ActionMode.Callback{
             if (selectedBookmarksIds.contains(headline.id)) {
                 selectedBookmarksIds.remove(headline.id)
                 view.isSelected = false
-                val typedValue = TypedValue()
-
-                requireActivity().theme.resolveAttribute(
-                    android.R.attr.windowBackground,
-                    typedValue,
-                    true
-                )
-                view.setBackgroundColor(typedValue.data)
+                view.findViewById<View>(R.id.selected_background).setBackgroundColor(Color.TRANSPARENT)
 
             } else {
                 selectedBookmarksIds.add(headline.id)
-                view.setBackgroundColor(Color.LTGRAY)
+                view.findViewById<View>(R.id.selected_background).setBackgroundColor(Color.LTGRAY)
             }
 
             if (selectedBookmarksIds.isEmpty()) {
@@ -193,7 +196,7 @@ class BookmarksFragment : Fragment(), ActionMode.Callback{
         if (!multiSelect) {
             actionMode =  activity?.startActionMode(this)
             selectedBookmarksIds.add(headline.id)
-            view.setBackgroundColor(Color.LTGRAY)
+            view.findViewById<View>(R.id.selected_background)?.setBackgroundColor(Color.LTGRAY)
         }
 
         return true
@@ -289,8 +292,9 @@ class BookmarksFragment : Fragment(), ActionMode.Callback{
             adapter.isMultiSelect = false
 
             for (i in 0 until adapter.itemCount) {
-                val holder = bookmarked_articles.findViewHolderForAdapterPosition(i)
-                holder?.itemView?.setBackgroundColor(Color.WHITE)
+                if (selectedBookmarksIds.contains(this.adapter.currentList[i].id)) {
+                    this.adapter.notifyItemChanged(i)
+                }
             }
         }
 

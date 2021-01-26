@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.diskin.alon.movieguide.common.presentation.createFragmentViewModel
+import com.diskin.alon.movieguide.common.presentation.setCustomDecoration
 import com.diskin.alon.movieguide.news.presentation.R
 import com.diskin.alon.movieguide.news.presentation.data.Headline
 import com.diskin.alon.movieguide.news.presentation.util.HeadlinesViewModelFactoryQualifier
@@ -46,8 +47,14 @@ class HeadlinesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // Setup news titles adapter
-        val adapter = HeadlinesAdapter(this::shareHeadline,this::navigateToArticle)
+        val adapter = HeadlinesAdapter(this::shareHeadline, this::navigateToArticle)
         headlines.adapter = adapter
+
+        setCustomDecoration(
+            requireContext(),
+            headlines,
+            requireContext().resources.getInteger(R.integer.headlines_span)
+        )
 
         // Handle adapter loading state changes
         adapter.addLoadStateListener { state ->
@@ -61,7 +68,8 @@ class HeadlinesFragment : Fragment() {
                 is LoadState.NotLoading -> swipe_refresh?.isRefreshing = false
 
                 is LoadState.Error -> showErrorNotification(
-                    (state.refresh as LoadState.Error).error) { adapter.retry() }
+                    (state.refresh as LoadState.Error).error
+                ) { adapter.retry() }
             }
 
             when (state.append) {
@@ -70,7 +78,8 @@ class HeadlinesFragment : Fragment() {
                 is LoadState.NotLoading -> progress_bar?.visibility = View.GONE
 
                 is LoadState.Error -> showErrorNotification(
-                    (state.append as LoadState.Error).error) { adapter.retry() }
+                    (state.append as LoadState.Error).error
+                ) { adapter.retry() }
             }
         }
 
@@ -84,15 +93,19 @@ class HeadlinesFragment : Fragment() {
     private fun showErrorNotification(e: Throwable, retry: () -> (Unit)) {
         val message = e.message
         // remove any ui load state indicators
-        swipe_refresh.isRefreshing = false
-        progress_bar.visibility = View.GONE
+        swipe_refresh?.isRefreshing = false
+        progress_bar?.visibility = View.GONE
 
         // If error message exist,show it with retry action
         snackbar = if (message == null || message.isEmpty()) {
-            Snackbar.make(headlines,getString(R.string.unexpected_error),Snackbar.LENGTH_INDEFINITE)
+            Snackbar.make(
+                headlines,
+                getString(R.string.unexpected_error),
+                Snackbar.LENGTH_INDEFINITE
+            )
         } else {
             // Else show generic error message indicating unknown error
-            Snackbar.make(headlines,message,Snackbar.LENGTH_INDEFINITE)
+            Snackbar.make(headlines, message, Snackbar.LENGTH_INDEFINITE)
                 .setAction(getString(R.string.action_retry)) { retry() }
         }
 

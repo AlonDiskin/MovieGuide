@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import com.diskin.alon.movieguide.common.presentation.setCustomDecoration
 import com.diskin.alon.movieguide.reviews.appservices.data.MovieSorting
 import com.diskin.alon.movieguide.reviews.presentation.R
 import com.diskin.alon.movieguide.reviews.presentation.data.Movie
@@ -46,6 +47,12 @@ class MoviesFragment : Fragment() {
         val adapter = MoviesAdapter(this::navigateToMovieReview)
         movies.adapter = adapter
         adapter.refresh()
+
+        setCustomDecoration(
+            requireContext(),
+            movies,
+            requireContext().resources.getInteger(R.integer.movies_span)
+        )
 
         // handle adapter paging load state updates
         adapter.addLoadStateListener { state ->

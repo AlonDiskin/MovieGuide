@@ -1,13 +1,13 @@
 package com.diskin.alon.movieguide.news.presentation.controller
 
 import android.graphics.Color
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.diskin.alon.movieguide.news.presentation.R
 import com.diskin.alon.movieguide.news.presentation.data.Headline
 import com.diskin.alon.movieguide.news.presentation.databinding.BookmarkBinding
 
@@ -42,18 +42,11 @@ class BookmarksAdapter(
 
         fun bind(headline: Headline,isMultiSelect: Boolean,selectedBookmarks: List<String>) {
             binding.bookmark = headline
-            binding.root.setBackgroundColor(
+            binding.root.findViewById<View>(R.id.selected_background).setBackgroundColor(
                 if (isMultiSelect && selectedBookmarks.contains(headline.id)) {
                     Color.LTGRAY
                 } else {
-                    val typedValue = TypedValue()
-
-                    binding.root.context.theme.resolveAttribute(
-                        android.R.attr.windowBackground,
-                        typedValue,
-                        true
-                    )
-                    typedValue.data
+                    Color.TRANSPARENT
                 }
             )
         }
