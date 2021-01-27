@@ -142,9 +142,6 @@ class MovieSearchSteps(private val server: MockWebServer) : GreenCoffeeSteps() {
 
         onView(withId(R.id.summary))
             .check(ViewAssertions.matches(withText(review.summary)))
-
-        onView(withId(R.id.review_text))
-            .check(ViewAssertions.matches(withText(review.review)))
     }
 
     private fun expectedUiMovieReview(): UiMovieReviewData {

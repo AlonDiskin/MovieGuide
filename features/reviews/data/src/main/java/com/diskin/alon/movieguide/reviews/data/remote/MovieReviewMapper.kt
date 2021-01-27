@@ -14,6 +14,13 @@ import javax.inject.Inject
  */
 class MovieReviewMapper @Inject constructor() : Mapper2<MovieDetailResponse, TrailersResponse, MovieReviewEntity> {
 
+    companion object {
+        private const val REVIEW_STUB = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur tempor suscipit ipsum, at " +
+                "blandit nisi. Aliquam erat volutpat. Nulla at mauris mattis, pellentesque neque vitae, consequat augue. Ut mollis vel leo" +
+                " in malesuada. Proin vitae fringilla mauris. Quisque placerat sodales quam quis gravida. Pellentesque sollicitudin vestibulum" +
+                " arcu, eget imperdiet nulla pellentesque sit amet."
+    }
+
     override fun map(source1: MovieDetailResponse, source2: TrailersResponse): MovieReviewEntity {
         return MovieReviewEntity(
             source1.id.toString(),
@@ -23,7 +30,7 @@ class MovieReviewMapper @Inject constructor() : Mapper2<MovieDetailResponse, Tra
             MOVIE_DB_BASE_BACKDROP_PATH.plus(source1.backdrop_path),
             source1.genres.map { MovieGenre(it.name) },
             source1.overview,
-            "review_stub",
+            REVIEW_STUB,
             MOVIE_DB_BASE.plus(source1.id.toString()),
             source2.results.map {
                 Trailer(

@@ -139,9 +139,6 @@ class MovieReviewReadingErrorSteps(server: MockWebServer) : GreenCoffeeSteps() {
         onView(withId(R.id.summary))
             .check(matches(withText(review.summary)))
 
-        onView(withId(R.id.review_text))
-            .check(matches(withText(review.review)))
-
         verify { ImageLoader.loadIntoImageView(any(),review.backDropImageUrl) }
 
         review.trailersThumbnailUrls.forEach { url ->
