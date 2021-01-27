@@ -1,6 +1,14 @@
 package com.diskin.alon.movieguide.userjourneytests
 
+import android.app.Activity
+import android.app.Application
+import android.app.Application.ActivityLifecycleCallbacks
+import android.content.Context
+import android.os.Bundle
+import androidx.fragment.app.FragmentActivity
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
@@ -8,7 +16,9 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.movieguide.R
 import com.diskin.alon.movieguide.reviews.data.BuildConfig
 import com.diskin.alon.movieguide.reviews.presentation.R.string
+import com.diskin.alon.movieguide.reviews.presentation.controller.MovieReviewActivity
 import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesAdapter.MovieViewHolder
+import com.diskin.alon.movieguide.util.DataBindingIdlingResource
 import com.diskin.alon.movieguide.util.DeviceUtil
 import com.diskin.alon.movieguide.util.FileUtil
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
@@ -57,6 +67,45 @@ class MovieSearchSteps(private val server: MockWebServer) : GreenCoffeeSteps() {
         onView(withHint(string.search_hint))
             .perform(typeText(query))
             .perform(pressImeActionButton())
+
+        // Register idling resource for movie review activity
+        val app: Application = getApplicationContext<Context>() as Application
+        app.registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
+            private lateinit var dataBindingIdlingResource: DataBindingIdlingResource
+
+            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+                if (activity::class.java.simpleName == MovieReviewActivity::class.java.simpleName) {
+                    dataBindingIdlingResource = DataBindingIdlingResource(activity as FragmentActivity)
+                    IdlingRegistry.getInstance().register(dataBindingIdlingResource)
+                }
+            }
+
+            override fun onActivityStarted(activity: Activity) {
+
+            }
+
+            override fun onActivityResumed(activity: Activity) {
+
+            }
+
+            override fun onActivityPaused(activity: Activity) {
+
+            }
+
+            override fun onActivityStopped(activity: Activity) {
+
+            }
+
+            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+
+            }
+
+            override fun onActivityDestroyed(activity: Activity) {
+                if (activity::class.java.simpleName == MovieReviewActivity::class.java.simpleName) {
+                    IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
+                }
+            }
+        })
     }
 
     @And("^User read first resulted review detail$")
@@ -173,7 +222,7 @@ class MovieSearchSteps(private val server: MockWebServer) : GreenCoffeeSteps() {
                         MockResponse()
                             .setBody(FileUtil.readStringFromFile(movieDetailResourcePath))
                             .setResponseCode(200)
-                    } else{
+                    } else {
                         MockResponse().setResponseCode(404)
                     }
                 }
@@ -186,7 +235,7 @@ class MovieSearchSteps(private val server: MockWebServer) : GreenCoffeeSteps() {
                         MockResponse()
                             .setBody(FileUtil.readStringFromFile(movieTrailersResourcePath))
                             .setResponseCode(200)
-                    } else{
+                    } else {
                         MockResponse().setResponseCode(404)
                     }
                 }
@@ -196,12 +245,14 @@ class MovieSearchSteps(private val server: MockWebServer) : GreenCoffeeSteps() {
         }
     }
 
-    private data class UiMovieReviewData(val title: String,
-                                 val rating: String,
-                                 val genres: String,
-                                 val releaseDate: String,
-                                 val summary: String,
-                                 val review: String,
-                                 val backDropImageUrl: String,
-                                 val trailersThumbnailUrls: List<String>)
+    private data class UiMovieReviewData(
+        val title: String,
+        val rating: String,
+        val genres: String,
+        val releaseDate: String,
+        val summary: String,
+        val review: String,
+        val backDropImageUrl: String,
+        val trailersThumbnailUrls: List<String>
+    )
 }

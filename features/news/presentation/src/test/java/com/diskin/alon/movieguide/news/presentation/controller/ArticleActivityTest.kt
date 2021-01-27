@@ -2,6 +2,7 @@ package com.diskin.alon.movieguide.news.presentation.controller
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Looper
 import androidx.lifecycle.MutableLiveData
 import androidx.test.core.app.ActivityScenario
@@ -275,5 +276,30 @@ class ArticleActivityTest {
 
         // Then activity should ask view model to un bookmark article
         verify { viewModel.unBookmark() }
+    }
+
+    @Test
+    fun openArticleWebOriginWhenSelected() {
+        // Test case fixture
+        Intents.init()
+
+        // Given a resumed activity with displayed article
+        val article = createTestArticle()
+        articleViewData.value = article
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // When user select to read original article
+        onView(withId(R.id.fab))
+            .perform(click())
+
+        // Then open original article via user selected app
+        Intents.intended(IntentMatchers.hasAction(Intent.ACTION_CHOOSER))
+
+        val intent = Intents.getIntents().first().extras?.get(Intent.EXTRA_INTENT) as Intent
+
+        assertThat(intent.action).isEqualTo(Intent.ACTION_VIEW)
+        assertThat(intent.data).isEqualTo(Uri.parse(article.articleUrl))
+
+        Intents.release()
     }
 }

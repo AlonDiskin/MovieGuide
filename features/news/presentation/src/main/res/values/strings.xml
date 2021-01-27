@@ -28,4 +28,6 @@
     <string name="title_share_bookmark_chooser">Share bookmark</string>
     <string name="remove_bookamrk_dialog_message">Remove bookmark?</string>
     <string name="remove_bookmark_dialog_title">Remove bookmark</string>
+    <string name="read_article_origin_desc">read origin</string>
+    <string name="title_read_article_origin">Read article origin</string>
 </resources>

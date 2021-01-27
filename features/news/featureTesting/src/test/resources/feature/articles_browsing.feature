@@ -42,3 +42,9 @@ Feature: News articles browsing
       | error_cause       | provide_retry | select_retry | display     |
       | device networking | provide       | select       | display     |
       | remote server     | provide       | select       | display     |
+
+  @article-origin-reading
+  Scenario: User read article web origin
+    Given User opened article in detail screen
+    When User select read original article
+    Then App should open web article

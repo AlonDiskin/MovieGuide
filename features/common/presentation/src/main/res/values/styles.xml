@@ -6,6 +6,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="colorOnSecondary">@color/colorOnSecondary</item>
         <item name="actionModeBackground">@color/colorPrimary</item>
         <item name="actionMenuTextColor">?attr/colorOnPrimary</item>
         <item name="actionModeCloseDrawable">@drawable/ic_baseline_arrow_back_24</item>
