@@ -163,6 +163,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?attr/textAppearanceBody1"
                     android:text="@{movieReview.review}"
+                    android:layout_marginBottom="@dimen/item_margin"
                     tools:text="@string/stub_movie_review"/>
 
             </LinearLayout>
