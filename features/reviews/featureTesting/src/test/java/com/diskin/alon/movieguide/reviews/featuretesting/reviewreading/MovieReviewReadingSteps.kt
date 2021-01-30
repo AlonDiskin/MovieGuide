@@ -1,7 +1,7 @@
 package com.diskin.alon.movieguide.reviews.featuretesting.reviewreading
 
 import android.content.Context
-import android.content.Intent
+import android.os.Bundle
 import android.os.Looper
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
@@ -18,7 +18,7 @@ import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
 import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.reviews.data.BuildConfig
 import com.diskin.alon.movieguide.reviews.featuretesting.R
-import com.diskin.alon.movieguide.reviews.presentation.controller.MovieReviewActivity
+import com.diskin.alon.movieguide.reviews.presentation.controller.MovieReviewFragment
 import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesAdapter.MovieViewHolder
 import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesFragment
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
@@ -39,8 +39,8 @@ import org.robolectric.Shadows
  */
 class MovieReviewReadingSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
-    private lateinit var moviesFragmentScenario: ActivityScenario<HiltTestActivity>
-    private lateinit var reviewActivityScenario: ActivityScenario<MovieReviewActivity>
+    private lateinit var moviesScenario: ActivityScenario<HiltTestActivity>
+    private lateinit var reviewScenario: ActivityScenario<HiltTestActivity>
     private val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
     private val dispatcher = TestDispatcher()
 
@@ -48,18 +48,13 @@ class MovieReviewReadingSteps(server: MockWebServer) : GreenCoffeeSteps() {
         // Setup nav controller
         navController.setGraph(R.navigation.reviews_nav_graph)
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.movieReviewActivity) {
+            if (destination.id == R.id.movieReviewFragment) {
                 val context = ApplicationProvider.getApplicationContext<Context>()!!
                 val keyMovieId = context.getString(R.string.movie_id_arg)
                 val movieIdArg = navController
                     .currentBackStackEntry!!.arguments!!.getString(keyMovieId)!!
-                val intent = Intent(context,MovieReviewActivity::class.java)
-                    .apply { putExtra(keyMovieId,movieIdArg) }
-
-                // Launch review detail activity when user navigates to it from fragment
-                // (manually,robolectric bug)
-                reviewActivityScenario = ActivityScenario.launch(intent)
-                // Wait for main looper to idle
+                val bundle = Bundle().apply { putString(keyMovieId,movieIdArg) }
+                reviewScenario = launchFragmentInHiltContainer<MovieReviewFragment>(fragmentArgs = bundle)
                 Shadows.shadowOf(Looper.getMainLooper()).idle()
             }
         }
@@ -73,9 +68,9 @@ class MovieReviewReadingSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
     @Given("^User opened movies screen$")
     fun userOpenedMoviesScreen() {
-        moviesFragmentScenario = launchFragmentInHiltContainer<MoviesFragment>()
+        moviesScenario = launchFragmentInHiltContainer<MoviesFragment>()
         // Set test nav controller on movies fragment
-        moviesFragmentScenario.onActivity {
+        moviesScenario.onActivity {
             Navigation.setViewNavController(
                 it.supportFragmentManager.fragments[0].requireView(),
                 navController)

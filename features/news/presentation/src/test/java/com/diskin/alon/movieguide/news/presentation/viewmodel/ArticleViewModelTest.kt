@@ -25,9 +25,9 @@ import org.junit.Rule
 import org.junit.Test
 
 /**
- * [ArticleViewModelImpl] unit test.
+ * [ArticleViewModel] unit test.
  */
-class ArticleViewModelImplTest {
+class ArticleViewModelTest {
 
     companion object {
 
@@ -45,7 +45,7 @@ class ArticleViewModelImplTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     // Test subject
-    private lateinit var viewModel: ArticleViewModelImpl
+    private lateinit var viewModel: ArticleViewModel
 
     // Collaborators
     private val model: Model = mockk()
@@ -59,10 +59,10 @@ class ArticleViewModelImplTest {
     fun setUp() {
         // Stub collaborators
         every { model.execute(any<ArticleModelRequest>()) } returns modelArticleSubject
-        savedState.set(ArticleViewModelImpl.KEY_ARTICLE_ID,articleId)
+        savedState.set(ArticleViewModel.KEY_ARTICLE_ID,articleId)
 
         // Init subject
-        viewModel = ArticleViewModelImpl(model,savedState)
+        viewModel = ArticleViewModel(model,savedState)
     }
 
     @Test
@@ -78,7 +78,7 @@ class ArticleViewModelImplTest {
         // Test case fixture
 
         // When view model is created without article id (null value)
-        ArticleViewModelImpl(model, SavedStateHandle())
+        ArticleViewModel(model, SavedStateHandle())
 
         // Then view model should throw a IllegalArgumentException
     }

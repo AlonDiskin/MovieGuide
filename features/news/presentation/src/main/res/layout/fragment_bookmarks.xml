@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbarSize="4dp"
-        android:scrollbarThumbVertical="@color/colorAccent"
+        android:scrollbarThumbVertical="?attr/colorSecondary"
         android:scrollbars="vertical"
         app:spanCount="@integer/headlines_span"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"

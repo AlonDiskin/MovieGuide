@@ -188,7 +188,7 @@ class BookmarksFragment : Fragment(), ActionMode.Callback{
 
         } else {
             val bundle = bundleOf(getString(R.string.key_article_id) to headline.id)
-            findNavController().navigate(R.id.articleActivity, bundle)
+            findNavController().navigate(R.id.action_bookmarksFragment_to_articleFragment, bundle)
         }
     }
 

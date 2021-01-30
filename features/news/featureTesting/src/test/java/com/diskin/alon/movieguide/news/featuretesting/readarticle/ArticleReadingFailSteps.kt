@@ -1,7 +1,7 @@
 package com.diskin.alon.movieguide.news.featuretesting.readarticle
 
 import android.content.Context
-import android.content.Intent
+import android.os.Bundle
 import android.os.Looper
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
@@ -10,9 +10,11 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
+import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
+import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.news.data.remote.FEEDLY_ENTRY_PATH
 import com.diskin.alon.movieguide.news.featuretesting.R
-import com.diskin.alon.movieguide.news.presentation.controller.ArticleActivity
+import com.diskin.alon.movieguide.news.presentation.controller.ArticleFragment
 import com.diskin.alon.movieguide.news.presentation.data.Article
 import com.diskin.alonmovieguide.common.data.NetworkErrorHandler.Companion.ERR_API_SERVER
 import com.diskin.alonmovieguide.common.data.NetworkErrorHandler.Companion.ERR_DEVICE_NETWORK
@@ -36,7 +38,7 @@ class ArticleReadingFailSteps(private val server: MockWebServer) : GreenCoffeeSt
         private const val TEST_WEB_ENTRY_JSON = "json/feedly_entry.json"
     }
 
-    private lateinit var scenario: ActivityScenario<ArticleActivity>
+    private lateinit var scenario: ActivityScenario<HiltTestActivity>
     private lateinit var expectedErrorMessage: String
 
     @Given("^Existing app error due to \"([^\"]*)\"$")
@@ -77,14 +79,11 @@ class ArticleReadingFailSteps(private val server: MockWebServer) : GreenCoffeeSt
 
     @When("^User opened article screen$")
     fun userOpenedArticleScreen() {
-        // Launch article activity with article id matching test web article
         val context = getApplicationContext<Context>()!!
         val keyArticleId = context.getString(R.string.key_article_id)
         val articleIdArg = getTestWebEntryId()
-
-        Intent(context, ArticleActivity::class.java)
-            .apply { putExtra(keyArticleId, articleIdArg) }
-            .also { scenario = ActivityScenario.launch(it) }
+        val bundle = Bundle().apply { putString(keyArticleId,articleIdArg) }
+        scenario = launchFragmentInHiltContainer<ArticleFragment>(fragmentArgs = bundle)
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 

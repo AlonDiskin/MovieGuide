@@ -1,7 +1,7 @@
 package com.diskin.alon.movieguide.news.featuretesting.readbookmark
 
 import android.content.Context
-import android.content.Intent
+import android.os.Bundle
 import android.os.Looper
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
@@ -20,7 +20,7 @@ import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.news.data.local.data.Bookmark
 import com.diskin.alon.movieguide.news.featuretesting.R
 import com.diskin.alon.movieguide.news.featuretesting.di.TestDatabase
-import com.diskin.alon.movieguide.news.presentation.controller.ArticleActivity
+import com.diskin.alon.movieguide.news.presentation.controller.ArticleFragment
 import com.diskin.alon.movieguide.news.presentation.controller.BookmarksAdapter
 import com.diskin.alon.movieguide.news.presentation.controller.BookmarksFragment
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
@@ -47,8 +47,8 @@ class ReadBookmarkSteps(
     private val database: TestDatabase
 ) : GreenCoffeeSteps() {
 
-    private lateinit var bookmarksFragmentScenario: ActivityScenario<HiltTestActivity>
-    private lateinit var articleActivityScenario: ActivityScenario<ArticleActivity>
+    private lateinit var bookmarksScenario: ActivityScenario<HiltTestActivity>
+    private lateinit var articleScenario: ActivityScenario<HiltTestActivity>
     private val navController = TestNavHostController(getApplicationContext())
     private val dispatcher = TestDispatcher()
 
@@ -56,19 +56,12 @@ class ReadBookmarkSteps(
         // Set test nav controller
         navController.setGraph(R.navigation.bookmarks_nav_graph)
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.articleActivity) {
+            if (destination.id == R.id.articleFragment) {
                 val context = getApplicationContext<Context>()!!
                 val keyArticleId = context.getString(R.string.key_article_id)
-                val articleIdArg = navController
-                    .currentBackStackEntry!!.arguments!!.getString(keyArticleId)!!
-                val intent = Intent(context, ArticleActivity::class.java)
-                    .apply { putExtra(keyArticleId, articleIdArg) }
-
-                // Launch article detail activity when user navigates to it from fragment
-                // (manually,robolectric bug)
-                articleActivityScenario = ActivityScenario.launch(intent)
-
-                // Wait for main looper to idle
+                val articleIdArg = navController.currentBackStackEntry!!.arguments!!.getString(keyArticleId)!!
+                val bundle = Bundle().apply { putString(keyArticleId,articleIdArg) }
+                articleScenario = launchFragmentInHiltContainer<ArticleFragment>(fragmentArgs = bundle)
                 Shadows.shadowOf(Looper.getMainLooper()).idle()
             }
         }
@@ -87,9 +80,9 @@ class ReadBookmarkSteps(
 
     @And("^User open bookmarks screen$")
     fun user_open_bookmarks_screen() {
-        bookmarksFragmentScenario = launchFragmentInHiltContainer<BookmarksFragment>()
+        bookmarksScenario = launchFragmentInHiltContainer<BookmarksFragment>()
         // Set test nav controller on headlines fragment
-        bookmarksFragmentScenario.onActivity {
+        bookmarksScenario.onActivity {
             Navigation.setViewNavController(
                 it.supportFragmentManager.fragments[0].requireView(),
                 navController

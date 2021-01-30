@@ -5,6 +5,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Looper
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelLazy
+import androidx.navigation.Navigation
+import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -18,7 +21,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.diskin.alon.movieguide.common.presentation.ErrorViewData
 import com.diskin.alon.movieguide.common.presentation.UpdateViewData
-import com.diskin.alon.movieguide.common.presentation.createActivityViewModel
+import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
+import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.news.presentation.R
 import com.diskin.alon.movieguide.news.presentation.createBookmarkedTestArticle
 import com.diskin.alon.movieguide.news.presentation.createTestArticle
@@ -28,9 +32,8 @@ import com.diskin.alon.movieguide.news.presentation.viewmodel.ArticleViewModel
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
+import io.mockk.mockkConstructor
 import io.mockk.verify
-import kotlinx.android.synthetic.main.activity_article.*
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Before
 import org.junit.Test
@@ -41,16 +44,16 @@ import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowToast
 
 /**
- * [ArticleActivity] hermetic ui test class.
+ * [ArticleFragment] hermetic ui test class.
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @SmallTest
 @Config(sdk = [28])
-class ArticleActivityTest {
+class ArticleFragmentTest {
 
     // Test subject
-    private lateinit var scenario: ActivityScenario<ArticleActivity>
+    private lateinit var scenario: ActivityScenario<HiltTestActivity>
 
     // Collaborators
     private val viewModel = mockk<ArticleViewModel>()
@@ -60,19 +63,33 @@ class ArticleActivityTest {
     private val errorViewData =  MutableLiveData<ErrorViewData>()
     private val updateViewData = MutableLiveData<UpdateViewData>()
 
+    // Test nav controller
+    private val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
+
     @Before
     fun setUp() {
-        // Mock and stub view model generator for activity
-        mockkStatic("com.diskin.alon.movieguide.common.presentation.ViewModelUtilKt")
-        every { createActivityViewModel<ArticleViewModel>(any(),any()) } returns lazy { viewModel }
+        // Stub view model creation with test mock
+        mockkConstructor(ViewModelLazy::class)
+        every { anyConstructed<ViewModelLazy<ArticleViewModel>>().value } returns viewModel
 
         // Stub mocked view model
         every { viewModel.article } returns articleViewData
         every { viewModel.update } returns updateViewData
         every { viewModel.error } returns errorViewData
 
-        // Launch activity under test
-        scenario = ActivityScenario.launch(ArticleActivity::class.java)
+        // Setup test nav controller
+        navController.setGraph(R.navigation.news_nav_graph)
+        navController.setCurrentDestination(R.id.articleFragment)
+
+        // Launch fragment under test
+        scenario = launchFragmentInHiltContainer<ArticleFragment>()
+
+        // Set the NavController property on the fragment with test controller
+        scenario.onActivity {
+            Navigation.setViewNavController(
+                it.supportFragmentManager.fragments[0].requireView(),
+                navController)
+        }
     }
 
     @Test
@@ -217,19 +234,10 @@ class ArticleActivityTest {
 
     @Test
     fun showEmptyAppBarTitle() {
-        // Given a resumed activity
+        // Given a resumed fragment
 
-        // Then activity should show an empty title in appbar
-        scenario.onActivity { assertThat(it.toolbar.title).isEqualTo("") }
-    }
-
-    @Test
-    fun showUpNavigationInAppBar() {
-        // Given a resumed activity
-
-        // Then activity should show up navigation button in its appbar
-        onView(withContentDescription(R.string.abc_action_bar_up_description))
-            .check(matches(isDisplayed()))
+        // Then fragment should show an empty title in appbar
+        assertThat(navController.currentDestination?.label).isEqualTo("")
     }
 
     @Test

@@ -166,7 +166,7 @@ class BookmarksFragmentTest {
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then fragment should navigate user to article detail screen,passing it selected article id
-        assertThat(navController.currentDestination?.id).isEqualTo(R.id.articleActivity)
+        assertThat(navController.currentDestination?.id).isEqualTo(R.id.articleFragment)
         val context = getApplicationContext<Context>()
         assertThat(
             navController.currentBackStackEntry?.arguments?.get(

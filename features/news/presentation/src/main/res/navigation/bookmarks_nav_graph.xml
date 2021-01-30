@@ -8,15 +8,19 @@
     <fragment
         android:id="@+id/bookmarksFragment"
         android:name="com.diskin.alon.movieguide.news.presentation.controller.BookmarksFragment"
-        android:label="BookmarksFragment"
+        android:label="@string/app_name"
         tools:layout="@layout/fragment_bookmarks">
         <action
-            android:id="@+id/action_bookmarksFragment_to_articleActivity2"
-            app:destination="@id/articleActivity" />
+            android:id="@+id/action_bookmarksFragment_to_articleFragment"
+            app:destination="@id/articleFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
-    <activity
-        android:id="@+id/articleActivity"
-        android:name="com.diskin.alon.movieguide.news.presentation.controller.ArticleActivity"
-        android:label="activity_article"
-        tools:layout="@layout/activity_article" />
+    <fragment
+        android:id="@+id/articleFragment"
+        android:name="com.diskin.alon.movieguide.news.presentation.controller.ArticleFragment"
+        android:label=""
+        tools:layout="@layout/fragment_article"/>
 </navigation>

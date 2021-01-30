@@ -3,66 +3,66 @@ package com.diskin.alon.movieguide.reviews.presentation.controller
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.Toast
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ShareCompat
-import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.diskin.alon.movieguide.common.presentation.ErrorViewData
 import com.diskin.alon.movieguide.common.presentation.UpdateViewData
 import com.diskin.alon.movieguide.reviews.presentation.R
 import com.diskin.alon.movieguide.reviews.presentation.data.Trailer
-import com.diskin.alon.movieguide.reviews.presentation.databinding.ActivityMovieReviewBinding
 import com.diskin.alon.movieguide.reviews.presentation.viewmodel.MovieReviewViewModel
 import com.google.android.material.snackbar.Snackbar
+import com.diskin.alon.movieguide.reviews.presentation.databinding.FragmentMovieReviewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.migration.OptionalInject
-import kotlinx.android.synthetic.main.activity_movie_review.*
 
-/**
- * Display movie review info,and provide content engagement actions.
- */
 @OptionalInject
 @AndroidEntryPoint
-class MovieReviewActivity : AppCompatActivity() {
+class MovieReviewFragment : Fragment() {
 
     private val viewModel: MovieReviewViewModel by viewModels()
     private var errorSnackbar: Snackbar? = null
+    private lateinit var binding: FragmentMovieReviewBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = DataBindingUtil
-            .setContentView<ActivityMovieReviewBinding>(this,R.layout.activity_movie_review)
+        setHasOptionsMenu(true)
+    }
 
-        // Setup toolbar
-        setSupportActionBar(toolbar)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentMovieReviewBinding.inflate(inflater,container,false)
+        return binding.root
+    }
 
-        // Setup up navigation
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         // Setup trailers adapter
         val adapter = TrailersAdapter(this::openTrailerWebLink)
         binding.trailers.adapter = adapter
 
         // Observe view model review state
-        viewModel.movieReview.observe(this) {
+        viewModel.movieReview.observe(viewLifecycleOwner) {
             binding.movieReview = it
             adapter.submitList(it?.trailers)
         }
 
         // Observe view model review update state
-        viewModel.reviewUpdate.observe(this) { update ->
+        viewModel.reviewUpdate.observe(viewLifecycleOwner) { update ->
             when(update) {
-                is UpdateViewData.Update -> progress_bar?.visibility = View.VISIBLE
-                is UpdateViewData.EndUpdate -> progress_bar?.visibility = View.GONE
+                is UpdateViewData.Update -> binding.progressBar.visibility = View.VISIBLE
+                is UpdateViewData.EndUpdate -> binding.progressBar.visibility = View.GONE
             }
         }
 
         // Observe view model review error state
-        viewModel.reviewError.observe(this) { error ->
+        viewModel.reviewError.observe(viewLifecycleOwner) { error ->
             when(error) {
                 is ErrorViewData.NoError -> errorSnackbar?.dismiss()
                 is ErrorViewData.NotRetriable -> showNotRetriableError(error)
@@ -71,13 +71,11 @@ class MovieReviewActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_movie_review, menu)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_movie_review, menu)
+    override fun onPrepareOptionsMenu(menu: Menu) {
         viewModel.movieReview.observe(this, { review ->
             review?.let {
                 val favoritingItem = menu.findItem(R.id.action_favoriting)
@@ -102,7 +100,6 @@ class MovieReviewActivity : AppCompatActivity() {
                 }
             }
         })
-        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -125,7 +122,7 @@ class MovieReviewActivity : AppCompatActivity() {
 
     private fun showNotRetriableError(error: ErrorViewData.NotRetriable) {
         errorSnackbar = Snackbar.make(
-            review_content,
+            binding.reviewContent,
             error.reason,
             Snackbar.LENGTH_INDEFINITE)
 
@@ -134,7 +131,7 @@ class MovieReviewActivity : AppCompatActivity() {
 
     private fun showRetriableError(error: ErrorViewData.Retriable) {
         errorSnackbar = Snackbar.make(
-            review_content,
+            binding.reviewContent,
             error.reason,
             Snackbar.LENGTH_INDEFINITE)
             .setAction(getString(R.string.action_retry)) { error.retry() }
@@ -145,14 +142,14 @@ class MovieReviewActivity : AppCompatActivity() {
     private fun shareReview() {
         viewModel.movieReview.value?.let { review ->
             ShareCompat.IntentBuilder
-                .from(this)
+                .from(requireActivity())
                 .setType(getString(R.string.mime_type_text))
                 .setText(review.webUrl)
                 .setChooserTitle(getString(R.string.title_share_review_chooser))
                 .startChooser()
         } ?: run {
             Toast.makeText(
-                this,
+                requireActivity(),
                 getString(R.string.title_action_not_available),
                 Toast.LENGTH_LONG
             ).show()

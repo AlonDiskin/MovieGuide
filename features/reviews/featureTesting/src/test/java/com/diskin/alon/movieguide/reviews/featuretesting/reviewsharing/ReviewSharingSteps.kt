@@ -2,6 +2,7 @@ package com.diskin.alon.movieguide.reviews.featuretesting.reviewsharing
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.os.Looper
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -11,9 +12,11 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
+import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
+import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.reviews.data.BuildConfig
 import com.diskin.alon.movieguide.reviews.featuretesting.R
-import com.diskin.alon.movieguide.reviews.presentation.controller.MovieReviewActivity
+import com.diskin.alon.movieguide.reviews.presentation.controller.MovieReviewFragment
 import com.google.common.truth.Truth
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.Given
@@ -31,7 +34,7 @@ import org.robolectric.Shadows
  */
 class ReviewSharingSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
-    private lateinit var scenario: ActivityScenario<MovieReviewActivity>
+    private lateinit var scenario: ActivityScenario<HiltTestActivity>
     private val dispatcher = TestDispatcher()
 
     init {
@@ -44,10 +47,8 @@ class ReviewSharingSteps(server: MockWebServer) : GreenCoffeeSteps() {
         val context = ApplicationProvider.getApplicationContext<Context>()!!
         val keyMovieId = context.getString(R.string.movie_id_arg)
         val movieIdArg = dispatcher.movieResourceId.toString()
-
-        Intent(context, MovieReviewActivity::class.java)
-            .apply { putExtra(keyMovieId, movieIdArg) }
-            .also { scenario = ActivityScenario.launch(it) }
+        val bundle = Bundle().apply { putString(keyMovieId,movieIdArg) }
+        scenario = launchFragmentInHiltContainer<MovieReviewFragment>(fragmentArgs = bundle)
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 

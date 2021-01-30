@@ -5,6 +5,7 @@
     <item
         android:id="@+id/action_bookmarking"
         android:title=""
+        android:icon="@drawable/ic_not_bookmarked_24"
         android:enabled="false"
         app:showAsAction="ifRoom"/>
 

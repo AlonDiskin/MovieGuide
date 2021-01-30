@@ -6,6 +6,7 @@ import android.os.Looper
 import android.view.View
 import android.widget.ProgressBar
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelLazy
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.paging.LoadState
@@ -30,7 +31,6 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.diskin.alon.movieguide.common.presentation.ImageLoader
-import com.diskin.alon.movieguide.common.presentation.createFragmentViewModel
 import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
 import com.diskin.alon.movieguide.common.uitesting.RecyclerViewMatcher.withRecyclerView
 import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
@@ -41,7 +41,6 @@ import com.diskin.alon.movieguide.news.presentation.createNewsHeadlines
 import com.diskin.alon.movieguide.news.presentation.data.Headline
 import com.diskin.alon.movieguide.news.presentation.viewmodel.HeadlinesViewModel
 import com.google.common.truth.Truth.assertThat
-import dagger.hilt.migration.DisableInstallInCheck
 import io.mockk.*
 import io.reactivex.Single
 import kotlinx.android.synthetic.main.fragment_headlines.*
@@ -76,9 +75,9 @@ class HeadlinesFragmentTest {
 
     @Before
     fun setUp() {
-        // Mock and stub view model generator for fragment
-        mockkStatic("com.diskin.alon.movieguide.common.presentation.ViewModelUtilKt")
-        every { createFragmentViewModel<HeadlinesViewModel>(any(),any()) } returns lazy { viewModel }
+        // Stub view model creation with test mock
+        mockkConstructor(ViewModelLazy::class)
+        every { anyConstructed<ViewModelLazy<HeadlinesViewModel>>().value } returns viewModel
 
         // Stub mocked view model
         every { viewModel.headlines } returns headlines
@@ -304,36 +303,36 @@ class HeadlinesFragmentTest {
                 )
             ))
     }
-//
-//    @Test
-//    fun showNotificationWhenUnRecoverablePagingErrorOccur() {
-//        // Test case fixture
-//        val pagingError = Throwable()
-//        val paging = Pager(PagingConfig(pageSize = 10)) {
-//            return@Pager object : RxPagingSource<String, Headline>() {
-//                override fun loadSingle(params: LoadParams<String>): Single<LoadResult<String, Headline>> {
-//                    return Single.just(LoadResult.Error(pagingError))
-//                }
-//            }
-//        }.observable
-//
-//        // Given a resumed fragment
-//
-//        // When paging state updates to an error that does not contains a message
-//        paging.subscribe { headlines.value = it }
-//        Shadows.shadowOf(Looper.getMainLooper()).idle()
-//
-//        // Then fragment should display a snack bar with generic error message
-//        onView(withId(R.id.snackbar_text))
-//            .check(matches(allOf(
-//                withText(R.string.unexpected_error),
-//                isDisplayed()
-//            )))
-//
-//        // And do not provide a retry action for failed operation
-//        onView(withId(R.id.snackbar_action))
-//            .check(matches(withEffectiveVisibility(Visibility.GONE)))
-//    }
+
+    @Test
+    fun showNotificationWhenUnRecoverablePagingErrorOccur() {
+        // Test case fixture
+        val pagingError = Throwable()
+        val paging = Pager(PagingConfig(pageSize = 10)) {
+            return@Pager object : RxPagingSource<String, Headline>() {
+                override fun loadSingle(params: LoadParams<String>): Single<LoadResult<String, Headline>> {
+                    return Single.just(LoadResult.Error(pagingError))
+                }
+            }
+        }.observable
+
+        // Given a resumed fragment
+
+        // When paging state updates to an error that does not contains a message
+        paging.subscribe { headlines.value = it }
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+        // Then fragment should display a snack bar with generic error message
+        onView(withId(R.id.snackbar_text))
+            .check(matches(allOf(
+                withText(R.string.unexpected_error),
+                isDisplayed()
+            )))
+
+        // And do not provide a retry action for failed operation
+        onView(withId(R.id.snackbar_action))
+            .check(matches(withEffectiveVisibility(Visibility.GONE)))
+    }
 
     @Test
     fun shareHeadlineWhenHeadlineSharingSelected() {
@@ -376,7 +375,7 @@ class HeadlinesFragmentTest {
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then fragment should navigate to article ui destination
-        assertThat(navController.currentDestination?.id).isEqualTo(R.id.articleActivity)
+        assertThat(navController.currentDestination?.id).isEqualTo(R.id.articleFragment)
 
         // And pass headline id to destination
         val context = getApplicationContext<Context>()

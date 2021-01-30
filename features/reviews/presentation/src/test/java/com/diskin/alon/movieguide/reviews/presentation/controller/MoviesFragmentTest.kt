@@ -710,7 +710,7 @@ class MoviesFragmentTest {
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then fragment should open movie review screen via navigation controller
-        assertThat(navController.currentDestination?.id).isEqualTo(R.id.movieReviewActivity)
+        assertThat(navController.currentDestination?.id).isEqualTo(R.id.movieReviewFragment)
 
         // And pass movie id to destination
         val context = ApplicationProvider.getApplicationContext<Context>()

@@ -169,7 +169,7 @@ class MoviesFragment : Fragment() {
 
     private fun navigateToMovieReview(movie: Movie) {
         val bundle = bundleOf(getString(R.string.movie_id_arg) to movie.id)
-        findNavController().navigate(R.id.movieReviewActivity, bundle)
+        findNavController().navigate(R.id.action_moviesFragment_to_movieReviewFragment, bundle)
     }
 
     override fun onDestroyView() {

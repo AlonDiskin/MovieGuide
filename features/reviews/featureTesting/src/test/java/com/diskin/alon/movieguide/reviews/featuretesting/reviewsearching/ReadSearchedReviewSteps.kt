@@ -1,7 +1,7 @@
 package com.diskin.alon.movieguide.reviews.featuretesting.reviewsearching
 
 import android.content.Context
-import android.content.Intent
+import android.os.Bundle
 import android.os.Looper
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
@@ -19,7 +19,7 @@ import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.reviews.data.BuildConfig
 import com.diskin.alon.movieguide.reviews.featuretesting.R
 import com.diskin.alon.movieguide.reviews.presentation.R.string
-import com.diskin.alon.movieguide.reviews.presentation.controller.MovieReviewActivity
+import com.diskin.alon.movieguide.reviews.presentation.controller.MovieReviewFragment
 import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesAdapter
 import com.diskin.alon.movieguide.reviews.presentation.controller.MoviesSearchFragment
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
@@ -43,27 +43,23 @@ import org.robolectric.Shadows
  */
 class ReadSearchedReviewSteps(private val server: MockWebServer) : GreenCoffeeSteps() {
 
-    private lateinit var searchFragmentScenario: ActivityScenario<HiltTestActivity>
-    private lateinit var reviewActivityScenario: ActivityScenario<MovieReviewActivity>
+    private lateinit var searchScenario: ActivityScenario<HiltTestActivity>
+    private lateinit var reviewScenario: ActivityScenario<HiltTestActivity>
     private val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
     private lateinit var dispatcher: TestDispatcher
 
     init {
         // Setup nav controller
         navController.setGraph(R.navigation.reviews_nav_graph)
+        navController.setCurrentDestination(R.id.moviesSearchFragment)
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.movieReviewActivity) {
+            if (destination.id == R.id.movieReviewFragment) {
                 val context = ApplicationProvider.getApplicationContext<Context>()!!
                 val keyMovieId = context.getString(R.string.movie_id_arg)
                 val movieIdArg = navController
                     .currentBackStackEntry!!.arguments!!.getString(keyMovieId)!!
-                val intent = Intent(context,MovieReviewActivity::class.java)
-                    .apply { putExtra(keyMovieId,movieIdArg) }
-
-                // Launch review detail activity when user navigates to it from fragment
-                // (manually,robolectric bug)
-                reviewActivityScenario = ActivityScenario.launch(intent)
-                // Wait for main looper to idle
+                val bundle = Bundle().apply { putString(keyMovieId,movieIdArg) }
+                reviewScenario = launchFragmentInHiltContainer<MovieReviewFragment>(fragmentArgs = bundle)
                 Shadows.shadowOf(Looper.getMainLooper()).idle()
             }
         }
@@ -80,10 +76,10 @@ class ReadSearchedReviewSteps(private val server: MockWebServer) : GreenCoffeeSt
 
     @When("^User open movies search screen$")
     fun user_open_movies_search_screen() {
-        searchFragmentScenario = launchFragmentInHiltContainer<MoviesSearchFragment>()
+        searchScenario = launchFragmentInHiltContainer<MoviesSearchFragment>()
 
         // Set the NavController property on the fragment with test controller
-        searchFragmentScenario.onActivity {
+        searchScenario.onActivity {
             Navigation.setViewNavController(
                 it.supportFragmentManager.fragments[0].requireView(),
                 navController)

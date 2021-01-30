@@ -1,6 +1,5 @@
 package com.diskin.alon.movieguide.news.di.headlinescontainer
 
-import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagingData
 import com.diskin.alon.movieguide.common.appservices.UseCase
 import com.diskin.alon.movieguide.common.presentation.Model
@@ -15,16 +14,15 @@ import com.diskin.alon.movieguide.news.presentation.data.Headline
 import com.diskin.alon.movieguide.news.presentation.data.HeadlinesModelRequest
 import com.diskin.alon.movieguide.news.presentation.util.HeadlinesModelDispatcher
 import com.diskin.alon.movieguide.news.presentation.util.HeadlinesPagingMapper
-import com.diskin.alon.movieguide.news.presentation.util.HeadlinesViewModelFactoryQualifier
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.android.components.ViewModelComponent
 import io.reactivex.Observable
 
 @Module
-@InstallIn(ActivityComponent::class)
+@InstallIn(ViewModelComponent::class)
 abstract class HeadlinesModule {
 
     companion object {
@@ -47,8 +45,4 @@ abstract class HeadlinesModule {
 
     @Binds
     abstract fun bindHeadlinesPagingMapper(mapper: HeadlinesPagingMapper): Mapper<Observable<PagingData<HeadlineDto>>, Observable<PagingData<Headline>>>
-
-    @HeadlinesViewModelFactoryQualifier
-    @Binds
-    abstract fun provideViewModelFactory(factory: HeadlinesViewModelFactory): ViewModelProvider.Factory
 }
