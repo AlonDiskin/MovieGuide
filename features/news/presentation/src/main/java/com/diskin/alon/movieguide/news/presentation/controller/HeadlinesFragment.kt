@@ -7,20 +7,17 @@ import android.view.ViewGroup
 import androidx.core.app.ShareCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import com.diskin.alon.movieguide.common.presentation.createFragmentViewModel
 import com.diskin.alon.movieguide.common.presentation.setCustomDecoration
 import com.diskin.alon.movieguide.news.presentation.R
 import com.diskin.alon.movieguide.news.presentation.data.Headline
-import com.diskin.alon.movieguide.news.presentation.util.HeadlinesViewModelFactoryQualifier
 import com.diskin.alon.movieguide.news.presentation.viewmodel.HeadlinesViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.migration.OptionalInject
 import kotlinx.android.synthetic.main.fragment_headlines.*
-import javax.inject.Inject
 
 /**
  * Display a listing of [Headline]s, and provide user interaction
@@ -30,10 +27,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class HeadlinesFragment : Fragment() {
 
-    @Inject
-    @HeadlinesViewModelFactoryQualifier
-    lateinit var factory: ViewModelProvider.Factory
-    private val viewModel: HeadlinesViewModel by createFragmentViewModel(this) { factory }
+    private val viewModel: HeadlinesViewModel by viewModels()
     private var snackbar: Snackbar? = null
 
     override fun onCreateView(
@@ -125,7 +119,7 @@ class HeadlinesFragment : Fragment() {
 
     private fun navigateToArticle(headline: Headline) {
         val bundle = bundleOf(getString(R.string.key_article_id) to headline.id)
-        findNavController().navigate(R.id.articleActivity, bundle)
+        findNavController().navigate(R.id.action_headlinesFragment_to_articleFragment, bundle)
     }
 
     override fun onDestroyView() {

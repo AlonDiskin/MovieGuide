@@ -1,6 +1,5 @@
 package com.diskin.alon.movieguide.news.di.articleconatiner
 
-import androidx.lifecycle.ViewModelProvider
 import com.diskin.alon.movieguide.common.appservices.Result
 import com.diskin.alon.movieguide.common.appservices.UseCase
 import com.diskin.alon.movieguide.common.presentation.Model
@@ -17,16 +16,15 @@ import com.diskin.alon.movieguide.news.presentation.data.BookmarkingModelRequest
 import com.diskin.alon.movieguide.news.presentation.data.UnBookmarkingModelRequest
 import com.diskin.alon.movieguide.news.presentation.util.ArticleMapper
 import com.diskin.alon.movieguide.news.presentation.util.ArticleModelDispatcher
-import com.diskin.alon.movieguide.news.presentation.util.ArticleViewModelFactoryQualifier
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.android.components.ViewModelComponent
 import io.reactivex.Observable
 
 @Module
-@InstallIn(ActivityComponent::class)
+@InstallIn(ViewModelComponent::class)
 abstract class ArticleModule {
 
     companion object {
@@ -51,7 +49,4 @@ abstract class ArticleModule {
     @Binds
     abstract fun bindArticleMapper(mapper: ArticleMapper): Mapper<Observable<Result<ArticleDto>>,Observable<Result<Article>>>
 
-    @ArticleViewModelFactoryQualifier
-    @Binds
-    abstract fun bindArticleViewModelFactory(factory: ArticleViewModelFactory): ViewModelProvider.Factory
 }

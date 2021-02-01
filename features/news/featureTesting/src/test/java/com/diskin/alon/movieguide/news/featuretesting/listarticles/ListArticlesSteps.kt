@@ -19,7 +19,7 @@ import com.diskin.alon.movieguide.news.featuretesting.util.parseFeedlyResponseJs
 import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesAdapter.HeadlineViewHolder
 import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesFragment
 import com.diskin.alon.movieguide.news.presentation.data.Headline
-import com.diskin.alon.movieguide.news.presentation.viewmodel.HeadlinesViewModelImpl.Companion.PAGE_SIZE
+import com.diskin.alon.movieguide.news.presentation.viewmodel.HeadlinesViewModel.Companion.PAGE_SIZE
 import com.google.common.truth.Truth.assertThat
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.Given

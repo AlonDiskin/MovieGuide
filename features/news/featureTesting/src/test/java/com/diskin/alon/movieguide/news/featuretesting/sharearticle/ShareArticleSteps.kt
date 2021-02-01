@@ -2,6 +2,7 @@ package com.diskin.alon.movieguide.news.featuretesting.sharearticle
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.os.Looper
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -11,9 +12,11 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
+import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
+import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.news.data.remote.FEEDLY_ENTRY_PATH
 import com.diskin.alon.movieguide.news.presentation.R
-import com.diskin.alon.movieguide.news.presentation.controller.ArticleActivity
+import com.diskin.alon.movieguide.news.presentation.controller.ArticleFragment
 import com.google.common.truth.Truth
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.Given
@@ -35,7 +38,7 @@ class ShareArticleSteps(server: MockWebServer) : GreenCoffeeSteps() {
         const val TEST_WEB_JSON = "json/feedly_entry.json"
     }
 
-    private lateinit var scenario: ActivityScenario<ArticleActivity>
+    private lateinit var scenario: ActivityScenario<HiltTestActivity>
 
     init {
         // Prepare mock web server for test scenario
@@ -61,12 +64,11 @@ class ShareArticleSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
     @Given("^User opened news article screen$")
     fun userOpenedNewsArticleScreen() {
-        // Launch article activity
         val context = ApplicationProvider.getApplicationContext<Context>()!!
-        val intent = Intent(context, ArticleActivity::class.java).apply {
-            putExtra(context.getString(R.string.key_article_id),parseTestWebEntryResourceId())
+        val bundle = Bundle().apply {
+            putString(context.getString(R.string.key_article_id),parseTestWebEntryResourceId())
         }
-        scenario = ActivityScenario.launch(intent)
+        scenario = launchFragmentInHiltContainer<ArticleFragment>(fragmentArgs = bundle)
     }
 
     @When("^User select to share the article$")

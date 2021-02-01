@@ -1,18 +1,21 @@
 package com.diskin.alon.movieguide.news.featuretesting.bookmarkarticle
 
 import android.content.Context
-import android.content.Intent
+import android.os.Bundle
 import android.os.Looper
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.*
-import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions.*
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
+import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
+import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.news.featuretesting.di.TestDatabase
 import com.diskin.alon.movieguide.news.presentation.R
-import com.diskin.alon.movieguide.news.presentation.controller.ArticleActivity
+import com.diskin.alon.movieguide.news.presentation.controller.ArticleFragment
 import com.google.common.truth.Truth.assertThat
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.And
@@ -34,7 +37,7 @@ class BookmarkArticleSteps(
     private val database: TestDatabase
 ) : GreenCoffeeSteps() {
 
-    private lateinit var scenario: ActivityScenario<ArticleActivity>
+    private lateinit var scenario: ActivityScenario<HiltTestActivity>
     private val dispatcher = TestDispatcher()
 
     init {
@@ -46,10 +49,11 @@ class BookmarkArticleSteps(
     @Given("^User open unbookmarked article for reading$")
     fun user_open_unbookmarked_article_for_reading() {
         val context = ApplicationProvider.getApplicationContext<Context>()!!
-        val intent = Intent(context, ArticleActivity::class.java).apply {
-            putExtra(context.getString(R.string.key_article_id),dispatcher.entryId)
+        val bundle = Bundle().apply {
+            putString(context.getString(R.string.key_article_id),dispatcher.entryId)
         }
-        scenario = ActivityScenario.launch(intent)
+        scenario = launchFragmentInHiltContainer<ArticleFragment>(fragmentArgs = bundle)
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 
     @When("^User select to bookmark article$")

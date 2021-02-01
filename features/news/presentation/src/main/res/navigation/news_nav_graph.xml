@@ -8,16 +8,20 @@
     <fragment
         android:id="@+id/headlinesFragment"
         android:name="com.diskin.alon.movieguide.news.presentation.controller.HeadlinesFragment"
-        android:label="HeadlinesFragment"
+        android:label="@string/app_name"
         tools:layout="@layout/fragment_headlines">
         <action
-            android:id="@+id/action_headlinesFragment_to_articleActivity"
-            app:destination="@id/articleActivity" />
+            android:id="@+id/action_headlinesFragment_to_articleFragment"
+            app:destination="@id/articleFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
+    <fragment
+        android:id="@+id/articleFragment"
+        android:name="com.diskin.alon.movieguide.news.presentation.controller.ArticleFragment"
+        android:label=""
+        tools:layout="@layout/fragment_article"/>
 
-    <activity
-        android:id="@+id/articleActivity"
-        android:name="com.diskin.alon.movieguide.news.presentation.controller.ArticleActivity"
-        android:label="ArticleActivity"
-        tools:layout="@layout/activity_article"/>
 </navigation>

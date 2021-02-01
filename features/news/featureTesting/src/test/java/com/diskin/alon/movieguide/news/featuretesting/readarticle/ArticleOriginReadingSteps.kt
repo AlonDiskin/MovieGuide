@@ -3,6 +3,7 @@ package com.diskin.alon.movieguide.news.featuretesting.readarticle
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.os.Looper
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -12,8 +13,10 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
+import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
+import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.news.presentation.R
-import com.diskin.alon.movieguide.news.presentation.controller.ArticleActivity
+import com.diskin.alon.movieguide.news.presentation.controller.ArticleFragment
 import com.google.common.truth.Truth
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.Given
@@ -32,7 +35,7 @@ import java.net.URLEncoder
  */
 class ArticleOriginReadingSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
-    private lateinit var scenario: ActivityScenario<ArticleActivity>
+    private lateinit var scenario: ActivityScenario<HiltTestActivity>
     private val dispatcher = TestDispatcher()
 
     init {
@@ -42,10 +45,10 @@ class ArticleOriginReadingSteps(server: MockWebServer) : GreenCoffeeSteps() {
     @Given("^User opened article in detail screen$")
     fun user_opened_article_in_detail_screen() {
         val context = ApplicationProvider.getApplicationContext<Context>()!!
-        val intent = Intent(context, ArticleActivity::class.java).apply {
-            putExtra(context.getString(R.string.key_article_id),dispatcher.entryId)
+        val bundle = Bundle().apply {
+            putString(context.getString(R.string.key_article_id),dispatcher.entryId)
         }
-        scenario = ActivityScenario.launch(intent)
+        scenario = launchFragmentInHiltContainer<ArticleFragment>(fragmentArgs = bundle)
         Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 

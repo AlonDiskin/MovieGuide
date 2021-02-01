@@ -81,6 +81,7 @@ class MoviesSearchFragmentTest {
 
         // Setup test nav controller
         navController.setGraph(R.navigation.reviews_nav_graph)
+        navController.setCurrentDestination(R.id.moviesSearchFragment)
 
         // Launch fragment under test
         scenario = launchFragmentInHiltContainer<MoviesSearchFragment>()
@@ -441,7 +442,7 @@ class MoviesSearchFragmentTest {
         Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Then fragment nav controller should nav user to movie review activity
-        assertThat(navController.currentDestination?.id).isEqualTo(R.id.movieReviewActivity)
+        assertThat(navController.currentDestination?.id).isEqualTo(R.id.movieReviewFragment)
 
         // And pass movie id to destination
         val context = ApplicationProvider.getApplicationContext<Context>()

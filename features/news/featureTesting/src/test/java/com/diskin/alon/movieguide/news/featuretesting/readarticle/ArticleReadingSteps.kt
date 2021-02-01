@@ -1,7 +1,7 @@
 package com.diskin.alon.movieguide.news.featuretesting.readarticle
 
 import android.content.Context
-import android.content.Intent
+import android.os.Bundle
 import android.os.Looper
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
@@ -17,10 +17,10 @@ import com.diskin.alon.movieguide.common.featuretesting.getJsonFromResource
 import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
 import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.news.featuretesting.R
-import com.diskin.alon.movieguide.news.presentation.controller.ArticleActivity
+import com.diskin.alon.movieguide.news.presentation.controller.ArticleFragment
 import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesAdapter.HeadlineViewHolder
 import com.diskin.alon.movieguide.news.presentation.controller.HeadlinesFragment
-import com.diskin.alon.movieguide.news.presentation.viewmodel.HeadlinesViewModelImpl.Companion.PAGE_SIZE
+import com.diskin.alon.movieguide.news.presentation.viewmodel.HeadlinesViewModel.Companion.PAGE_SIZE
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.And
 import com.mauriciotogneri.greencoffee.annotations.Given
@@ -40,7 +40,7 @@ import java.net.URLEncoder
 class ArticleReadingSteps(server: MockWebServer) : GreenCoffeeSteps() {
 
     private lateinit var movieHeadlinesScenario: ActivityScenario<HiltTestActivity>
-    private lateinit var articleScenario: ActivityScenario<ArticleActivity>
+    private lateinit var articleScenario: ActivityScenario<HiltTestActivity>
     private val navController = TestNavHostController(getApplicationContext())
     private val dispatcher = TestDispatcher()
 
@@ -48,19 +48,12 @@ class ArticleReadingSteps(server: MockWebServer) : GreenCoffeeSteps() {
         // Setup nav controller
         navController.setGraph(R.navigation.news_nav_graph)
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.articleActivity) {
+            if (destination.id == R.id.articleFragment) {
                 val context = getApplicationContext<Context>()!!
                 val keyArticleId = context.getString(R.string.key_article_id)
-                val articleIdArg = navController
-                    .currentBackStackEntry!!.arguments!!.getString(keyArticleId)!!
-                val intent = Intent(context,ArticleActivity::class.java)
-                    .apply { putExtra(keyArticleId,articleIdArg) }
-
-                // Launch article detail activity when user navigates to it from fragment
-                // (manually,robolectric bug)
-                articleScenario = ActivityScenario.launch(intent)
-
-                // Wait for main looper to idle
+                val articleIdArg = navController.currentBackStackEntry!!.arguments!!.getString(keyArticleId)!!
+                val bundle = Bundle().apply { putString(keyArticleId,articleIdArg) }
+                articleScenario = launchFragmentInHiltContainer<ArticleFragment>(fragmentArgs = bundle)
                 Shadows.shadowOf(Looper.getMainLooper()).idle()
             }
         }

@@ -7,7 +7,7 @@ import com.diskin.alon.movieguide.common.localtesting.WhiteBox
 import com.diskin.alon.movieguide.common.presentation.Model
 import com.diskin.alon.movieguide.news.presentation.data.Headline
 import com.diskin.alon.movieguide.news.presentation.data.HeadlinesModelRequest
-import com.diskin.alon.movieguide.news.presentation.viewmodel.HeadlinesViewModelImpl.Companion.PAGE_SIZE
+import com.diskin.alon.movieguide.news.presentation.viewmodel.HeadlinesViewModel.Companion.PAGE_SIZE
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -23,9 +23,9 @@ import org.junit.Rule
 import org.junit.Test
 
 /**
- * [HeadlinesViewModelImpl] unit test class.
+ * [HeadlinesViewModel] unit test class.
  */
-class HeadlinesViewModelImplTest {
+class HeadlinesViewModelTest {
 
     companion object {
 
@@ -43,7 +43,7 @@ class HeadlinesViewModelImplTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     // Test subject
-    private lateinit var viewModel: HeadlinesViewModelImpl
+    private lateinit var viewModel: HeadlinesViewModel
 
     // Collaborators
     private val model: Model = mockk()
@@ -63,7 +63,7 @@ class HeadlinesViewModelImplTest {
         every { model.execute(capture(modelRequestSlot)) } returns modelHeadlinesSubject
 
         // Init subject
-        viewModel = HeadlinesViewModelImpl(model)
+        viewModel = HeadlinesViewModel(model)
     }
 
     @Test

@@ -12,8 +12,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/article_root_land"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBar"
@@ -27,7 +26,6 @@
                 android:id="@+id/collapsingToolBar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:contentScrim="?attr/colorPrimary"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
                 app:titleEnabled="false"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
@@ -60,14 +58,6 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    app:popupTheme="@style/AppTheme.PopupOverlay"
-                    app:layout_collapseMode="pin"
-                    tools:menu="@menu/menu_article"/>
-
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -76,7 +66,9 @@
             android:id="@+id/nestedScrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="none"
+            android:scrollbarSize="4dp"
+            android:scrollbarThumbVertical="?attr/colorSecondary"
+            android:scrollbars="vertical"
             app:behavior_overlapTop="350dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:fillViewport="true">
@@ -152,7 +144,9 @@
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
+            app:layout_anchor="@id/appBar"
+            app:layout_anchorGravity="end|bottom"
+            app:backgroundTint="?attr/colorAccent"
             android:src="@drawable/ic_article_24"
             android:contentDescription="@string/read_article_origin_desc"
             android:layout_margin="16dp" />
