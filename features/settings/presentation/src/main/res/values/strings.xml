@@ -7,6 +7,16 @@
     <string name="pref_theme_day_entry">Light</string>
     <string name="pref_theme_night_entry">Dark</string>
     <string name="pref_theme_default_value">@string/pref_theme_day_value</string>
+    <string name="pref_news_notification_key">news_update_notification</string>
+    <string name="pref_news_notification_vibration_key">news_update_notification_vibration</string>
+    <string name="pref_news_notification_title">News update notification</string>
+    <string name="pref_news_notification_vibration_title">Enable vibration</string>
+    <string name="pref_news_notification_default_value">false</string>
+    <string name="pref_news_notification_vibration_default_value">false</string>
+    <string name="notifications_category_title">Notifications</string>
+    <string name="visual_category_title">Visual</string>
+    <string name="pref_news_notification_summary">Notify when unread news published</string>
+    <string name="pref_news_notification_vibration_summary">Vibrate upon notification</string>
 
     <string-array name="pref_theme_entries">
         <item>@string/pref_theme_day_entry</item>

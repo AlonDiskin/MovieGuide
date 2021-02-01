@@ -3,14 +3,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <ListPreference
-        android:key="@string/pref_theme_key"
-        android:entries="@array/pref_theme_entries"
-        android:entryValues="@array/pref_theme_values"
-        android:defaultValue="@string/pref_theme_default_value"
-        android:title="@string/pref_theme_title"
-        app:useSimpleSummaryProvider="true"
-        tools:summary="Night"
-        />
+     <PreferenceCategory android:title="@string/visual_category_title">
+
+        <ListPreference
+            android:key="@string/pref_theme_key"
+            android:entries="@array/pref_theme_entries"
+            android:entryValues="@array/pref_theme_values"
+            android:defaultValue="@string/pref_theme_default_value"
+            android:title="@string/pref_theme_title"
+            app:useSimpleSummaryProvider="true"
+            tools:summary="Night" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/notifications_category_title">
+
+        <SwitchPreference
+            android:key="@string/pref_news_notification_key"
+            android:title="@string/pref_news_notification_title"
+            android:summary="@string/pref_news_notification_summary"
+            android:defaultValue="@string/pref_news_notification_default_value" />
+
+        <SwitchPreference
+            android:key="@string/pref_news_notification_vibration_key"
+            android:title="@string/pref_news_notification_vibration_title"
+            android:defaultValue="@string/pref_news_notification_vibration_default_value"
+            android:summary="@string/pref_news_notification_vibration_summary"
+            android:dependency="@string/pref_news_notification_key"/>
+
+    </PreferenceCategory>
 
 </androidx.preference.PreferenceScreen>

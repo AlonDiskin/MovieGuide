@@ -30,7 +30,7 @@ class ArticleOriginReadingStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTes
         @Parameterized.Parameters(name = "{0}")
         fun scenarios(): Iterable<ScenarioConfig> {
             return GreenCoffeeConfig()
-                .withFeatureFromAssets("assets/feature/user_read_original_article_journey.feature")
+                .withFeatureFromAssets("assets/feature/user_read_original_article.feature")
                 .scenarios()
         }
     }

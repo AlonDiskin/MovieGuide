@@ -1,6 +1,6 @@
-Feature: App visual theme selection
+Feature: App visual theme selection preference
 
-  # Rule: Provide app visual theme customization
+  # Rule: Provide app visual theme customization via app settings
 
     @theme-changed
     Scenario: User change app theme

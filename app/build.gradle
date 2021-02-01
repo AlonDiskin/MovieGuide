@@ -69,7 +69,7 @@ dependencies {
     implementation project(':features:home:presentation')
     implementation project(':features:news:di')
     implementation project(':features:reviews:di')
-    implementation project(':features:settings:presentation')
+    implementation project(':features:settings:di')
     implementation project(':features:common:presentation')
 
     implementation fileTree(dir: "libs", include: ["*.jar"])

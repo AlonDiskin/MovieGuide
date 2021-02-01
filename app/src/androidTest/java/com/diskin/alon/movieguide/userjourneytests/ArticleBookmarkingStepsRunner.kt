@@ -30,7 +30,7 @@ class ArticleBookmarkingStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(
         @Parameterized.Parameters(name = "{0}")
         fun scenarios(): Iterable<ScenarioConfig> {
             return GreenCoffeeConfig()
-                .withFeatureFromAssets("assets/feature/article_bookmarking_journey.feature")
+                .withFeatureFromAssets("assets/feature/article_bookmarking.feature")
                 .scenarios()
         }
     }

@@ -30,7 +30,7 @@ class MovieReviewSharingStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(
         @Parameterized.Parameters(name = "{0}")
         fun scenarios(): Iterable<ScenarioConfig> {
             return GreenCoffeeConfig()
-                .withFeatureFromAssets("assets/feature/review_sharing_journey.feature")
+                .withFeatureFromAssets("assets/feature/review_sharing.feature")
                 .scenarios()
         }
     }

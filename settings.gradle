@@ -1,3 +1,6 @@
+include ':features:settings:di'
+include ':features:settings:infrastructure'
+include ':features:settings:appServices'
 include ':features:settings:featureTesting'
 include ':features:common:domain'
 include ':features:reviews:di'
