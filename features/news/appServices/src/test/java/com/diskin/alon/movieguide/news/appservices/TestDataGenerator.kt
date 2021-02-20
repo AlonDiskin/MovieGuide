@@ -2,6 +2,7 @@ package com.diskin.alon.movieguide.news.appservices
 
 import com.diskin.alon.movieguide.common.appservices.AppError
 import com.diskin.alon.movieguide.news.appservices.data.ArticleDto
+import com.diskin.alon.movieguide.news.appservices.data.NewsNotificationData
 import com.diskin.alon.movieguide.news.domain.ArticleEntity
 
 fun createHeadlines(): List<ArticleEntity> {
@@ -65,5 +66,13 @@ fun createAppError(): AppError {
         "cause",
         true
     )
+}
+
+fun createEnabledNewsNotification(): NewsNotificationData {
+    return NewsNotificationData(true, vibrate = true)
+}
+
+fun createDisabledNewsNotification(): NewsNotificationData {
+    return NewsNotificationData(false, vibrate = true)
 }
 

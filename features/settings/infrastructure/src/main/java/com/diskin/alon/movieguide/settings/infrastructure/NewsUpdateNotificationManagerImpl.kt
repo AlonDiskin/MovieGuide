@@ -1,6 +1,6 @@
 package com.diskin.alon.movieguide.settings.infrastructure
 
-import com.diskin.alon.movieguide.common.util.messaging.NewsUpdateConfigEvent
+import com.diskin.alon.movieguide.common.util.messaging.NewsNotificationConfigEvent
 import com.diskin.alon.movieguide.settings.appservices.data.NewsNotificationConfig
 import com.diskin.alon.movieguide.settings.appservices.interfaces.NewsUpdateNotificationManager
 import org.greenrobot.eventbus.EventBus
@@ -11,7 +11,7 @@ class NewsUpdateNotificationManagerImpl @Inject constructor(
 ) : NewsUpdateNotificationManager {
 
     override fun config(configuration: NewsNotificationConfig) {
-        val event = NewsUpdateConfigEvent(
+        val event = NewsNotificationConfigEvent(
             configuration.enabled,
             configuration.vibrate
         )

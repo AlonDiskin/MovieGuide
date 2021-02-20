@@ -1,3 +1,5 @@
+include ':features:common:instrumentationTesting'
+include ':features:news:infrastructure'
 include ':features:settings:di'
 include ':features:settings:infrastructure'
 include ':features:settings:appServices'

@@ -1,6 +1,6 @@
 package com.diskin.alon.movieguide.settings.infrastructure
 
-import com.diskin.alon.movieguide.common.util.messaging.NewsUpdateConfigEvent
+import com.diskin.alon.movieguide.common.util.messaging.NewsNotificationConfigEvent
 import com.diskin.alon.movieguide.settings.appservices.data.NewsNotificationConfig
 import io.mockk.every
 import io.mockk.mockk
@@ -37,7 +37,7 @@ class NewsUpdateNotificationManagerImplTest {
         manager.config(configuration)
 
         // Then
-        val expected = NewsUpdateConfigEvent(
+        val expected = NewsNotificationConfigEvent(
             configuration.enabled,
             configuration.vibrate
         )

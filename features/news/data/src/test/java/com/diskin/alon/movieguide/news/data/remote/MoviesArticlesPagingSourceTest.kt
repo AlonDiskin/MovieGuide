@@ -1,6 +1,5 @@
 package com.diskin.alon.movieguide.news.data.remote
 
-import androidx.paging.PagingSource
 import androidx.paging.PagingSource.LoadParams
 import androidx.paging.PagingSource.LoadResult
 import com.diskin.alon.movieguide.common.appservices.AppError
@@ -46,11 +45,15 @@ class MoviesArticlesPagingSourceTest {
     private val api: FeedlyApi = mockk()
     private val networkErrorHandler: NetworkErrorHandler = mockk()
     private val apiArticleMapper: Mapper<FeedlyEntryResponse, ArticleEntity> = mockk()
+    private val lastReadArticleStore: LastReadArticleStore = mockk()
 
     @Before
     fun setUp() {
+        //  Stub collaborators
+        every { lastReadArticleStore.putLastDate(any()) } returns Unit
+
         // Init subject
-        pagingSource =  MoviesArticlesPagingSource(api,networkErrorHandler,apiArticleMapper)
+        pagingSource =  MoviesArticlesPagingSource(api, networkErrorHandler, apiArticleMapper, lastReadArticleStore)
     }
 
     @Test
@@ -141,6 +144,25 @@ class MoviesArticlesPagingSourceTest {
 
             errorMessage == appError.description
         }
+    }
+
+    @Test
+    fun saveLastArticleDateWhenRefreshedPageLoaded() {
+        // Test case fixture
+        val apiResponse = createFeedlyFeedResponse()
+        val mappedArticle: ArticleEntity = mockk()
+
+        every { api.getFeedItems(any(),any()) } returns Single.just(apiResponse)
+        every { apiArticleMapper.map(any()) } returns mappedArticle
+
+        // Given an initialized paging source
+
+        // When paging source loads articles to refresh paging
+        val params = LoadParams.Refresh<String>(null,20,false)
+        pagingSource.loadSingle(params).test()
+
+        // Then paging source should put latest article date to sharedPreferences
+        verify { lastReadArticleStore.putLastDate(apiResponse.items.first().published) }
     }
 
     private fun apiFailParams() = arrayOf(

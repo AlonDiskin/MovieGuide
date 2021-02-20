@@ -9,7 +9,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
 import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
-import com.diskin.alon.movieguide.common.util.messaging.NewsUpdateConfigEvent
+import com.diskin.alon.movieguide.common.util.messaging.NewsNotificationConfigEvent
 import com.diskin.alon.movieguide.settings.presentation.controller.SettingsFragment
 import com.google.common.truth.Truth.assertThat
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
@@ -78,17 +78,17 @@ class NewsNotificationActivationSteps(private val mockEventBus: EventBus) : Gree
         verify { mockEventBus.post(event) }
     }
 
-    private fun getExpectedEnableNewsUpdateConfigEvent(): NewsUpdateConfigEvent {
+    private fun getExpectedEnableNewsUpdateConfigEvent(): NewsNotificationConfigEvent {
         val vibrationKey = context.getString(R.string.pref_news_notification_vibration_key)
         val prefVibration = getSharedPrefs().getBoolean(vibrationKey,false)
 
-        return NewsUpdateConfigEvent(true,prefVibration)
+        return NewsNotificationConfigEvent(true,prefVibration)
     }
 
-    private fun getExpectedDisableNewsUpdateConfigEvent(): NewsUpdateConfigEvent {
+    private fun getExpectedDisableNewsUpdateConfigEvent(): NewsNotificationConfigEvent {
         val vibrationKey = context.getString(R.string.pref_news_notification_vibration_key)
         val prefVibration = getSharedPrefs().getBoolean(vibrationKey,false)
 
-        return NewsUpdateConfigEvent(false,prefVibration)
+        return NewsNotificationConfigEvent(false,prefVibration)
     }
 }
