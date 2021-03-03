@@ -2,7 +2,6 @@ package com.diskin.alon.movieguide.news.featuretesting.newsupdatenotification
 
 import android.content.Context
 import android.util.Log
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.filters.MediumTest
 import androidx.work.Configuration
@@ -36,7 +35,7 @@ import java.util.*
 import javax.inject.Inject
 
 /**
- * Step definitions runner for 'Show notification in user device' scenario.
+ * Step definitions for 'News screen opened when notification tapped' scenario.
  */
 @HiltAndroidTest
 @UninstallModules(NewsNetworkingModule::class)
@@ -44,7 +43,7 @@ import javax.inject.Inject
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = HiltTestApplication::class,sdk = [28])
 @MediumTest
-class UserNotifiedStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
+class NotificationTappedStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
 
     companion object {
         @JvmStatic
@@ -53,7 +52,7 @@ class UserNotifiedStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenar
             val res = ArrayList<Array<Any>>()
             val scenarioConfigs = GreenCoffeeConfig()
                 .withFeatureFromAssets("feature/news_update_notification.feature")
-                .withTags("@notify-user")
+                .withTags("@notification-tap")
                 .scenarios()
 
             for (scenarioConfig in scenarioConfigs) {
@@ -69,9 +68,6 @@ class UserNotifiedStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenar
             RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
         }
     }
-
-    @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
@@ -97,7 +93,7 @@ class UserNotifiedStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenar
             .build()
 
         WorkManagerTestInitHelper.initializeTestWorkManager(getApplicationContext(), config)
-        start(UserNotifiedSteps(mockWebServer,workerFactory))
+        start(NotificationTappedSteps(mockWebServer,workerFactory))
     }
 
     class TestWorkerFactory(

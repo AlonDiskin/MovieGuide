@@ -2,7 +2,7 @@ package com.diskin.alon.movieguide.settings.presentation
 
 import android.content.Context
 import android.os.Looper
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import androidx.lifecycle.ViewModelLazy
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController

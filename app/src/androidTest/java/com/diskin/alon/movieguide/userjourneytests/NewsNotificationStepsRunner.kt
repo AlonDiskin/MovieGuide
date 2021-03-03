@@ -1,83 +1,55 @@
-package com.diskin.alon.movieguide.news.featuretesting.newsupdatenotification
+package com.diskin.alon.movieguide.userjourneytests
 
 import android.content.Context
 import android.util.Log
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
-import androidx.test.filters.MediumTest
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.filters.LargeTest
 import androidx.work.Configuration
 import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import androidx.work.testing.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
+import com.diskin.alon.movieguide.di.NetworkingModule
 import com.diskin.alon.movieguide.news.di.common.NewsNetworkingModule
 import com.diskin.alon.movieguide.news.infrastructure.LocalRecentDateProvider
 import com.diskin.alon.movieguide.news.infrastructure.NewsNotificationWorker
 import com.diskin.alon.movieguide.news.infrastructure.RemoteRecentDateProvider
+import com.diskin.alon.movieguide.reviews.di.common.ReviewsNetworkingModule
+import com.diskin.alon.movieguide.util.NetworkUtil
 import com.mauriciotogneri.greencoffee.GreenCoffeeConfig
 import com.mauriciotogneri.greencoffee.GreenCoffeeTest
 import com.mauriciotogneri.greencoffee.ScenarioConfig
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.HiltTestApplication
 import dagger.hilt.android.testing.UninstallModules
-import io.reactivex.plugins.RxJavaPlugins
-import io.reactivex.schedulers.Schedulers
-import okhttp3.mockwebserver.MockWebServer
-import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.ParameterizedRobolectricTestRunner
-import org.robolectric.annotation.Config
-import org.robolectric.annotation.LooperMode
-import java.util.*
+import org.junit.runners.Parameterized
 import javax.inject.Inject
 
 /**
- * Step definitions runner for 'Show notification in user device' scenario.
+ * Step definitions runner for 'User search for movie' scenario.
  */
 @HiltAndroidTest
-@UninstallModules(NewsNetworkingModule::class)
-@RunWith(ParameterizedRobolectricTestRunner::class)
-@LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = HiltTestApplication::class,sdk = [28])
-@MediumTest
-class UserNotifiedStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
+@UninstallModules(NetworkingModule::class, ReviewsNetworkingModule::class, NewsNetworkingModule::class)
+@RunWith(Parameterized::class)
+@LargeTest
+class NewsNotificationStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenario) {
 
     companion object {
         @JvmStatic
-        @ParameterizedRobolectricTestRunner.Parameters
-        fun data(): Collection<Array<Any>> {
-            val res = ArrayList<Array<Any>>()
-            val scenarioConfigs = GreenCoffeeConfig()
-                .withFeatureFromAssets("feature/news_update_notification.feature")
-                .withTags("@notify-user")
+        @Parameterized.Parameters(name = "{0}")
+        fun scenarios(): Iterable<ScenarioConfig> {
+            return GreenCoffeeConfig()
+                .withFeatureFromAssets("assets/feature/user_notified_for_unread_articles.feature")
                 .scenarios()
-
-            for (scenarioConfig in scenarioConfigs) {
-                res.add(arrayOf(scenarioConfig))
-            }
-
-            return res
-        }
-
-        @JvmStatic
-        @BeforeClass
-        fun setupClass() {
-            RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
         }
     }
 
     @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
-
-    @get:Rule
     val hiltRule = HiltAndroidRule(this)
-
-    @Inject
-    lateinit var mockWebServer: MockWebServer
 
     @Inject
     lateinit var remoteProvider: RemoteRecentDateProvider
@@ -96,8 +68,8 @@ class UserNotifiedStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenar
             .setWorkerFactory(workerFactory)
             .build()
 
-        WorkManagerTestInitHelper.initializeTestWorkManager(getApplicationContext(), config)
-        start(UserNotifiedSteps(mockWebServer,workerFactory))
+        WorkManagerTestInitHelper.initializeTestWorkManager(ApplicationProvider.getApplicationContext(), config)
+        start(NewsNotificationSteps(NetworkUtil.server,workerFactory))
     }
 
     class TestWorkerFactory(

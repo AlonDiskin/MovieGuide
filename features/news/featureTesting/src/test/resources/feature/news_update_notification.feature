@@ -15,3 +15,11 @@ Feature: News update notification
       | active_usage      | notify_user |
       | in foreground     | not notify  |
       | not in foreground | notify      |
+
+  #Rule: Open news screen when user tap notification
+
+  @notification-tap
+  Scenario: News screen opened when notification tapped
+    Given News notification is shown
+    When User tap on notification
+    Then App should launch and open news screen

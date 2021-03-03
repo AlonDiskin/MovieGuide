@@ -5,7 +5,6 @@ import android.app.ActivityManager.RunningAppProcessInfo
 import android.app.ActivityManager.getMyMemoryState
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Looper
 import androidx.core.app.NotificationManagerCompat
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
@@ -36,7 +35,6 @@ import okhttp3.mockwebserver.RecordedRequest
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
 import org.robolectric.Robolectric
-import org.robolectric.Shadows
 import java.net.URLEncoder
 
 /**
@@ -49,11 +47,13 @@ class UserNotifiedSteps(
 
     private val appContext = getApplicationContext<Context>()
     private val dispatcher = TestDispatcher()
-    private val service = Robolectric.setupService(NewsNotificationConfigListenerService::class.java)
 
     init {
         // Prepare test web server
         server.setDispatcher(dispatcher)
+
+        // Init listener service
+        Robolectric.setupService(NewsNotificationConfigListenerService::class.java)
     }
 
     @Given("^Unread by user articles are published$")
@@ -106,9 +106,9 @@ class UserNotifiedSteps(
 
     @Then("^App should \"([^\"]*)\" user upon notification service run$")
     fun app_should_notify_user_upon_notification_service_run(notifyArg: String) {
-        val workManager = WorkManager.getInstance(getApplicationContext())
-        val testDriver = WorkManagerTestInitHelper.getTestDriver(getApplicationContext())!!
-        val notificationManager: NotificationManager = getApplicationContext<Context>()
+        val workManager = WorkManager.getInstance(appContext)
+        val testDriver = WorkManagerTestInitHelper.getTestDriver(appContext)!!
+        val notificationManager: NotificationManager = appContext
             .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val workInfo = workManager.getWorkInfosForUniqueWork(
             NewsNotificationSchedulerImpl.NEWS_NOTIFICATION_WORK_NAME).get()[0]
@@ -119,8 +119,10 @@ class UserNotifiedSteps(
         // Set notification work constrains and delay as met, for work to run
         testDriver.setPeriodDelayMet(workInfo.id)
         testDriver.setAllConstraintsMet(workInfo.id)
+
+        // TestDriver currently do not supporting executing work for RxWorker, so we
+        // need to do this manually
         val testObserver = workerFactory.worker.createWork().test()
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
 
         // Verify worker returned  successful result
         testObserver.assertValue(Result.success())
@@ -128,7 +130,7 @@ class UserNotifiedSteps(
         when(notifyArg) {
             "notify" -> {
                 // Verify notification has been shown
-                val channel = NotificationManagerCompat.from(getApplicationContext())
+                val channel = NotificationManagerCompat.from(appContext)
                     .getNotificationChannel(NewsNotificationWorker.CHANNEL_ID)
                 assertThat(channel).isNotNull()
                 assertThat(notificationManager.activeNotifications.size).isEqualTo(1)
@@ -136,7 +138,7 @@ class UserNotifiedSteps(
 
             "not notify" -> {
                 // Verify notification has not been shown
-                val channel = NotificationManagerCompat.from(getApplicationContext())
+                val channel = NotificationManagerCompat.from(appContext)
                     .getNotificationChannel(NewsNotificationWorker.CHANNEL_ID)
                 assertThat(channel).isNull()
                 assertThat(notificationManager.activeNotifications.size).isEqualTo(0)

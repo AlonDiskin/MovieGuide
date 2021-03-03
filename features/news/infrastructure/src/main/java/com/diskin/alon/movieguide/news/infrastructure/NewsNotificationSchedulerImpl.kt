@@ -16,7 +16,7 @@ class NewsNotificationSchedulerImpl @Inject constructor(
 
     companion object {
         const val NEWS_NOTIFICATION_WORK_NAME = "news notification work"
-        const val WORK_INTERVAL_HOURS = 1L
+        const val WORK_INTERVAL_MINUTES = 30L
     }
 
     override fun schedule(data: NewsNotificationData): Completable {
@@ -25,8 +25,8 @@ class NewsNotificationSchedulerImpl @Inject constructor(
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
             val workRequest = PeriodicWorkRequestBuilder<NewsNotificationWorker>(
-                WORK_INTERVAL_HOURS,
-                TimeUnit.HOURS)
+                WORK_INTERVAL_MINUTES,
+                TimeUnit.MINUTES)
                 .setConstraints(constraints)
                 .setInputData(mapEventToWorkData(data))
                 .build()

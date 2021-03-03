@@ -6,7 +6,7 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.diskin.alon.movieguide.news.appservices.data.NewsNotificationData
 import com.diskin.alon.movieguide.news.infrastructure.NewsNotificationSchedulerImpl.Companion.NEWS_NOTIFICATION_WORK_NAME
-import com.diskin.alon.movieguide.news.infrastructure.NewsNotificationSchedulerImpl.Companion.WORK_INTERVAL_HOURS
+import com.diskin.alon.movieguide.news.infrastructure.NewsNotificationSchedulerImpl.Companion.WORK_INTERVAL_MINUTES
 import com.diskin.alon.movieguide.news.infrastructure.NewsNotificationWorker.Companion.KEY_VIBRATION
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
@@ -102,7 +102,7 @@ class NewsNotificationSchedulerImplTest {
         // Then manager should enqueue repeatable unique work
         assertThat(workRequestSlot.captured.workSpec.isPeriodic).isTrue()
         assertThat(workRequestSlot.captured.workSpec.intervalDuration)
-            .isEqualTo(TimeUnit.HOURS.toMillis(WORK_INTERVAL_HOURS))
+            .isEqualTo(TimeUnit.MINUTES.toMillis(WORK_INTERVAL_MINUTES))
     }
 
     @Test

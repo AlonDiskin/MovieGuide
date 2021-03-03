@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import android.widget.Toast
 import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.common.util.messaging.NewsNotificationConfigEvent
 import com.diskin.alon.movieguide.news.appservices.data.ScheduleNewsNotificationRequest
@@ -46,23 +45,6 @@ class NewsNotificationConfigListenerService : Service() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: NewsNotificationConfigEvent) {
         useCase.execute(mapper.map(event))
-            .subscribe(
-                { handleScheduleUseCaseSuccess(event) },
-                { handleScheduleUseCaseFailure(event,it) }
-            )
-    }
-
-    private fun handleScheduleUseCaseSuccess(event: NewsNotificationConfigEvent) {
-        val message = if (event.enabled) {
-            getString(R.string.notification_enabled)
-        } else {
-            getString(R.string.notification_disabled)
-        }
-
-        Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
-    }
-
-    private fun handleScheduleUseCaseFailure(event: NewsNotificationConfigEvent, error: Throwable) {
-        Toast.makeText(this,getString(R.string.notification_schedule_error),Toast.LENGTH_SHORT).show()
+            .subscribe()
     }
 }

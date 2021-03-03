@@ -27,7 +27,7 @@ class TestRunner : AndroidJUnitRunner() {
             private lateinit var dataBindingIdlingResource: DataBindingIdlingResource
 
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-                if (activity::class.java.simpleName == MainActivity::class.java.simpleName) {
+                if(activity is MainActivity) {
                     dataBindingIdlingResource = DataBindingIdlingResource(activity as FragmentActivity)
                     IdlingRegistry.getInstance().register(dataBindingIdlingResource)
                 }
@@ -54,7 +54,7 @@ class TestRunner : AndroidJUnitRunner() {
             }
 
             override fun onActivityDestroyed(activity: Activity) {
-                if (activity::class.java.simpleName == MainActivity::class.java.simpleName) {
+                if(activity is MainActivity) {
                     IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
                 }
             }

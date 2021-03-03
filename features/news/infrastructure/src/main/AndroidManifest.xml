@@ -6,7 +6,6 @@
         <service
             android:name=".NewsNotificationConfigListenerService"
             android:exported="false"
-            android:stopWithTask="true"
             />
     </application>
 
