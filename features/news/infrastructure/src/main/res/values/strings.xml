@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="welcome_messages">.</string>
+    <string name="notification_enabled">News notification enabled</string>
+    <string name="notification_disabled">News notification disabled</string>
+    <string name="notification_schedule_error">Operation failed!</string>
+    <string name="channel_name">movie guide notification channel</string>
+    <string name="channel_description">movie guide app news notification channel</string>
+    <string name="notification_title">New Articles Published!</string>
+    <string name="notification_text">Check out your unread movie news</string>
+</resources>

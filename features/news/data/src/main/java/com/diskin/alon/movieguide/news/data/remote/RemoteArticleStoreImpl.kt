@@ -19,7 +19,8 @@ import javax.inject.Inject
 class RemoteArticleStoreImpl @Inject constructor(
     private val api: FeedlyApi,
     private val errorHandler: NetworkErrorHandler,
-    private val apiArticleMapper: Mapper<FeedlyEntryResponse,ArticleEntity>
+    private val apiArticleMapper: Mapper<FeedlyEntryResponse,ArticleEntity>,
+    private val lastReadArticleStore: LastReadArticleStore
 ) : RemoteArticleStore {
 
     override fun getArticle(articleId: String): Observable<Result<ArticleEntity>> {
@@ -31,7 +32,9 @@ class RemoteArticleStoreImpl @Inject constructor(
     }
 
     override fun getPaging(config: PagingConfig): Observable<PagingData<ArticleEntity>> {
-        return Pager(config) { MoviesArticlesPagingSource(api,errorHandler,apiArticleMapper) }
+        return Pager(config) {
+            MoviesArticlesPagingSource(api,errorHandler,apiArticleMapper,lastReadArticleStore)
+        }
             .observable
     }
 

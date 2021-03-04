@@ -41,10 +41,11 @@ class RemoteArticleStoreImplTest {
     private val api: FeedlyApi = mockk()
     private val errorHandler: NetworkErrorHandler = mockk()
     private val apiArticleMapper: Mapper<FeedlyEntryResponse, ArticleEntity> = mockk()
+    private val lastReadArticleStore: LastReadArticleStore = mockk()
 
     @Before
     fun setUp() {
-        store = RemoteArticleStoreImpl(api, errorHandler, apiArticleMapper)
+        store = RemoteArticleStoreImpl(api, errorHandler, apiArticleMapper,lastReadArticleStore)
     }
 
     @Test

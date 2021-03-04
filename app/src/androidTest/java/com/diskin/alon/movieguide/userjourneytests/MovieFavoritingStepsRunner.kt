@@ -30,7 +30,7 @@ class MovieFavoritingStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(sce
         @Parameterized.Parameters(name = "{0}")
         fun scenarios(): Iterable<ScenarioConfig> {
             return GreenCoffeeConfig()
-                .withFeatureFromAssets("assets/feature/movie_favoriting_journey.feature")
+                .withFeatureFromAssets("assets/feature/movie_favoriting.feature")
                 .scenarios()
         }
     }

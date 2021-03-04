@@ -1,5 +1,8 @@
 package com.diskin.alon.movieguide.news.di.common
 
+import android.app.Application
+import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 import com.diskin.alon.movieguide.common.util.Mapper
 import com.diskin.alon.movieguide.news.appservices.data.HeadlineDto
 import com.diskin.alon.movieguide.news.appservices.interfaces.ArticleRepository
@@ -8,6 +11,8 @@ import com.diskin.alon.movieguide.news.data.local.BookmarkStore
 import com.diskin.alon.movieguide.news.data.local.BookmarkStoreImpl
 import com.diskin.alon.movieguide.news.data.local.StorageErrorHandler
 import com.diskin.alon.movieguide.news.data.local.StorageErrorHandlerImpl
+import com.diskin.alon.movieguide.news.data.remote.LastReadArticleStore
+import com.diskin.alon.movieguide.news.data.remote.LastReadArticleStoreImpl
 import com.diskin.alon.movieguide.news.data.remote.RemoteArticleStore
 import com.diskin.alon.movieguide.news.data.remote.RemoteArticleStoreImpl
 import com.diskin.alon.movieguide.news.data.remote.data.FeedlyEntryResponse
@@ -17,6 +22,7 @@ import com.diskin.alon.movieguide.news.presentation.data.Headline
 import com.diskin.alon.movieguide.news.presentation.util.HeadlineMapper
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
@@ -24,6 +30,15 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class NewsDataModule {
+
+    companion object {
+
+        @Singleton
+        @Provides
+        fun provideSharedPreferences(app: Application): SharedPreferences {
+            return PreferenceManager.getDefaultSharedPreferences(app)
+        }
+    }
 
     @Singleton
     @Binds
@@ -48,4 +63,8 @@ abstract class NewsDataModule {
     @Singleton
     @Binds
     abstract fun bindsHeadlineMapper(mapper: HeadlineMapper): Mapper<HeadlineDto, Headline>
+
+    @Singleton
+    @Binds
+    abstract fun bindsLastReadArticleStore(store: LastReadArticleStoreImpl): LastReadArticleStore
 }

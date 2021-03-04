@@ -30,7 +30,7 @@ class MovieSearchStepsRunner(scenario: ScenarioConfig) : GreenCoffeeTest(scenari
         @Parameterized.Parameters(name = "{0}")
         fun scenarios(): Iterable<ScenarioConfig> {
             return GreenCoffeeConfig()
-                .withFeatureFromAssets("assets/feature/read_searched_movie_review_journey.feature")
+                .withFeatureFromAssets("assets/feature/read_searched_movie_review.feature")
                 .scenarios()
         }
     }

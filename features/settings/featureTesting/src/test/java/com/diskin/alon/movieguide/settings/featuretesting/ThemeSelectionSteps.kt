@@ -1,28 +1,31 @@
 package com.diskin.alon.movieguide.settings.featuretesting
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Looper
-import android.preference.PreferenceManager
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.fragment.app.testing.FragmentScenario
 import androidx.preference.ListPreference
 import androidx.preference.get
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItem
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.diskin.alon.movieguide.common.uitesting.HiltTestActivity
+import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.settings.presentation.R
-import com.diskin.alon.movieguide.settings.presentation.SettingsFragment
+import com.diskin.alon.movieguide.settings.presentation.controller.SettingsFragment
 import com.google.common.truth.Truth.assertThat
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.And
 import com.mauriciotogneri.greencoffee.annotations.Given
 import com.mauriciotogneri.greencoffee.annotations.Then
 import com.mauriciotogneri.greencoffee.annotations.When
+import io.mockk.every
+import io.mockk.mockkStatic
+import io.mockk.verify
 import org.hamcrest.CoreMatchers.equalTo
 import org.robolectric.Shadows
 import org.robolectric.shadows.ShadowAlertDialog
@@ -32,7 +35,7 @@ import org.robolectric.shadows.ShadowAlertDialog
  */
 class ThemeSelectionSteps : GreenCoffeeSteps() {
 
-    private lateinit var scenario: FragmentScenario<SettingsFragment>
+    private lateinit var scenario: ActivityScenario<HiltTestActivity>
 
     @Given("^App theme has not been changed by user$")
     fun appThemeHasNotBeenChangedByUser() {
@@ -41,17 +44,16 @@ class ThemeSelectionSteps : GreenCoffeeSteps() {
 
     @And("^User open settings screen$")
     fun userOpenSettingsScreen() {
-        scenario = FragmentScenario.launchInContainer(
-            SettingsFragment::class.java,
-            null,
-            R.style.Theme_MaterialComponents_DayNight,
-            null
+        scenario = launchFragmentInHiltContainer<SettingsFragment>(
+            themeResId = R.style.Theme_MaterialComponents_DayNight
         )
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
     }
 
     @Then("^App theme should be set to the default$")
     fun appThemeShouldBeSetAsDefault() {
-        scenario.onFragment { fragment ->
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.fragments[0] as SettingsFragment
             val key = fragment.getString(R.string.pref_theme_key)
             val themePref = fragment.preferenceScreen.get<ListPreference>(key)!!
             val defaultThemeEntry = fragment.getString(R.string.pref_theme_day_entry)
@@ -70,6 +72,9 @@ class ThemeSelectionSteps : GreenCoffeeSteps() {
 
     @When("^User select different theme$")
     fun userSelectsDifferentTheme() {
+        mockkStatic(AppCompatDelegate::class)
+        every { AppCompatDelegate.setDefaultNightMode(any()) } returns Unit
+
         onView(withClassName(equalTo(RecyclerView::class.java.name)))
             .perform(
                 actionOnItem<RecyclerView.ViewHolder>(
@@ -94,7 +99,8 @@ class ThemeSelectionSteps : GreenCoffeeSteps() {
 
     @Then("^App theme should change as selected$")
     fun appThemeShouldChangeAsSelected() {
-        scenario.onFragment { fragment ->
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.fragments[0] as SettingsFragment
             val key = fragment.getString(R.string.pref_theme_key)
             val themePref = fragment.preferenceScreen.get<ListPreference>(key)!!
             val nightThemeEntry = fragment.getString(R.string.pref_theme_night_entry)
@@ -110,16 +116,7 @@ class ThemeSelectionSteps : GreenCoffeeSteps() {
             assertThat(actualTheme).isEqualTo(nightThemeValue)
 
             // Verify night mode is set
-            assertThat(AppCompatDelegate.getDefaultNightMode())
-                .isEqualTo(AppCompatDelegate.MODE_NIGHT_YES)
+            verify { AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) }
         }
-    }
-
-    private fun clearSharedPrefs() {
-        val context = getApplicationContext<Context>()
-        val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor = prefs.edit()
-        editor.clear()
-        editor.commit()
     }
 }

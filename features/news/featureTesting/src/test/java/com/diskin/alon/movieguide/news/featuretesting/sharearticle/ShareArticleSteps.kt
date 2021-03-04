@@ -17,7 +17,7 @@ import com.diskin.alon.movieguide.common.uitesting.launchFragmentInHiltContainer
 import com.diskin.alon.movieguide.news.data.remote.FEEDLY_ENTRY_PATH
 import com.diskin.alon.movieguide.news.presentation.R
 import com.diskin.alon.movieguide.news.presentation.controller.ArticleFragment
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import com.mauriciotogneri.greencoffee.GreenCoffeeSteps
 import com.mauriciotogneri.greencoffee.annotations.Given
 import com.mauriciotogneri.greencoffee.annotations.Then
@@ -89,8 +89,8 @@ class ShareArticleSteps(server: MockWebServer) : GreenCoffeeSteps() {
         val intent = Intents.getIntents().first().extras?.get(Intent.EXTRA_INTENT) as Intent
         val context = ApplicationProvider.getApplicationContext<Context>()!!
 
-        Truth.assertThat(intent.type).isEqualTo(context.getString(R.string.mime_type_text))
-        Truth.assertThat(intent.getStringExtra(Intent.EXTRA_TEXT))
+        assertThat(intent.type).isEqualTo(context.getString(R.string.mime_type_text))
+        assertThat(intent.getStringExtra(Intent.EXTRA_TEXT))
             .isEqualTo(parseTestWebEntryResourceArticleUrl())
 
         Intents.release()

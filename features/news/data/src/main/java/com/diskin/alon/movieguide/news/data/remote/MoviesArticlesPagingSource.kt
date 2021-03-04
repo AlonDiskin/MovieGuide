@@ -16,7 +16,8 @@ import javax.inject.Inject
 class MoviesArticlesPagingSource @Inject constructor(
     private val api: FeedlyApi,
     private val networkErrorHandler: NetworkErrorHandler,
-    private val apiArticlesMapper: Mapper<FeedlyEntryResponse, ArticleEntity>
+    private val apiArticlesMapper: Mapper<FeedlyEntryResponse, ArticleEntity>,
+    private val lastReadArticleStore: LastReadArticleStore
 ) : RxPagingSource<String,ArticleEntity>() {
 
     override fun loadSingle(params: LoadParams<String>): Single<LoadResult<String, ArticleEntity>> {
@@ -35,10 +36,8 @@ class MoviesArticlesPagingSource @Inject constructor(
             .onErrorReturn{ toLoadResultError(it) }
     }
 
-    /**
-     * Maps remote api [FeedlyFeedResponse] to a [LoadResult].
-     */
     private fun toLoadResult(response: FeedlyFeedResponse): LoadResult<String, ArticleEntity> {
+        lastReadArticleStore.putLastDate(response.items.first().published)
         return LoadResult.Page(
             response.items.map(apiArticlesMapper::map),
             null,  // Only paging forward.
@@ -48,9 +47,6 @@ class MoviesArticlesPagingSource @Inject constructor(
         )
     }
 
-    /**
-     * Maps remote api errors, to [Throwable] containing description message about
-     */
     private fun toLoadResultError(e: Throwable): LoadResult<String,ArticleEntity> {
         val networkError = networkErrorHandler.handle(e)
         val throwable = Throwable(networkError.description)

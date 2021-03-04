@@ -10,4 +10,5 @@ java {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    api 'org.greenrobot:eventbus:3.2.0'
 }
