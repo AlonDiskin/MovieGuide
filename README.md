@@ -15,14 +15,14 @@
 Provides the latest news and detail about movies, allowing the user to stay informed  on current events from the movie industry
 
 ## Screenshots
-![Example screenshot](./img/Screenshot_20210305-115900_MovieGuide.jpg)
-![Example screenshot](./img/Screenshot_20210305-115914_MovieGuide.jpg)
-![Example screenshot](./img/Screenshot_20210305-115941_MovieGuide.jpg)
-![Example screenshot](./img/Screenshot_20210305-120023_MovieGuide.jpg)
-![Example screenshot](./img/Screenshot_20210305-120036_MovieGuide.jpg)
-![Example screenshot](./img/Screenshot_20210305-120056_MovieGuide.jpg)
-![Example screenshot](./img/Screenshot_20210305-120111_MovieGuide.jpg)
-![Example screenshot](./img/Screenshot_20210305-120211_MovieGuide.jpg)
+![Example screenshot](./img/Screenshot_20210305-115900_MovieGuide.jpg){:height="50px" width="250px"}
+![Example screenshot](./img/Screenshot_20210305-115914_MovieGuide.jpg){:height="50px" width="250px"}
+![Example screenshot](./img/Screenshot_20210305-115941_MovieGuide.jpg){:height="50px" width="250px"}
+![Example screenshot](./img/Screenshot_20210305-120023_MovieGuide.jpg){:height="50px" width="250px"}
+![Example screenshot](./img/Screenshot_20210305-120036_MovieGuide.jpg){:height="50px" width="250px"}
+![Example screenshot](./img/Screenshot_20210305-120056_MovieGuide.jpg){:height="50px" width="250px"}
+![Example screenshot](./img/Screenshot_20210305-120111_MovieGuide.jpg){:height="50px" width="250px"}
+![Example screenshot](./img/Screenshot_20210305-120211_MovieGuide.jpg){:height="50px" width="250px"}
 
 ## Technologies
 * Tech 1 - version 1.0
