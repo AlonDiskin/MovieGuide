@@ -1,5 +1,5 @@
-# Project Name
-> Here goes your awesome project description!
+# Movie guide
+> Movies news and content android app
 
 ## Table of contents
 * [General info](#general-info)
@@ -12,7 +12,7 @@
 * [Contact](#contact)
 
 ## General info
-Add more general information about project. What the purpose of the project is? Motivation?
+Provides the latest news and detail about movies, allowing the user to stay informed  on current events from the movie industry
 
 ## Screenshots
 ![Example screenshot](./img/screenshot.png)
@@ -30,17 +30,14 @@ Show examples of usage:
 `put-your-code-here`
 
 ## Features
-List of features ready and TODOs for future development
-* Awesome feature 1
-* Awesome feature 2
-* Awesome feature 3
 
-To-do list:
-* Wow improvement to be done 1
-* Wow improvement to be done 2
+* News articles
+* Movie deatail & reviews
+* Content bookmarking & sharing
+* News update notification
 
 ## Status
-Project is: _in progress_, _finished_, _no longer continue_ and why?
+Ongoing development
 
 ## Inspiration
 Add here credits. Project inspired by..., based on...
