@@ -36,7 +36,7 @@ App requires min sdk 21 to run(android 5.0 lollipop). Currently the app is not a
 Ongoing development, look in the 'Projects' section of repository for more detailed  staus info.
 
 ## Management 
-Planing and management for this project is done using the principles of scrum, utilizing github projects feature. In order to facilitate user story refinement and feature delivery, BDD methods are applied to map stories to functional requirements.Code delivery itself is done via CI\CD pipeline which use gits ‘branch by feature’ approach,that triggers test runs for each push to this repository, upon successful push branches are deleted.
+Planning and management for this project is done using the principles of scrum, utilizing github projects feature. In order to facilitate user story refinement and feature delivery, BDD methods are applied to map stories to functional requirements.Code delivery itself is done via CI\CD pipeline which use gits ‘branch by feature’ approach,that triggers test runs for each push to this repository, upon successful push branches are deleted.
 
 ## Architecture
 Software solution utilizes domain driven design principles along with clean architecture specification, as the structural guidelines for implementation.
